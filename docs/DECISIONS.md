@@ -130,14 +130,15 @@ stämmer det exakt. För den som haft fond länge blir den något för stor,
 eftersom fonden vuxit snabbare, och vinsten med att flytta något för liten.
 Det står i "Så har vi räknat".
 
-Inmatningen börjar med ett val: "Allt ligger i traditionell försäkring, eller
-jag vet inte" ger ett fält för totalen, som står på avtalat.se:s startsida.
+Inmatningen börjar med ett val: "Allt ligger i traditionell försäkring" ger
+ett fält för totalen, som står på avtalat.se:s startsida.
 "Jag har flera olika pensionsbolag" ger en rad per försäkring med belopp och
 trad eller fond. Pensionsbolag frågar vi inte efter: det avgör inte
 sparformen säkert och används inte i beräkningen.
 
-Vi tvingar ingen att ta reda på något. Den som inte vet räknas som om allt
-ligger i trad, och resultatet säger att vi har antagit det.
+Vi tvingar ingen att ta reda på något. Ovanför valet står att den som är
+osäker kan välja att allt ligger i trad, så ser man hur illa det kan vara.
+Resultatet säger att vi har räknat så.
 
 ## 12. Fördelningen av kommande inbetalningar är valfri (2026-10-22)
 

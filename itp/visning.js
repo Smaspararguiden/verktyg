@@ -40,9 +40,13 @@ rot.innerHTML = `
         Ditt totala ITP1-kapital står på startsidan. Under Din tjänstepension
         → Pensionskapital ser du hos vilka bolag pengarna ligger.
       </p>
+      <p class="hjalp">
+        Är du osäker och orkar inte kolla? Välj att allt ligger i traditionell
+        försäkring, så ser du hur illa det kan vara.
+      </p>
       <div class="val">
         <label><input type="radio" name="lage" value="trad" checked>
-          Allt ligger i traditionell försäkring, eller jag vet inte</label>
+          Allt ligger i traditionell försäkring</label>
         <label><input type="radio" name="lage" value="delar">
           Jag har flera olika pensionsbolag</label>
       </div>
@@ -53,7 +57,7 @@ rot.innerHTML = `
         </label>
         <p class="hjalp">
           Står det bara Alecta under Pensionskapital ligger allt i traditionell
-          försäkring. Vet du inte räknar vi som om allt ligger där.
+          försäkring.
         </p>
       </div>
 
