@@ -50,3 +50,14 @@ också testmiljön, så att andra kan testa via en länk.
 ITP-räknesnurran visar väntevärdet, i dagens penningvärde, och i första hand
 kapital vid pension. Ett utfallsintervall valdes bort i första versionen.
 Antagandena redovisas öppet i "Så har vi räknat".
+
+## 7. En pensionsålder för alla, premier ända dit (2026-10-22)
+
+ITP-räknesnurran räknar med samma pensionsålder för alla, 68 år, och med
+premier fram till den. Dagens ITP1-avtal betalar premier till 66 år, men
+riktåldern för pension höjs med tiden, och för den som är ung i dag blir den
+troligen högre. Vi antar att avtalet följer med. Ingen anpassning efter
+födelseår, åtminstone inte nu: en ålder är enklare att förklara.
+
+Pensionsåldern är en parameter. Entrélösningens nedtrappning räknas från den,
+så att den flyttar med om åldern ändras.

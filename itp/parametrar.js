@@ -37,19 +37,24 @@ export const parametrar = {
     varde: 30,
     enhet: "IBB",
     beskrivning: "Ingen premie betalas på lön över taket",
-    kalla: "VERIFIERA",
+    kalla: "ITP1-avtalet sedan 2023; PTK, Vägledning alternativ ITP (mars 2026)",
   },
   premieStartalder: {
     varde: 25,
     enhet: "år",
     beskrivning: "Ålder när premieinbetalningarna börjar",
-    kalla: "VERIFIERA – kan ha ändrats i senare avtal",
+    kalla: "ITP1-avtalet; Länsförsäkringars förköpsinformation ITP (2026-01-01)",
   },
   pensionsalder: {
-    varde: 65,
+    // One age for everyone, no adjustment per birth year. Premiums are paid
+    // up to this age as well, although today's agreement stops them at 66:
+    // we assume the agreement follows the rising target retirement age.
+    // The entry solution's glide path follows this age; Alecta's follows the
+    // insured's age only.
+    varde: 68,
     enhet: "år",
-    beskrivning: "Premier betalas och kapitalet växer fram till den här åldern",
-    kalla: "Antagande",
+    beskrivning: "Premier betalas och kapitalet växer fram till den här åldern. Riktåldern höjs med tiden, så den blir troligen högre än dagens för den som är ung nu",
+    kalla: "Antagande – samma ålder för alla. Dagens ITP1-avtal betalar premier till 66 år",
   },
   andelObligatoriskTrad: {
     varde: 0.5,
@@ -80,64 +85,109 @@ export const parametrar = {
     varde: 0.06,
     enhet: "per år",
     beskrivning: "Förväntad real avkastning på aktier, före avgifter och skatt",
-    kalla: "Antagande – siffran från artiklarna, oklart om den är real. Andreas sätter",
+    kalla: "Antagande (Småspararguiden)",
   },
   realAvkastningRantor: {
     varde: 0.01,
     enhet: "per år",
     beskrivning: "Förväntad real avkastning på räntor, före avgifter och skatt",
-    kalla: "Antagande – siffran från artiklarna. Andreas sätter",
+    kalla: "Antagande (Småspararguiden)",
   },
 
   // --- Tax ----------------------------------------------------------------
   avkastningsskattPension: {
-    varde: 0.00375,
+    // 15 % of the average government bond rate for the previous year, with
+    // the rate floored at 0.5 %. Varies year to year; we hold it constant.
+    varde: 0.00354,
     enhet: "andel av kapitalet per år",
-    beskrivning: "Avkastningsskatt på pensionskapital (15 % av statslåneräntan)",
-    kalla: "VERIFIERA – beror på statslåneräntan i november året innan",
+    beskrivning: "Avkastningsskatt på pensionskapital 2026 (15 % av genomsnittlig statslåneränta 2025, 2,36 %)",
+    kalla: "Skatteverket, allmänna råd SKV A 2026:1",
   },
 
   // --- Products -----------------------------------------------------------
-  // Equity share by age is given as points [age, share] and interpolated
-  // linearly between them. Before the first point the first value holds;
-  // after the last point the last value holds.
-  // Fee per year in kronor = min(tak, max(golv, procent * kapital + fastKr)).
-  // A null tak or golv means no cap or no floor.
+  // Equity share comes in two forms:
+  //   perAlder:     points [age, share], interpolated linearly between them.
+  //                 Before the first point the first value holds; after the
+  //                 last point the last value holds.
+  //   forePension:  startandel until startArForePension years before the
+  //                 pension age, then linearly down to slutandel over
+  //                 langdAr years. Moves with the pension age.
+  //
+  // Fee per year in kronor =
+  //   min(tak, max(golv, procent * kapital + fastKr)) + procentUtanTak * kapital
+  // where procent = aktieandel * procentAktiedel + (1 - aktieandel) * procentRantedel.
+  // A null tak or golv means no cap or no floor. procentUtanTak covers costs
+  // charged on top of a capped fee, such as Alecta's capital management cost.
   produkter: {
     alectaTrad: {
       namn: "Alecta traditionell försäkring",
-      aktieandelPerAlder: {
-        varde: [[25, 0.60], [55, 0.60], [65, 0.50]],
-        kalla: "VERIFIERA – artikeln anger cirka 60 % som ung och 50 % som pensionär",
+      aktieandel: {
+        // 60 % until 63, 50 % from 63 to 66, 40 % after 66.
+        typ: "perAlder",
+        punkter: [[62, 0.60], [63, 0.50], [65, 0.50], [66, 0.40]],
+        kalla: "Andrahandskälla (minkapital.se, 2026). VERIFIERA mot Alecta",
       },
       avgift: {
-        procent: 0.0011,
+        // Alecta charges the same rate whatever the mix, so both parts are
+        // equal.
+        procentAktiedel: 0.0005,
+        procentRantedel: 0.0005,
         fastKr: 0,
         takKr: 480,
         golvKr: null,
-        kalla: "Artikeln om ITP1 och ITP2 (upphandlingen 2023)",
+        procentUtanTak: 0.0003,
+        kalla: "Alecta; Konsumenternas, Jämför tjänstepensioner ITP 1 (2026-10): 0,05 % per år, högst 40 kr/mån, plus kapitalförvaltningskostnad cirka 0,03 %",
       },
     },
     entrelosning: {
-      namn: "Länsförsäkringar fondförsäkring, entrélösningen",
-      aktieandelPerAlder: {
-        varde: [[25, 1.0], [55, 1.0], [65, 0.6]],
-        kalla: "VERIFIERA – nedtrappningen och slutnivån är gissade",
+      namn: "Länsförsäkringar fondförsäkring, entrélösningen (LF Entré ITP)",
+      aktieandel: {
+        // All in equity funds until six years before pension, then moved
+        // over to bond funds during 20 years (with lifelong payout) until 25 %
+        // remains in equities. The move is read as linear. With pension at 65
+        // this matches "normally starts at 59".
+        typ: "forePension",
+        startandel: 1.0,
+        startArForePension: 6,
+        langdAr: 20,
+        slutandel: 0.25,
+        kalla: "Länsförsäkringars förköpsinformation ITP (2026-01-01); Konsumenternas, Jämför tjänstepensioner ITP 1 (2026-10)",
       },
       avgift: {
-        // The fund fee is a blend of the equity and bond funds, weighted by
-        // the equity share for the year.
-        procentAktiefond: 0.0012,
-        procentRantefond: 0.0012,
+        // Equity part: LF Global Index 80 % and LF Sverige Vision 20 %.
+        // Bond part: LF Kort Räntefond and LF Lång Räntefond. LF states the
+        // total as 0.08 % when young and 0.06 % at 25 % equity; the bond
+        // part's rate is derived from that.
+        procentAktiedel: 0.0008,
+        procentRantedel: 0.00053,
         fastKr: 0,
         takKr: null,
         golvKr: null,
-        kalla: "Aktiefonden: total avgift enligt artikeln. Räntefonden: VERIFIERA",
+        procentUtanTak: 0,
+        kalla: "Länsförsäkringars förköpsinformation ITP (2026-01-01): 0 kr fast avgift, 0 % kapitalavgift, 0,08–0,06 % årlig avgift",
       },
     },
   },
 
   // --- Display ------------------------------------------------------------
+  minstaVinstForTrafikljus: {
+    varde: 10000,
+    enhet: "kr",
+    beskrivning: "Är vinsten med att flytta mindre än så visas inget trafikljus",
+    kalla: "Antagande",
+  },
+  trafikljusGulFran: {
+    varde: 0.1,
+    enhet: "andel av vinsten",
+    beskrivning: "Under den här andelen uppnådd vinst är trafikljuset rött",
+    kalla: "Antagande",
+  },
+  trafikljusGronFran: {
+    varde: 0.9,
+    enhet: "andel av vinsten",
+    beskrivning: "Från den här andelen uppnådd vinst är trafikljuset grönt",
+    kalla: "Antagande",
+  },
   aldersvarningFran: {
     varde: 55,
     enhet: "år",
