@@ -34,6 +34,15 @@ parameterfilen: aktieandel och avgift.
 
 Tester: `itp/berakning.test.js`, körs med `node --test`.
 
-## Status
+Visningen är `index.html`, `stil.css` och `visning.js`. `visning.js` läser
+formuläret, anropar `berakna()` vid varje ändring och ritar resultatet. Den
+har inga egna siffror. "Så har vi räknat" ritas direkt från parameterfilen,
+och knappen "Ladda ner år för år" ger tabellen från `berakna()` som CSV
+(semikolon och decimalkomma, för svenska Excel och Sheets). Inget lämnar
+webbläsaren.
 
-Beräkningsmodulen finns. Visningen (`index.html`) är inte byggd.
+Användarens ålder räknas som innevarande år minus födelseår. Den som är född
+före 1979 har ITP2 och får ett meddelande i stället för ett resultat.
+
+Sidan använder ES-moduler och måste därför visas via en webbserver, inte som
+fil. Lokalt: `python -m http.server` i repots rot och sedan `/itp/`.
