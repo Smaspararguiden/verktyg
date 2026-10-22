@@ -61,3 +61,11 @@ födelseår, åtminstone inte nu: en ålder är enklare att förklara.
 
 Pensionsåldern är en parameter. Entrélösningens nedtrappning räknas från den,
 så att den flyttar med om åldern ändras.
+
+## 8. Typsnitt från repot, inte från Google Fonts (2026-10-22)
+
+Räknesnurran använder sajtens typsnitt Lato, och filerna ligger i repot
+(`itp/typsnitt/`, från Fontsource, med licensen OFL). Google Fonts valdes bort
+eftersom varje besök då skickar besökarens IP-adress till Google. Bara
+vanlig och fet vikt, och bara latinska tecken (som täcker å, ä och ö), för att
+hålla nedladdningen liten.
