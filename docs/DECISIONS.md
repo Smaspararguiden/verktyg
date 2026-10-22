@@ -88,8 +88,7 @@ webbläsare sidan från GitHub, som då fick IP-adress, tidpunkt och vilken
 sida på smaspararguiden.se besökaren var på. IP-adressen är en
 personuppgift. Som plugin pratar webbläsaren bara med smaspararguiden.se,
 som redan tar emot besöket. Sajtens webbansvarig rekommenderade samma väg:
-tredje parter kontaktas av servern, aldrig av besökarens webbläsare. Det
-gäller också mätningen, när den byggs.
+tredje parter kontaktas av servern, aldrig av besökarens webbläsare.
 
 Uppdatering sker för hand: filerna skrivs över via FTP och sajtens cache
 rensas i WordPress. Automatisk uppdatering från GitHub valdes bort på
