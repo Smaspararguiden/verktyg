@@ -83,6 +83,13 @@ test("premier betalas varje år från nuvarande ålder till pensionsåldern", ()
   assert.ok(ar.every((rad) => rad.premie > 0));
 });
 
+test("utan lön kommer inga premier, men kapitalet växer", () => {
+  const r = berakna(kopia(), { alder: 40, manadslon: 0, kapital: passiv });
+  assert.ok(r.scenarier.alltTrad.ar.every((rad) => rad.premie === 0));
+  assert.ok(r.scenarier.alltTrad.slutkapital > 200000);
+  assert.ok(r.vinstFlytt > 0);
+});
+
 test("inga premier före startåldern", () => {
   const r = berakna(kopia(), { alder: 22, manadslon: 30000, kapital: passiv });
   const ar = r.scenarier.alltTrad.ar;
