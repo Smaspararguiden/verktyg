@@ -123,3 +123,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 3. **Vilken data som skickas**, till exempel om fackförbund ska med.
    Småspararguidens GDPR-policy gäller.
 4. **Iframe eller WordPress-plugin.** Fråga ställd till webbansvarig.
+5. **Ska användaren dela upp traditionell försäkring i obligatorisk och
+   valbar del?** Avgörs när vi har skärmdumpar från avtalat.se. Beräkningen
+   behöver delarna, men om avtalat.se inte visar dem kan sidan få räkna fram
+   dem i stället.
