@@ -1,15 +1,81 @@
-// Display for the ITP1 calculator: reads the form, calls the calculation
-// module and renders the result. Holds no numbers of its own; everything it
-// shows comes from berakna() or the parameter file.
+// Display for the ITP1 calculator: draws the form into the page's .sg-itp
+// element, reads it, calls the calculation module and renders the result.
+// Holds no numbers of its own; everything it shows comes from berakna() or
+// the parameter file. The same file serves the WordPress shortcode and the
+// local preview page index.html.
 
-import { parametrar as p } from "./parametrar.js";
-import { berakna } from "./berakning.js";
+// The modules are loaded with this file's own version query (?ver=… from the
+// plugin), so a new upload is never mixed with cached old modules.
+const versionsfraga = new URL(import.meta.url).search;
+const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
+const { berakna } = await import(`./berakning.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
 
-const form = document.getElementById("indata");
-const resultat = document.getElementById("resultat");
+const rot = document.querySelector(".sg-itp");
+rot.innerHTML = `
+  <form autocomplete="off">
+    <fieldset>
+      <legend>Om dig</legend>
+      <label>Födelseår
+        <input name="fodelsear" inputmode="numeric" placeholder="t.ex. 1990">
+      </label>
+      <label class="kryss">
+        <input type="checkbox" name="anstalld" checked>
+        Jag har ITP1 i min nuvarande anställning
+      </label>
+      <label data-anstalld>Månadslön före skatt (kronor)
+        <input name="manadslon" inputmode="numeric" placeholder="t.ex. 45 000">
+      </label>
+      <p class="hjalp" data-ej-anstalld hidden>
+        Vi räknar bara på det kapital du har i dag, utan nya inbetalningar.
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Din ITP1 i dag</legend>
+      <p class="hjalp">Beloppen hittar du på avtalat.se.</p>
+      <div class="val">
+        <label><input type="radio" name="lage" value="total" checked>
+          Jag vet bara det totala beloppet</label>
+        <label><input type="radio" name="lage" value="delar">
+          Jag vet hur det är fördelat</label>
+      </div>
+
+      <div data-lage="total">
+        <label>Totalt ITP1-kapital
+          <input name="total" inputmode="numeric" placeholder="t.ex. 400 000">
+        </label>
+        <p class="hjalp">
+          Vi delar beloppet på mitten. Det stämmer om du aldrig har gjort något
+          val, eftersom hälften av varje inbetalning går till varje del.
+        </p>
+      </div>
+
+      <div data-lage="delar" hidden>
+        <label>Traditionell försäkring, obligatorisk del
+          <input name="obligatoriskTrad" inputmode="numeric">
+        </label>
+        <label>Traditionell försäkring, valbar del
+          <input name="flyttbarTrad" inputmode="numeric">
+        </label>
+        <label>Fondförsäkring
+          <input name="flyttbarFond" inputmode="numeric">
+        </label>
+      </div>
+    </fieldset>
+  </form>
+
+  <section class="resultat" aria-live="polite"></section>
+
+  <details>
+    <summary>Så har vi räknat</summary>
+    <div class="parametrar"></div>
+  </details>`;
+
+const form = rot.querySelector("form");
+const resultat = rot.querySelector(".resultat");
 
 const kr = (x) => `${(Math.round(x / 1000) * 1000).toLocaleString("sv-SE")} kr`;
 const procent = (x, decimaler = 0) =>
@@ -135,10 +201,10 @@ function visaResultat(indata, r) {
       <div class="rubrik"><span>${namn}</span><strong>${kr(varde)}</strong></div>
       <div class="spar"><div class="fyllning" style="width:${(varde / max) * 100}%"></div></div>
     </div>`).join("")}</div>
-    <button type="button" id="ladda-ner">Ladda ner år för år (CSV)</button>`);
+    <button type="button" class="ladda-ner">Ladda ner år för år (CSV)</button>`);
 
   resultat.innerHTML = delar.join("");
-  document.getElementById("ladda-ner").addEventListener("click", laddaNerCsv);
+  resultat.querySelector(".ladda-ner").addEventListener("click", laddaNerCsv);
 }
 
 // Year-by-year table for every scenario and pot, for checking by hand.
@@ -198,7 +264,7 @@ function avgiftText(f) {
 function visaParametrar() {
   const allmanna = Object.values(p).filter((post) => post && "varde" in post);
   const produkter = Object.values(p.produkter);
-  document.getElementById("parametrar").innerHTML = `
+  rot.querySelector(".parametrar").innerHTML = `
     <p class="hjalp">Alla belopp är i dagens penningvärde, och avkastningen är
       real, det vill säga efter inflation. Vi räknar med väntevärden: utfallet
       kan bli både bättre och sämre.</p>

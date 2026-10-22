@@ -45,6 +45,9 @@ få skrivrätt till samma server som hela sajten. Sidan på Pages är publik äv
 från ett privat repo och får `noindex` tills den lanseras. Pages-adressen är
 också testmiljön, så att andra kan testa via en länk.
 
+Ersatt av 9: verktygen publiceras som WordPress-plugin. Pages finns kvar som
+förhandsvisning.
+
 ## 6. Väntevärde i reala kronor (2026-10-22)
 
 ITP-räknesnurran visar väntevärdet, i dagens penningvärde, och i första hand
@@ -69,3 +72,47 @@ Räknesnurran använder sajtens typsnitt Lato, och filerna ligger i repot
 eftersom varje besök då skickar besökarens IP-adress till Google. Bara
 vanlig och fet vikt, och bara latinska tecken (som täcker å, ä och ö), för att
 hålla nedladdningen liten.
+
+Delvis ersatt av 10: på sajten används temats typsnitt. Filerna i repot
+används bara av förhandsvisningen.
+
+## 9. WordPress-plugin med kortkod, uppdaterad för hand via FTP (2026-10-22)
+
+Verktygen publiceras som en WordPress-plugin, `smaspararguiden-verktyg.php`
+i repots rot. Den skickar verktygets filer från sajtens egen server och
+lägger in verktyget där en kortkod står, till exempel `[itp_raknesnurra]`.
+Beräkningen körs fortfarande i besökarens webbläsare (1).
+
+Skälet är integritet. Med iframe från GitHub Pages hämtade besökarens
+webbläsare sidan från GitHub, som då fick IP-adress, tidpunkt och vilken
+sida på smaspararguiden.se besökaren var på. IP-adressen är en
+personuppgift. Som plugin pratar webbläsaren bara med smaspararguiden.se,
+som redan tar emot besöket. Sajtens webbansvarig rekommenderade samma väg:
+tredje parter kontaktas av servern, aldrig av besökarens webbläsare. Det
+gäller också mätningen, när den byggs.
+
+Uppdatering sker för hand: filerna skrivs över via FTP och sajtens cache
+rensas i WordPress. Automatisk uppdatering från GitHub valdes bort på
+webbansvarigs inrådan. Den kräver kod från tredje part i pluginen och ger
+GitHub en väg in till sajten, samma invändning som i 5. Priset är att en
+merge till `main` inte längre publicerar något på sajten.
+
+För att besökarnas webbläsare inte ska blanda en ny uppladdning med gamla
+filer i cachen får filernas adresser en version från den senaste
+ändringstiden bland dem. Pluginen behöver alltså inget nytt versionsnummer
+för varje ändring.
+
+Pages finns kvar som förhandsvisning, med `noindex`, så att andra kan testa
+via en länk innan en ändring laddas upp.
+
+## 10. Temat stylar det vanliga, vi bara komponenterna (2026-10-22)
+
+Utan iframe hamnar verktyget i samma sida som WordPress-temat. Rubriker,
+text, fält, knappar och tabeller får temats utseende, så att verktyget ser
+ut som resten av sajten och följer med om temat ändras. Vår CSS styler bara
+verktygets egna komponenter: rutorna, nyckeltalen, staplarna och
+trafikljuset.
+
+Alla våra regler gäller bara inuti verktygets element (`.sg-itp`), så de
+når inte resten av sidan. Shadow DOM, som stänger ute temat helt, valdes
+bort: då försvinner också det vi vill ärva.

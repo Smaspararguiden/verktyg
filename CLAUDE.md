@@ -2,8 +2,9 @@
 
 This repo holds tools that Småspararguiden publishes on smaspararguiden.se,
 for example calculators. Each tool runs entirely in the visitor's browser:
-plain JavaScript, no server, no build step. Pages are published with GitHub
-Pages and embedded in WordPress.
+plain JavaScript, no build step. The tools are published as a WordPress plugin
+(`smaspararguiden-verktyg.php`, one shortcode per tool), uploaded by hand over
+FTP. GitHub Pages shows a preview.
 
 Never modify code unless explicitly requested. Prefer discussion over
 implementation.
@@ -47,7 +48,7 @@ The human user controls GitHub. Local commits on your own branch are fine.
 Pushing a branch and opening a pull request is fine.
 
 Claude must **NEVER merge a PR or otherwise push to `main`**. GitHub Pages
-publishes from `main`, so a merge makes the change public. The human reviews
+publishes the preview from `main`, so a merge makes the change public there. The human reviews
 and merges on GitHub. This holds even when asked to "merge to main" – interpret
 that as "prepare and open the PR".
 
