@@ -1,173 +1,114 @@
-/* Styles for the ITP1 calculator page. Colours are taken from
-   smaspararguiden.se: blue-grey surfaces, the dark blue of the Befria ITP
-   campaign box and the site's buttons.
-   The font is the site's Lato, served from this repo (Fontsource 5.2.7,
-   Latin subset, which covers å, ä and ö; licence in typsnitt/OFL.txt). */
+/* Styles for the ITP1 calculator. Every rule is scoped to the .sg-itp
+   element, so nothing here reaches the rest of the page. Headings, text,
+   inputs, buttons and tables are left to the WordPress theme so the tool
+   looks like the rest of the site; only the tool's own components (the
+   boxes, key figures, bars and traffic light) are styled here.
+   Colours are taken from smaspararguiden.se. */
 
-@font-face {
-  font-family: Lato;
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("typsnitt/lato-latin-400-normal.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Lato;
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("typsnitt/lato-latin-700-normal.woff2") format("woff2");
-}
-
-:root {
-  --text: #111c22;
+.sg-itp {
   --dampad: #42728a;
-  --bakgrund: #fafafa;
   --yta: #eef4f7;
   --kant: #dde8ee;
   --accent: #325567;
-  --fokus: #538eac;
   --mork: #0b2e5b;
   --pa-mork: #ffffff;
   --pa-mork-dampad: #dde8ee;
-  --knapp: #42728a;
   --rod: #c0392b;
   --gul: #d4a017;
   --gron: #2e8b57;
   --trad: #bad2de;
   --nuvarande: #538eac;
   --fond: #0b2e5b;
-  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: var(--text);
-  background: var(--bakgrund);
 }
-
-body { margin: 0; background: var(--bakgrund); }
 
 /* Keep hidden elements hidden even where a rule sets display. */
-[hidden] { display: none !important; }
+.sg-itp [hidden] { display: none !important; }
 
-main {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 24px 16px 48px;
-  line-height: 1.5;
-}
+.sg-itp .hjalp { color: var(--dampad); font-size: 0.9em; margin: 4px 0 12px; }
 
-h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 8px; }
-h2 { font-size: 1.2rem; margin: 32px 0 8px; }
-
-/* Top block in the style of the site's campaign box. */
-.topp {
-  background: var(--mork);
-  color: var(--pa-mork);
-  border-radius: 10px;
-  padding: 24px 20px;
-  margin: 0 0 20px;
-}
-.topp h1 { color: var(--pa-mork); }
-.ingress { color: var(--pa-mork-dampad); margin: 0; }
-.hjalp { color: var(--dampad); font-size: 0.9rem; margin: 4px 0 12px; }
-
-fieldset {
+/* Form boxes. Legends sit inside the box rather than on its edge. */
+.sg-itp fieldset {
   background: var(--yta);
   border: none;
   border-radius: 10px;
   padding: 16px;
   margin: 0 0 16px;
+  min-width: 0;
 }
-/* Legends sit inside the box rather than on its edge. */
-legend { font-weight: 700; color: var(--accent); float: left; width: 100%; margin-bottom: 8px; padding: 0; }
-legend + * { clear: both; }
+.sg-itp legend {
+  font-weight: 700;
+  color: var(--accent);
+  float: left;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+  border: none;
+}
+.sg-itp legend + * { clear: both; }
 
-label { display: block; margin: 0 0 12px; font-size: 0.95rem; }
-input[inputmode] {
+.sg-itp label { display: block; margin: 0 0 12px; }
+.sg-itp input[inputmode] {
   display: block;
   width: 100%;
+  max-width: none;
   box-sizing: border-box;
   margin-top: 4px;
-  padding: 10px 12px;
-  font: inherit;
-  border: 1px solid var(--kant);
-  border-radius: 6px;
-  background: #ffffff;
 }
-input[inputmode]:focus { outline: 2px solid var(--fokus); outline-offset: 1px; }
-h1, h2 { color: var(--accent); }
 
-.kryss { display: flex; align-items: center; gap: 8px; }
-.val { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 12px; }
-.val label { margin: 0; }
+.sg-itp .kryss { display: flex; align-items: center; gap: 8px; }
+.sg-itp .val { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 12px; }
+.sg-itp .val label { margin: 0; }
 
-.meddelande {
+.sg-itp .meddelande {
   background: var(--yta);
   border-left: 4px solid var(--kant);
   border-radius: 4px;
   padding: 12px 16px;
   margin: 16px 0;
 }
-.meddelande.varning { border-left-color: var(--gul); }
+.sg-itp .meddelande.varning { border-left-color: var(--gul); }
 
-.nyckeltal {
+.sg-itp .nyckeltal {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
   margin: 16px 0;
 }
-.nyckeltal div {
+.sg-itp .nyckeltal > div {
   background: var(--mork);
   color: var(--pa-mork);
   border-radius: 10px;
   padding: 14px 16px;
 }
-.nyckeltal .etikett { font-size: 0.9rem; color: var(--pa-mork-dampad); }
-.nyckeltal .belopp { font-size: 1.5rem; font-weight: 700; }
+.sg-itp .nyckeltal .etikett { font-size: 0.9em; color: var(--pa-mork-dampad); }
+.sg-itp .nyckeltal .belopp { font-size: 1.5em; font-weight: 700; }
 
-.staplar { margin: 16px 0; }
-.stapel { margin: 0 0 12px; }
-.stapel .rubrik {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.95rem;
-}
-.stapel .spar {
+.sg-itp .staplar { margin: 16px 0; }
+.sg-itp .stapel { margin: 0 0 12px; }
+.sg-itp .stapel .rubrik { display: flex; justify-content: space-between; gap: 12px; }
+.sg-itp .stapel .spar {
   height: 14px;
   background: var(--kant);
   border-radius: 7px;
   overflow: hidden;
   margin-top: 4px;
 }
-.stapel .fyllning { height: 100%; background: var(--trad); border-radius: 7px; }
-.stapel.fond .fyllning { background: var(--fond); }
-.stapel.nuvarande .fyllning { background: var(--nuvarande); }
+.sg-itp .stapel .fyllning { height: 100%; background: var(--trad); border-radius: 7px; }
+.sg-itp .stapel.fond .fyllning { background: var(--fond); }
+.sg-itp .stapel.nuvarande .fyllning { background: var(--nuvarande); }
 
-.trafikljus { display: flex; align-items: center; gap: 12px; }
-.trafikljus .lampa {
+.sg-itp .trafikljus { display: flex; align-items: center; gap: 12px; }
+.sg-itp .lampa {
   flex: 0 0 auto;
   width: 22px;
   height: 22px;
   border-radius: 50%;
 }
-.lampa.rod { background: var(--rod); }
-.lampa.gul { background: var(--gul); }
-.lampa.gron { background: var(--gron); }
+.sg-itp .lampa.rod { background: var(--rod); }
+.sg-itp .lampa.gul { background: var(--gul); }
+.sg-itp .lampa.gron { background: var(--gron); }
 
-details { margin-top: 32px; border-top: 1px solid var(--kant); padding-top: 12px; }
-summary { cursor: pointer; font-weight: 700; }
-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 12px 0; }
-th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--kant); vertical-align: top; }
-td.kalla { color: var(--dampad); }
-.tabell-rulla { overflow-x: auto; }
-
-button {
-  font: inherit;
-  padding: 10px 16px;
-  border: none;
-  color: var(--pa-mork);
-  background: var(--knapp);
-  border-radius: 10px;
-  cursor: pointer;
-}
-button:hover { background: var(--accent); }
+.sg-itp details { margin-top: 32px; border-top: 1px solid var(--kant); padding-top: 12px; }
+.sg-itp summary { cursor: pointer; font-weight: 700; }
+.sg-itp .tabell-rulla { overflow-x: auto; }
+.sg-itp td.kalla { color: var(--dampad); }

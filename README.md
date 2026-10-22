@@ -1,8 +1,9 @@
 # verktyg
 
 Verktyg som Småspararguiden publicerar på smaspararguiden.se, till exempel
-räknesnurror. Varje verktyg körs helt i besökarens webbläsare, publiceras med
-GitHub Pages och bäddas in i WordPress.
+räknesnurror. Varje verktyg körs helt i besökarens webbläsare och
+publiceras som en WordPress-plugin med en kortkod per verktyg. GitHub Pages
+visar en förhandsvisning.
 
 ## Verktyg
 

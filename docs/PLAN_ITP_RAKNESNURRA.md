@@ -11,8 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–7). Iframe eller plugin är öppet,
-se Öppna frågor.
+Vägvalen hittills står i `DECISIONS.md` (1–10).
 
 ## Modellen
 
@@ -104,10 +103,13 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [x] Testa lokalt på dator.
 - [x] Sajtens färger (från chattens brand i smaspararboten).
 - [x] Typsnittet Lato, från repot (`itp/typsnitt/`).
-- [ ] Publicera på GitHub Pages med `noindex`. Testa på mobil via länken och
-      låt andra testa.
-- [ ] Lägg in den på en dold WordPress-sida (iframe eller plugin, enligt
-      webbansvarigs svar).
+- [x] Publicera på GitHub Pages med `noindex`.
+- [ ] Testa på mobil via länken och låt andra testa.
+- [x] Bygg WordPress-pluginen med kortkoden `[itp_raknesnurra]`.
+- [ ] Ladda upp pluginen via FTP, aktivera den och lägg kortkoden på en dold
+      sida. Vem som laddar upp: webbansvarig eller Andreas.
+- [ ] Kontrollera snurran i temat, på dator och mobil: fält, knappar,
+      rubriker och att temat inte knuffar våra komponenter.
 
 ### Fas 4 – Steg 2
 - [ ] Pension per månad och motsvarande privat sparande per månad.
@@ -123,7 +125,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 2. **Apps Script eller Zapier** för att logga resultat till ett Google Sheet.
 3. **Vilken data som skickas**, till exempel om fackförbund ska med.
    Småspararguidens GDPR-policy gäller.
-4. **Iframe eller WordPress-plugin.** Fråga ställd till webbansvarig.
+4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
 5. **Ska användaren dela upp traditionell försäkring i obligatorisk och
    valbar del?** Avgörs när vi har skärmdumpar från avtalat.se. Beräkningen
    behöver delarna, men om avtalat.se inte visar dem kan sidan få räkna fram
