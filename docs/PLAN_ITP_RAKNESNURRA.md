@@ -27,7 +27,9 @@ För varje år:
 3. **Aktieandel** för delen, utifrån produkten och användarens ålder (punkter
    med ålder och aktieandel, linjärt däremellan).
 4. **Avkastning** = aktieandel × aktieavkastning + resten × ränteavkastning.
-5. **Avgift** = min(tak, max(golv, procent × kapital + fast belopp)).
+5. **Avgift** = min(tak, max(golv, procent × kapital + fast belopp))
+   + procent utan tak × kapital. Den sista delen behövs för Alecta, vars
+   kapitalförvaltningskostnad tas ut utöver den avgift som har tak.
 6. **Kapital vid årets slut** = kapital × (1 + avkastning)
    + premie × (1 + avkastning/2) − avgift − skatt.
 
@@ -42,6 +44,20 @@ Scenarier:
 
 - Vinsten med att flytta det som går = *allt möjligt flyttat* − *allt i trad*.
 - Kostnaden för 50 %-regeln = *allt flyttat* − *allt möjligt flyttat*.
+- Redan uppnått = *nuvarande* − *allt i trad*.
+- Kvar att hämta = *allt möjligt flyttat* − *nuvarande*.
+- Andel uppnådd = redan uppnått ÷ vinsten med att flytta det som går. Styr
+  trafikljuset (rött, gult, grönt). Gränserna är parametrar.
+
+Kantfall:
+
+- **Vinsten är nästan noll** (lite kapital nära pension, ovanligt i ITP1):
+  inget trafikljus. Gränsen är en parameter.
+- **Fondförsäkring räknas alltid som entrélösningen.** Vi ser bara att
+  användaren valt fondförsäkring, inte vilka fonder. Det ska stå mycket
+  tydligt i resultatet. Andelen uppnådd kapas vid 100 %.
+- **Framtida premier** antas gå dit där kapitalet ligger, tills vi vet hur
+  avtalat.se visar inbetalningarna.
 
 ## Faser
 
@@ -49,7 +65,8 @@ Scenarier:
 - [ ] Andreas läser igenom modellen ovan.
 - [ ] Ta reda på hur avtalat.se visar kapital och inbetalningar (fråga ute).
       Det avgör inmatningen.
-- [ ] Verifiera värdena markerade VERIFIERA i `parametrar.js`.
+- [x] Verifiera värdena markerade VERIFIERA i `parametrar.js`. Kvar: Alectas
+      aktieandel per ålder, som bara finns i andrahandskälla.
 - [ ] Andreas sätter antagandena om avkastning och löneökning.
 
 ### Fas 2 – Repo och beräkningsmodul
