@@ -1,0 +1,127 @@
+/* Styles for the ITP1 calculator page. Neutral for now; the site's fonts and
+   colours go in the variables below. */
+
+:root {
+  --text: #1f2933;
+  --dampad: #5f6b76;
+  --bakgrund: #ffffff;
+  --yta: #f4f6f8;
+  --kant: #d9dee3;
+  --accent: #1f6f5c;
+  --rod: #c0392b;
+  --gul: #d4a017;
+  --gron: #2e8b57;
+  --trad: #9aa5b1;
+  --fond: #1f6f5c;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bakgrund);
+}
+
+body { margin: 0; background: var(--bakgrund); }
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  line-height: 1.5;
+}
+
+h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 8px; }
+h2 { font-size: 1.2rem; margin: 32px 0 8px; }
+.ingress { color: var(--dampad); margin: 0 0 24px; }
+.hjalp { color: var(--dampad); font-size: 0.9rem; margin: 4px 0 12px; }
+
+fieldset {
+  border: 1px solid var(--kant);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 0 0 16px;
+}
+legend { font-weight: 600; padding: 0 4px; }
+
+label { display: block; margin: 0 0 12px; font-size: 0.95rem; }
+input[inputmode] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4px;
+  padding: 10px 12px;
+  font: inherit;
+  border: 1px solid var(--kant);
+  border-radius: 6px;
+}
+input[inputmode]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.val { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 12px; }
+.val label { margin: 0; }
+
+.meddelande {
+  background: var(--yta);
+  border-left: 4px solid var(--kant);
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin: 16px 0;
+}
+.meddelande.varning { border-left-color: var(--gul); }
+
+.nyckeltal {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.nyckeltal div {
+  background: var(--yta);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.nyckeltal .etikett { font-size: 0.9rem; color: var(--dampad); }
+.nyckeltal .belopp { font-size: 1.5rem; font-weight: 700; }
+
+.staplar { margin: 16px 0; }
+.stapel { margin: 0 0 12px; }
+.stapel .rubrik {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.95rem;
+}
+.stapel .spar {
+  height: 14px;
+  background: var(--yta);
+  border-radius: 7px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.stapel .fyllning { height: 100%; background: var(--trad); border-radius: 7px; }
+.stapel.fond .fyllning { background: var(--fond); }
+.stapel.nuvarande .fyllning { background: var(--accent); opacity: 0.6; }
+
+.trafikljus { display: flex; align-items: center; gap: 12px; }
+.trafikljus .lampa {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+.lampa.rod { background: var(--rod); }
+.lampa.gul { background: var(--gul); }
+.lampa.gron { background: var(--gron); }
+
+details { margin-top: 32px; border-top: 1px solid var(--kant); padding-top: 12px; }
+summary { cursor: pointer; font-weight: 600; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 12px 0; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--kant); vertical-align: top; }
+td.kalla { color: var(--dampad); }
+.tabell-rulla { overflow-x: auto; }
+
+button {
+  font: inherit;
+  padding: 8px 14px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: var(--bakgrund);
+  border-radius: 6px;
+  cursor: pointer;
+}

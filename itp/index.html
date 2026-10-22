@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Not indexed until launch. -->
+  <meta name="robots" content="noindex">
+  <title>ITP-räknesnurra</title>
+  <link rel="stylesheet" href="stil.css">
+</head>
+<body>
+  <main>
+    <h1>Vad kostar din ITP1-pension dig?</h1>
+    <p class="ingress">
+      Räkna ut hur mycket mer pension du kan få genom att flytta det som går att
+      flytta till fondförsäkring, och vad regeln om att hälften måste ligga i
+      traditionell försäkring kostar dig.
+    </p>
+
+    <form id="indata" autocomplete="off">
+      <fieldset>
+        <legend>Om dig</legend>
+        <label>Födelseår
+          <input name="fodelsear" inputmode="numeric" placeholder="t.ex. 1990">
+        </label>
+        <label>Månadslön före skatt
+          <input name="manadslon" inputmode="numeric" placeholder="t.ex. 45 000">
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Din ITP1 i dag</legend>
+        <p class="hjalp">Beloppen hittar du på avtalat.se.</p>
+        <div class="val">
+          <label><input type="radio" name="lage" value="total" checked>
+            Jag vet bara det totala beloppet</label>
+          <label><input type="radio" name="lage" value="delar">
+            Jag vet hur det är fördelat</label>
+        </div>
+
+        <div data-lage="total">
+          <label>Totalt ITP1-kapital
+            <input name="total" inputmode="numeric" placeholder="t.ex. 400 000">
+          </label>
+          <p class="hjalp">
+            Vi delar beloppet på mitten. Det stämmer om du aldrig har gjort något
+            val, eftersom hälften av varje inbetalning går till varje del.
+          </p>
+        </div>
+
+        <div data-lage="delar" hidden>
+          <label>Traditionell försäkring, obligatorisk del
+            <input name="obligatoriskTrad" inputmode="numeric">
+          </label>
+          <label>Traditionell försäkring, valbar del
+            <input name="flyttbarTrad" inputmode="numeric">
+          </label>
+          <label>Fondförsäkring
+            <input name="flyttbarFond" inputmode="numeric">
+          </label>
+        </div>
+      </fieldset>
+    </form>
+
+    <section id="resultat" aria-live="polite"></section>
+
+    <details id="sa-har-vi-raknat">
+      <summary>Så har vi räknat</summary>
+      <div id="parametrar"></div>
+    </details>
+  </main>
+
+  <script type="module" src="visning.js"></script>
+</body>
+</html>

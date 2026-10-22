@@ -65,10 +65,11 @@ export const parametrar = {
 
   // --- Salary growth ------------------------------------------------------
   realLoneokning: {
+    // Placeholder until the assumption is settled.
     varde: 0.015,
     enhet: "per år",
     beskrivning: "Användarens reala löneökning",
-    kalla: "Antagande – Andreas sätter",
+    kalla: "Antagande (Småspararguiden)",
   },
   realIbbOkning: {
     // Same as the salary growth by default: the user's salary then keeps
@@ -77,7 +78,7 @@ export const parametrar = {
     varde: 0.015,
     enhet: "per år",
     beskrivning: "Hur inkomstbasbeloppet, och därmed brytpunkten, växer realt",
-    kalla: "Antagande – Andreas sätter",
+    kalla: "Antagande (Småspararguiden)",
   },
 
   // --- Returns ------------------------------------------------------------
