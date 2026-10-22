@@ -45,20 +45,17 @@ export const parametrar = {
     beskrivning: "Ålder när premieinbetalningarna börjar",
     kalla: "ITP1-avtalet; Länsförsäkringars förköpsinformation ITP (2026-01-01)",
   },
-  premieSlutalder: {
-    varde: 66,
-    enhet: "år",
-    beskrivning: "Ålder när premieinbetalningarna slutar",
-    kalla: "ITP1-avtalet: premier betalas till 66 år sedan 2023 (Alecta, Ändrade åldersgränser i ITP-planen)",
-  },
   pensionsalder: {
-    // One age for everyone, no adjustment per birth year. The glide paths
+    // One age for everyone, no adjustment per birth year. Premiums are paid
+    // up to this age as well, although today's agreement stops them at 66:
+    // we assume the agreement follows the rising target retirement age.
+    // The glide paths
     // below are given as absolute ages and assume this pension age;
     // changing it means moving their points too.
     varde: 68,
     enhet: "år",
-    beskrivning: "Kapitalet växer fram till den här åldern. Riktåldern höjs med tiden, så den blir troligen högre än dagens för den som är ung nu",
-    kalla: "Antagande – samma ålder för alla",
+    beskrivning: "Premier betalas och kapitalet växer fram till den här åldern. Riktåldern höjs med tiden, så den blir troligen högre än dagens för den som är ung nu",
+    kalla: "Antagande – samma ålder för alla. Dagens ITP1-avtal betalar premier till 66 år",
   },
   andelObligatoriskTrad: {
     varde: 0.5,
