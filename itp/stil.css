@@ -1,5 +1,6 @@
-/* Styles for the ITP1 calculator page. Colours follow the Småspararguiden
-   brand as defined for the chat in the smaspararboten repo (brands.json).
+/* Styles for the ITP1 calculator page. Colours are taken from
+   smaspararguiden.se: blue-grey surfaces, the dark blue of the Befria ITP
+   campaign box and the site's buttons.
    The font is the site's Lato, served from this repo (Fontsource 5.2.7,
    Latin subset, which covers å, ä and ö; licence in typsnitt/OFL.txt). */
 
@@ -20,18 +21,23 @@
 }
 
 :root {
-  --text: #333333;
-  --dampad: #5f6b76;
-  --bakgrund: #ffffff;
-  --yta: #f5f5ff;
-  --kant: #e9ecef;
-  --accent: navy;
-  --fokus: #38267a;
+  --text: #111c22;
+  --dampad: #42728a;
+  --bakgrund: #fafafa;
+  --yta: #eef4f7;
+  --kant: #dde8ee;
+  --accent: #325567;
+  --fokus: #538eac;
+  --mork: #0b2e5b;
+  --pa-mork: #ffffff;
+  --pa-mork-dampad: #dde8ee;
+  --knapp: #42728a;
   --rod: #c0392b;
   --gul: #d4a017;
   --gron: #2e8b57;
   --trad: #bad2de;
-  --fond: navy;
+  --nuvarande: #538eac;
+  --fond: #0b2e5b;
   font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
   background: var(--bakgrund);
@@ -48,16 +54,29 @@ main {
 
 h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 8px; }
 h2 { font-size: 1.2rem; margin: 32px 0 8px; }
-.ingress { color: var(--dampad); margin: 0 0 24px; }
+
+/* Top block in the style of the site's campaign box. */
+.topp {
+  background: var(--mork);
+  color: var(--pa-mork);
+  border-radius: 10px;
+  padding: 24px 20px;
+  margin: 0 0 20px;
+}
+.topp h1 { color: var(--pa-mork); }
+.ingress { color: var(--pa-mork-dampad); margin: 0; }
 .hjalp { color: var(--dampad); font-size: 0.9rem; margin: 4px 0 12px; }
 
 fieldset {
-  border: 1px solid var(--kant);
-  border-radius: 8px;
+  background: var(--yta);
+  border: none;
+  border-radius: 10px;
   padding: 16px;
   margin: 0 0 16px;
 }
-legend { font-weight: 700; padding: 0 4px; }
+/* Legends sit inside the box rather than on its edge. */
+legend { font-weight: 700; color: var(--accent); float: left; width: 100%; margin-bottom: 8px; padding: 0; }
+legend + * { clear: both; }
 
 label { display: block; margin: 0 0 12px; font-size: 0.95rem; }
 input[inputmode] {
@@ -69,6 +88,7 @@ input[inputmode] {
   font: inherit;
   border: 1px solid var(--kant);
   border-radius: 6px;
+  background: #ffffff;
 }
 input[inputmode]:focus { outline: 2px solid var(--fokus); outline-offset: 1px; }
 h1, h2 { color: var(--accent); }
@@ -92,11 +112,12 @@ h1, h2 { color: var(--accent); }
   margin: 16px 0;
 }
 .nyckeltal div {
-  background: var(--yta);
-  border-radius: 8px;
+  background: var(--mork);
+  color: var(--pa-mork);
+  border-radius: 10px;
   padding: 14px 16px;
 }
-.nyckeltal .etikett { font-size: 0.9rem; color: var(--dampad); }
+.nyckeltal .etikett { font-size: 0.9rem; color: var(--pa-mork-dampad); }
 .nyckeltal .belopp { font-size: 1.5rem; font-weight: 700; }
 
 .staplar { margin: 16px 0; }
@@ -109,14 +130,14 @@ h1, h2 { color: var(--accent); }
 }
 .stapel .spar {
   height: 14px;
-  background: var(--yta);
+  background: var(--kant);
   border-radius: 7px;
   overflow: hidden;
   margin-top: 4px;
 }
 .stapel .fyllning { height: 100%; background: var(--trad); border-radius: 7px; }
 .stapel.fond .fyllning { background: var(--fond); }
-.stapel.nuvarande .fyllning { background: var(--fokus); opacity: 0.6; }
+.stapel.nuvarande .fyllning { background: var(--nuvarande); }
 
 .trafikljus { display: flex; align-items: center; gap: 12px; }
 .trafikljus .lampa {
@@ -138,10 +159,11 @@ td.kalla { color: var(--dampad); }
 
 button {
   font: inherit;
-  padding: 8px 14px;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  background: var(--bakgrund);
-  border-radius: 6px;
+  padding: 10px 16px;
+  border: none;
+  color: var(--pa-mork);
+  background: var(--knapp);
+  border-radius: 10px;
   cursor: pointer;
 }
+button:hover { background: var(--accent); }
