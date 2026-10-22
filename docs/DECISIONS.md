@@ -115,3 +115,35 @@ trafikljuset.
 Alla våra regler gäller bara inuti verktygets element (`.sg-itp`), så de
 når inte resten av sidan. Shadow DOM, som stänger ute temat helt, valdes
 bort: då försvinner också det vi vill ärva.
+
+## 11. Användaren anger trad och fond, vi räknar ut vad som går att flytta (2026-10-22)
+
+Avtalat.se visar kapitalet per bolag och försäkring, och för varje försäkring
+om den är traditionell försäkring eller fondförsäkring. Den visar inte hur
+mycket av den traditionella försäkringen som är den obligatoriska delen.
+Användaren kan alltså inte ange den, och vi frågar bara efter trad och fond.
+
+Vi räknar den obligatoriska delen som hälften av det totala kapitalet, men
+aldrig mer än det som ligger i trad. Den har fått hälften av varje
+inbetalning och alltid legat i trad. För den som aldrig gjort något val
+stämmer det exakt. För den som haft fond länge blir den något för stor,
+eftersom fonden vuxit snabbare, och vinsten med att flytta något för liten.
+Det står i "Så har vi räknat".
+
+Inmatningen börjar med ett val: "Allt ligger i traditionell försäkring, eller
+jag vet inte" ger ett fält för totalen, som står på avtalat.se:s startsida.
+"Jag har flera olika pensionsbolag" ger en rad per försäkring med belopp och
+trad eller fond. Pensionsbolag frågar vi inte efter: det avgör inte
+sparformen säkert och används inte i beräkningen.
+
+Vi tvingar ingen att ta reda på något. Den som inte vet räknas som om allt
+ligger i trad, och resultatet säger att vi har antagit det.
+
+## 12. Fördelningen av kommande inbetalningar är valfri (2026-10-22)
+
+Avtalat.se visar hur kommande inbetalningar fördelas, till exempel 50 %
+traditionell försäkring och 50 % fondförsäkring. Användaren kan ange andelen
+till fond, högst den flyttbara halvan. Lämnas fältet tomt går alla nya
+inbetalningar till trad, och resultatet säger att vi har antagit det.
+
+Det ersätter antagandet att nya inbetalningar går dit kapitalet ligger i dag.

@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–10).
+Vägvalen hittills står i `DECISIONS.md` (1–12).
 
 ## Modellen
 
@@ -58,9 +58,10 @@ Kantfall:
 - **Fondförsäkring räknas alltid som entrélösningen.** Vi ser bara att
   användaren valt fondförsäkring, inte vilka fonder. Det ska stå mycket
   tydligt i resultatet. Andelen uppnådd kapas vid 100 %.
-- **Framtida premier** antas gå dit där kapitalet ligger, i samma proportion,
-  tills vi vet hur avtalat.se visar inbetalningarna. Utan kapital går de till
-  trad.
+- **Framtida premier** går till fond med den andel användaren anger, annars
+  allt till trad (`DECISIONS.md` 12).
+- **Obligatorisk del** räknas som hälften av kapitalet, högst det som ligger
+  i trad (`DECISIONS.md` 11).
 
 Förenklingar att ta ställning till:
 
@@ -78,8 +79,8 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 
 ### Fas 1 – Modellen
 - [x] Andreas läser igenom modellen ovan.
-- [ ] Ta reda på hur avtalat.se visar kapital och inbetalningar (fråga ute).
-      Det avgör inmatningen.
+- [x] Ta reda på hur avtalat.se visar kapital och inbetalningar. Inmatningen
+      är ombyggd efter det.
 - [x] Verifiera värdena markerade VERIFIERA i `parametrar.js`. Kvar: Alectas
       aktieandel per ålder, som bara finns i andrahandskälla.
 - [x] Andreas sätter antagandena om avkastning (6 % aktier, 1 % räntor).
@@ -120,13 +121,11 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 
 ## Öppna frågor
 
-1. **Hur avtalat.se visar kapital och inbetalningar.** Fråga ute.
-   Avgör både befintligt kapital och vart framtida premier går.
+1. ~~Hur avtalat.se visar kapital och inbetalningar.~~ Se `DECISIONS.md` 11
+   och 12.
 2. **Apps Script eller Zapier** för att logga resultat till ett Google Sheet.
 3. **Vilken data som skickas**, till exempel om fackförbund ska med.
    Småspararguidens GDPR-policy gäller.
 4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
-5. **Ska användaren dela upp traditionell försäkring i obligatorisk och
-   valbar del?** Avgörs när vi har skärmdumpar från avtalat.se. Beräkningen
-   behöver delarna, men om avtalat.se inte visar dem kan sidan få räkna fram
-   dem i stället.
+5. ~~Ska användaren dela upp traditionell försäkring i obligatorisk och
+   valbar del?~~ Nej, avtalat.se visar inte delarna. Se `DECISIONS.md` 11.

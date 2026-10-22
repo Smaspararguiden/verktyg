@@ -98,16 +98,26 @@ export function simuleraScenario(p, indata, potter) {
   return { slutkapital, ar };
 }
 
+// Splits the capital the user sees on avtalat.se, which only tells trad from
+// fund, into the obligatory and the movable part. The obligatory part has
+// always been in trad and received its share of every premium, so it is
+// taken as that share of the total capital, but never more than the trad
+// capital there is.
+export function delaUppKapital(p, trad, fond) {
+  const obligatoriskTrad = Math.min(trad, p.andelObligatoriskTrad.varde * (trad + fond));
+  return { obligatoriskTrad, flyttbarTrad: trad - obligatoriskTrad, flyttbarFond: fond };
+}
+
 // Builds the four scenarios from the user's capital. indata.kapital has
-// obligatoriskTrad, flyttbarTrad and flyttbarFond.
+// obligatoriskTrad, flyttbarTrad and flyttbarFond. indata.andelPremieFond is
+// the share of future premiums the user has chosen to put in funds; without
+// it, everything goes to trad.
 export function scenarier(p, indata) {
   const obl = p.andelObligatoriskTrad.varde;
   const { obligatoriskTrad, flyttbarTrad, flyttbarFond } = indata.kapital;
   const flyttbar = flyttbarTrad + flyttbarFond;
-
-  // Future premiums to the movable part are assumed to go where its capital
-  // is today, in the same proportion. With no capital yet, to trad.
-  const andelFondIdag = flyttbar > 0 ? flyttbarFond / flyttbar : 0;
+  // The obligatory share always goes to trad, so funds get at most the rest.
+  const premieFond = Math.min(1 - obl, Math.max(0, indata.andelPremieFond ?? 0));
 
   const tvaPotter = (oblProdukt, flyttProdukt) => [
     { namn: "obligatorisk", produkt: oblProdukt, startkapital: obligatoriskTrad, premieandel: obl },
@@ -120,15 +130,16 @@ export function scenarier(p, indata) {
     alltFlyttat: tvaPotter("entrelosning", "entrelosning"),
     nuvarande: [
       { namn: "obligatorisk", produkt: "alectaTrad", startkapital: obligatoriskTrad, premieandel: obl },
-      { namn: "flyttbar i trad", produkt: "alectaTrad", startkapital: flyttbarTrad, premieandel: (1 - obl) * (1 - andelFondIdag) },
-      { namn: "flyttbar i fond", produkt: "entrelosning", startkapital: flyttbarFond, premieandel: (1 - obl) * andelFondIdag },
+      { namn: "flyttbar i trad", produkt: "alectaTrad", startkapital: flyttbarTrad, premieandel: 1 - obl - premieFond },
+      { namn: "flyttbar i fond", produkt: "entrelosning", startkapital: flyttbarFond, premieandel: premieFond },
     ],
   };
 }
 
 // Runs all scenarios and derives the results shown to the user.
 //
-// indata: { alder, manadslon, kapital: { obligatoriskTrad, flyttbarTrad, flyttbarFond } }
+// indata: { alder, manadslon, kapital: { obligatoriskTrad, flyttbarTrad, flyttbarFond },
+//           andelPremieFond (optional, share of the whole premium) }
 export function berakna(p, indata) {
   const s = scenarier(p, indata);
   const utfall = Object.fromEntries(

@@ -8,7 +8,7 @@
 // plugin), so a new upload is never mixed with cached old modules.
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
-const { berakna } = await import(`./berakning.js${versionsfraga}`);
+const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -35,35 +35,51 @@ rot.innerHTML = `
 
     <fieldset>
       <legend>Din ITP1 i dag</legend>
-      <p class="hjalp">Beloppen hittar du på avtalat.se.</p>
+      <p class="hjalp">
+        Logga in på avtalat.se. Första gången behöver du godkänna deras villkor.
+        Ditt totala ITP1-kapital står på startsidan. Under Din tjänstepension
+        → Pensionskapital ser du hos vilka bolag pengarna ligger.
+      </p>
       <div class="val">
-        <label><input type="radio" name="lage" value="total" checked>
-          Jag vet bara det totala beloppet</label>
+        <label><input type="radio" name="lage" value="trad" checked>
+          Allt ligger i traditionell försäkring, eller jag vet inte</label>
         <label><input type="radio" name="lage" value="delar">
-          Jag vet hur det är fördelat</label>
+          Jag har flera olika pensionsbolag</label>
       </div>
 
-      <div data-lage="total">
+      <div data-lage="trad">
         <label>Totalt ITP1-kapital
           <input name="total" inputmode="numeric" placeholder="t.ex. 400 000">
         </label>
         <p class="hjalp">
-          Vi delar beloppet på mitten. Det stämmer om du aldrig har gjort något
-          val, eftersom hälften av varje inbetalning går till varje del.
+          Står det bara Alecta under Pensionskapital ligger allt i traditionell
+          försäkring. Vet du inte räknar vi som om allt ligger där.
         </p>
       </div>
 
       <div data-lage="delar" hidden>
-        <label>Traditionell försäkring, obligatorisk del
-          <input name="obligatoriskTrad" inputmode="numeric">
-        </label>
-        <label>Traditionell försäkring, valbar del
-          <input name="flyttbarTrad" inputmode="numeric">
-        </label>
-        <label>Fondförsäkring
-          <input name="flyttbarFond" inputmode="numeric">
-        </label>
+        <p class="hjalp">
+          Skriv in varje försäkring under Pensionskapital. Allt hos Alecta är
+          traditionell försäkring. Hos de andra bolagen klickar du på plustecknet
+          för att se om det står Traditionell försäkring eller Fondförsäkring.
+        </p>
+        <div class="forsakringar"></div>
+        <button type="button" class="lagg-till">+ Lägg till försäkring</button>
+        <p class="summa" aria-live="polite"></p>
       </div>
+    </fieldset>
+
+    <fieldset data-anstalld>
+      <legend>Kommande inbetalningar</legend>
+      <label>Andel till fondförsäkring, i procent (valfritt)
+        <input name="andelFond" inputmode="numeric" placeholder="t.ex. 50">
+      </label>
+      <p class="hjalp">
+        Står på avtalat.se under Pensionskapital → Placering av kommande
+        inbetalningar. Högst 50 %, eftersom resten måste gå till traditionell
+        försäkring. Lämnar du fältet tomt räknar vi med att allt går till
+        traditionell försäkring.
+      </p>
     </fieldset>
   </form>
 
@@ -82,9 +98,43 @@ const procent = (x, decimaler = 0) =>
   `${(x * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler })} %`;
 
 // Accepts "45 000", "45000" and "45 000 kr".
-function tal(namn) {
-  const varde = form.elements[namn].value.replace(/[^\d]/g, "");
+function talFran(falt) {
+  const varde = falt.value.replace(/[^\d]/g, "");
   return varde === "" ? null : Number(varde);
+}
+const tal = (namn) => talFran(form.elements[namn]);
+
+// One row per insurance on avtalat.se: an amount and trad or fund. Each row's
+// radio buttons need a name of their own.
+const forsakringar = rot.querySelector(".forsakringar");
+let radNummer = 0;
+function laggTillRad() {
+  radNummer += 1;
+  const rad = document.createElement("div");
+  rad.className = "rad";
+  rad.innerHTML = `
+    <input class="belopp-falt" inputmode="numeric" aria-label="Belopp i kronor" placeholder="Belopp">
+    <span class="sparform">
+      <label><input type="radio" name="sparform-${radNummer}" value="trad" checked> Trad</label>
+      <label><input type="radio" name="sparform-${radNummer}" value="fond"> Fond</label>
+    </span>
+    <button type="button" class="ta-bort" aria-label="Ta bort försäkringen">✕</button>`;
+  forsakringar.append(rad);
+}
+
+// Sums the rows into trad and fund, or null if no amount is filled in.
+function lasRader() {
+  let trad = 0;
+  let fond = 0;
+  let nagot = false;
+  for (const rad of forsakringar.querySelectorAll(".rad")) {
+    const belopp = talFran(rad.querySelector(".belopp-falt"));
+    if (belopp === null) continue;
+    nagot = true;
+    if (rad.querySelector('input[value="fond"]').checked) fond += belopp;
+    else trad += belopp;
+  }
+  return nagot ? { trad, fond } : null;
 }
 
 function lasIndata() {
@@ -93,22 +143,20 @@ function lasIndata() {
   // calculation handles as a salary of zero.
   const anstalld = form.elements.anstalld.checked;
   const manadslon = anstalld ? tal("manadslon") : 0;
-  const lage = form.elements.lage.value;
-  let kapital;
-  if (lage === "total") {
+  // An empty field means the user has made no choice, so everything goes to
+  // trad. The percentage is of the whole premium, as avtalat.se shows it.
+  const andelFond = anstalld ? tal("andelFond") : null;
+  const andelPremieFond = andelFond === null ? null : andelFond / 100;
+
+  let kapital = null;
+  if (form.elements.lage.value === "trad") {
     const total = tal("total");
-    if (total === null) return { fodelsear, manadslon, kapital: null };
-    // Half of every premium goes to each part, so for someone who never
-    // made a choice the capital is split down the middle.
-    const obl = total * p.andelObligatoriskTrad.varde;
-    kapital = { obligatoriskTrad: obl, flyttbarTrad: total - obl, flyttbarFond: 0 };
+    if (total !== null) kapital = delaUppKapital(p, total, 0);
   } else {
-    const delar = ["obligatoriskTrad", "flyttbarTrad", "flyttbarFond"].map(tal);
-    if (delar.every((d) => d === null)) return { fodelsear, manadslon, kapital: null };
-    const [obligatoriskTrad, flyttbarTrad, flyttbarFond] = delar.map((d) => d ?? 0);
-    kapital = { obligatoriskTrad, flyttbarTrad, flyttbarFond };
+    const rader = lasRader();
+    if (rader) kapital = delaUppKapital(p, rader.trad, rader.fond);
   }
-  return { fodelsear, manadslon, kapital };
+  return { fodelsear, manadslon, kapital, andelPremieFond };
 }
 
 function meddelande(text, klass = "") {
@@ -118,8 +166,9 @@ function meddelande(text, klass = "") {
 let senaste = null;
 
 function uppdatera() {
-  const { fodelsear, manadslon, kapital } = lasIndata();
+  const { fodelsear, manadslon, kapital, andelPremieFond } = lasIndata();
   senaste = null;
+  visaSumma();
 
   if (fodelsear === null || manadslon === null || kapital === null) {
     meddelande(form.elements.anstalld.checked
@@ -141,7 +190,7 @@ function uppdatera() {
     return;
   }
 
-  const indata = { alder, manadslon, kapital };
+  const indata = { alder, manadslon, kapital, andelPremieFond };
   const r = berakna(p, indata);
   senaste = { indata, r };
   visaResultat(indata, r);
@@ -150,7 +199,7 @@ function uppdatera() {
 function visaResultat(indata, r) {
   const s = r.scenarier;
   const pa = p.pensionsalder.varde;
-  const harFond = indata.kapital.flyttbarFond > 0;
+  const harFond = indata.kapital.flyttbarFond > 0 || indata.andelPremieFond > 0;
   const delar = [];
 
   if (r.aldersvarning) {
@@ -181,12 +230,23 @@ function visaResultat(indata, r) {
       <span>${texter[r.trafikljus]}</span></div>`);
   }
 
+  // Where the user left something out we guess, and say so.
+  const antaganden = [];
+  if (form.elements.lage.value === "trad") {
+    antaganden.push("Vi har räknat som om allt ditt kapital ligger i traditionell försäkring.");
+  }
+  if (indata.manadslon > 0 && indata.andelPremieFond === null) {
+    antaganden.push(`Vi har antagit att alla dina nya inbetalningar går till traditionell
+      försäkring. Har du valt fondförsäkring, fyll i det under Kommande inbetalningar.`);
+  }
   if (harFond) {
-    delar.push(`<div class="meddelande varning">
-      Vi ser inte vilka fonder du har valt. Vi räknar som om din fondförsäkring
-      ligger i Länsförsäkringars entrélösning. Har du valt andra fonder kan
-      det bli både bättre och sämre.
-    </div>`);
+    antaganden.push(`Vi ser inte vilka fonder du har valt. Vi räknar som om din
+      fondförsäkring ligger i Länsförsäkringars entrélösning. Har du valt andra
+      fonder kan det bli både bättre och sämre.`);
+  }
+  if (antaganden.length) {
+    delar.push(`<div class="meddelande varning"><strong>Det här har vi antagit</strong>
+      <ul>${antaganden.map((a) => `<li>${a}</li>`).join("")}</ul></div>`);
   }
 
   const rader = [
@@ -261,6 +321,17 @@ function avgiftText(f) {
   return delar.join(", ");
 }
 
+// Sum of the rows, to compare with the total capital on avtalat.se.
+function visaSumma() {
+  const summa = rot.querySelector(".summa");
+  const rader = lasRader();
+  // Exact kronor, not rounded, so the sum can be checked against avtalat.se.
+  const exakt = (x) => `${x.toLocaleString("sv-SE")} kr`;
+  summa.textContent = rader
+    ? `Summa ${exakt(rader.trad + rader.fond)}, varav ${exakt(rader.trad)} i traditionell försäkring.`
+    : "";
+}
+
 function visaParametrar() {
   const allmanna = Object.values(p).filter((post) => post && "varde" in post);
   const produkter = Object.values(p.produkter);
@@ -268,6 +339,13 @@ function visaParametrar() {
     <p class="hjalp">Alla belopp är i dagens penningvärde, och avkastningen är
       real, det vill säga efter inflation. Vi räknar med väntevärden: utfallet
       kan bli både bättre och sämre.</p>
+    <p class="hjalp">Avtalat.se visar bara om kapitalet ligger i traditionell
+      försäkring eller fondförsäkring, inte hur stor del som måste ligga kvar i
+      traditionell försäkring. Den delen har fått ${procent(p.andelObligatoriskTrad.varde)}
+      av varje inbetalning, så vi räknar med att den är ${procent(p.andelObligatoriskTrad.varde)}
+      av ditt totala kapital, men aldrig mer än det du har i traditionell
+      försäkring. Har du haft fondförsäkring länge kan den delen vara något
+      mindre, och vinsten med att flytta då något större.</p>
     <div class="tabell-rulla"><table>
       <tr><th>Antagande</th><th>Värde</th><th>Källa</th></tr>
       ${allmanna.map((post) => `<tr><td>${post.beskrivning}</td>
@@ -293,6 +371,17 @@ function visaLage() {
 }
 
 form.addEventListener("input", () => { visaLage(); uppdatera(); });
+rot.querySelector(".lagg-till").addEventListener("click", () => {
+  laggTillRad();
+  forsakringar.lastElementChild.querySelector(".belopp-falt").focus();
+});
+forsakringar.addEventListener("click", (e) => {
+  if (!e.target.closest(".ta-bort")) return;
+  e.target.closest(".rad").remove();
+  uppdatera();
+});
+// Three rows are enough for most people; more can be added.
+for (let i = 0; i < 3; i++) laggTillRad();
 form.addEventListener("submit", (e) => e.preventDefault());
 visaLage();
 visaParametrar();

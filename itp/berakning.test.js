@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { parametrar } from "./parametrar.js";
-import { aktieandel, arligAvgift, arsPremie, berakna } from "./berakning.js";
+import { aktieandel, arligAvgift, arsPremie, berakna, delaUppKapital } from "./berakning.js";
 
 // Deep copy of the parameters, so each test can change values freely.
 const kopia = () => structuredClone(parametrar);
@@ -140,6 +140,7 @@ test("den som flyttat hela den flyttbara delen har uppnått allt: grönt", () =>
   const r = berakna(kopia(), {
     alder: 35, manadslon: 45000,
     kapital: { obligatoriskTrad: 100000, flyttbarTrad: 0, flyttbarFond: 130000 },
+    andelPremieFond: 0.5,
   });
   narall(r.kvarAttHamta, 0, 1e-6);
   assert.equal(r.andelUppnadd, 1);
@@ -150,6 +151,7 @@ test("delvis flyttat ger gult", () => {
   const r = berakna(kopia(), {
     alder: 35, manadslon: 45000,
     kapital: { obligatoriskTrad: 100000, flyttbarTrad: 50000, flyttbarFond: 50000 },
+    andelPremieFond: 0.25,
   });
   assert.ok(r.andelUppnadd > 0.1 && r.andelUppnadd < 0.9);
   assert.equal(r.trafikljus, "gul");
@@ -160,4 +162,40 @@ test("åldersvarningen slår till från gränsen", () => {
   const grans = p.aldersvarningFran.varde;
   assert.equal(berakna(p, { alder: grans - 1, manadslon: 45000, kapital: passiv }).aldersvarning, false);
   assert.equal(berakna(p, { alder: grans, manadslon: 45000, kapital: passiv }).aldersvarning, true);
+});
+
+test("uppdelning: allt i trad ger hälften obligatoriskt och hälften flyttbart", () => {
+  assert.deepEqual(delaUppKapital(parametrar, 200000, 0),
+    { obligatoriskTrad: 100000, flyttbarTrad: 100000, flyttbarFond: 0 });
+});
+
+test("uppdelning: det som ligger i trad utöver hälften är flyttbart", () => {
+  assert.deepEqual(delaUppKapital(parametrar, 150000, 50000),
+    { obligatoriskTrad: 100000, flyttbarTrad: 50000, flyttbarFond: 50000 });
+});
+
+test("uppdelning: den obligatoriska delen blir aldrig större än trad", () => {
+  // Funds have grown faster, so trad is less than half of the total.
+  assert.deepEqual(delaUppKapital(parametrar, 90000, 110000),
+    { obligatoriskTrad: 90000, flyttbarTrad: 0, flyttbarFond: 110000 });
+});
+
+test("utan vald fördelning går alla nya premier till trad i nuvarande", () => {
+  const kapital = { obligatoriskTrad: 100000, flyttbarTrad: 0, flyttbarFond: 100000 };
+  const potter = berakna(kopia(), { alder: 35, manadslon: 45000, kapital })
+    .scenarier.nuvarande.ar[0].potter;
+  assert.equal(potter.find((x) => x.namn === "flyttbar i fond").premie, 0);
+  assert.ok(potter.find((x) => x.namn === "flyttbar i trad").premie > 0);
+});
+
+test("andelen till fond styr premierna och kapas vid den flyttbara delen", () => {
+  const indata = { alder: 35, manadslon: 45000, kapital: passiv };
+  const potter = (andel) => berakna(kopia(), { ...indata, andelPremieFond: andel })
+    .scenarier.nuvarande.ar[0].potter;
+  const [obl, trad, fond] = potter(0.5);
+  narall(fond.premie, obl.premie, 1e-9);
+  assert.equal(trad.premie, 0);
+  // More than the movable half is not possible; the obligatory part stays.
+  const [obl2, , fond2] = potter(0.8);
+  narall(fond2.premie, obl2.premie, 1e-9);
 });
