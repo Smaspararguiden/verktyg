@@ -1,19 +1,22 @@
-/* Styles for the ITP1 calculator page. Neutral for now; the site's fonts and
-   colours go in the variables below. */
+/* Styles for the ITP1 calculator page. Colours follow the Småspararguiden
+   brand as defined for the chat in the smaspararboten repo (brands.json).
+   The site's font is Lato; it is listed first but not loaded, so visitors
+   without it installed get the system font. */
 
 :root {
-  --text: #1f2933;
+  --text: #333333;
   --dampad: #5f6b76;
   --bakgrund: #ffffff;
-  --yta: #f4f6f8;
-  --kant: #d9dee3;
-  --accent: #1f6f5c;
+  --yta: #f5f5ff;
+  --kant: #e9ecef;
+  --accent: navy;
+  --fokus: #38267a;
   --rod: #c0392b;
   --gul: #d4a017;
   --gron: #2e8b57;
-  --trad: #9aa5b1;
-  --fond: #1f6f5c;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --trad: #bad2de;
+  --fond: navy;
+  font-family: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
   background: var(--bakgrund);
 }
@@ -51,7 +54,8 @@ input[inputmode] {
   border: 1px solid var(--kant);
   border-radius: 6px;
 }
-input[inputmode]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+input[inputmode]:focus { outline: 2px solid var(--fokus); outline-offset: 1px; }
+h1, h2 { color: var(--accent); }
 
 .val { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 12px; }
 .val label { margin: 0; }
@@ -96,7 +100,7 @@ input[inputmode]:focus { outline: 2px solid var(--accent); outline-offset: 1px; 
 }
 .stapel .fyllning { height: 100%; background: var(--trad); border-radius: 7px; }
 .stapel.fond .fyllning { background: var(--fond); }
-.stapel.nuvarande .fyllning { background: var(--accent); opacity: 0.6; }
+.stapel.nuvarande .fyllning { background: var(--fokus); opacity: 0.6; }
 
 .trafikljus { display: flex; align-items: center; gap: 12px; }
 .trafikljus .lampa {

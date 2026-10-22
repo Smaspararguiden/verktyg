@@ -102,7 +102,9 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [x] Enkel sida: inmatning, scenarierna, vinst och kostnad, trafikljus,
       åldersvarning och "Så har vi räknat".
 - [x] Testa lokalt på dator.
-- [ ] Sajtens typsnitt och färger (variablerna överst i `stil.css`).
+- [x] Sajtens färger (från chattens brand i smaspararboten).
+- [ ] Typsnittet Lato: står först men laddas inte. Ladda det från repot
+      (inte Google Fonts, som skickar besökarens IP till Google).
 - [ ] Publicera på GitHub Pages med `noindex`. Testa på mobil via länken och
       låt andra testa.
 - [ ] Lägg in den på en dold WordPress-sida (iframe eller plugin, enligt
