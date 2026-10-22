@@ -11,25 +11,28 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–6). Iframe eller plugin är öppet,
+Vägvalen hittills står i `DECISIONS.md` (1–7). Iframe eller plugin är öppet,
 se Öppna frågor.
 
 ## Modellen
 
-Räknar år för år, i reala kronor, med två delar: obligatorisk trad och
-flyttbar del.
+Byggd i `itp/berakning.js`. Räknar år för år, i reala kronor, från
+användarens ålder till pensionsåldern. Kapitalet ligger i "potter": två i de
+flesta scenarier (obligatorisk och flyttbar), tre i "nuvarande".
 
-För varje år:
+För varje år och pott:
 
 1. **Lön** växer med real löneökning. **IBB** växer med sin egen parameter.
 2. **Premie** (från 25 år till pensionsåldern) = 4,5 % av lönen upp till 7,5 IBB plus 30 % av lönen mellan
    7,5 IBB och lönetaket. Hälften går till varje del.
-3. **Aktieandel** för delen, utifrån produkten och användarens ålder (punkter
-   med ålder och aktieandel, linjärt däremellan).
+3. **Aktieandel** utifrån produkten. Alecta: efter ålder (punkter, linjärt
+   däremellan). Entrélösningen: 100 % till sex år före pensionsåldern, sedan
+   linjärt ner mot 25 % under 20 år, så vid pensionen 77,5 % aktier.
 4. **Avkastning** = aktieandel × aktieavkastning + resten × ränteavkastning.
 5. **Avgift** = min(tak, max(golv, procent × kapital + fast belopp))
-   + procent utan tak × kapital. Den sista delen behövs för Alecta, vars
-   kapitalförvaltningskostnad tas ut utöver den avgift som har tak.
+   + procent utan tak × kapital, där procent vägs mellan aktiedelens och
+   räntedelens avgift efter aktieandelen. Delen utan tak behövs för Alecta,
+   vars kapitalförvaltningskostnad tas ut utöver den avgift som har tak.
 6. **Kapital vid årets slut** = kapital × (1 + avkastning)
    + premie × (1 + avkastning/2) − avgift − skatt.
 
@@ -56,31 +59,42 @@ Kantfall:
 - **Fondförsäkring räknas alltid som entrélösningen.** Vi ser bara att
   användaren valt fondförsäkring, inte vilka fonder. Det ska stå mycket
   tydligt i resultatet. Andelen uppnådd kapas vid 100 %.
-- **Framtida premier** antas gå dit där kapitalet ligger, tills vi vet hur
-  avtalat.se visar inbetalningarna.
+- **Framtida premier** antas gå dit där kapitalet ligger, i samma proportion,
+  tills vi vet hur avtalat.se visar inbetalningarna. Utan kapital går de till
+  trad.
 
-Pensionsåldern är 68 år för alla, och premier räknas ända dit, fast dagens
-avtal stoppar dem vid 66. Vi antar att avtalet följer den stigande riktåldern.
+Förenklingar att ta ställning till:
+
+- **Alectas avgiftstak räknas per pott.** Ligger både den obligatoriska och
+  den flyttbara delen i Alecta är det troligen en försäkring med ett tak.
+  Skillnaden är liten (0,05 % på kapitalet över taket).
+- **Vinsten och kostnaden blir exakt lika stora för den som alltid varit
+  passiv.** Båda delarna är lika stora och ligger i samma produkt, så att
+  flytta den ena halvan ger lika mycket som att flytta den andra. Det är
+  inget fel, men det ser kanske konstigt ut i resultatet.
+
+Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 
 ## Faser
 
 ### Fas 1 – Modellen
-- [ ] Andreas läser igenom modellen ovan.
+- [x] Andreas läser igenom modellen ovan.
 - [ ] Ta reda på hur avtalat.se visar kapital och inbetalningar (fråga ute).
       Det avgör inmatningen.
 - [x] Verifiera värdena markerade VERIFIERA i `parametrar.js`. Kvar: Alectas
       aktieandel per ålder, som bara finns i andrahandskälla.
-- [ ] Andreas sätter antagandena om avkastning och löneökning.
+- [x] Andreas sätter antagandena om avkastning (6 % aktier, 1 % räntor).
+- [ ] Andreas sätter antagandet om löneökning (1,5 % är platshållare).
 
 ### Fas 2 – Repo och beräkningsmodul
 - [x] Skapa repot och klona det lokalt.
 - [x] Sätt upp `CLAUDE.md`, `docs/` och flytta in `parametrar.js` och den här
       planen.
-- [ ] Bygg beräkningsmodulen med tester:
+- [x] Bygg beräkningsmodulen med tester (`itp/berakning.js`):
   - kontrolltester (noll avkastning ger summan av premierna, samma aktieandel
     ger samma resultat i alla scenarier, 100 000 kr med 6 % i 34 år ger cirka
     725 000 kr)
-  - jämförelse med det befintliga kalkylarket där det täcker samma fall
+- [ ] Jämför med det befintliga kalkylarket där det täcker samma fall.
 - [ ] Export av tabellen år för år till CSV, för stickprov för hand.
 
 ### Fas 3 – Visning och publicering

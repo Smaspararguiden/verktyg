@@ -49,9 +49,8 @@ export const parametrar = {
     // One age for everyone, no adjustment per birth year. Premiums are paid
     // up to this age as well, although today's agreement stops them at 66:
     // we assume the agreement follows the rising target retirement age.
-    // The glide paths
-    // below are given as absolute ages and assume this pension age;
-    // changing it means moving their points too.
+    // The entry solution's glide path follows this age; Alecta's follows the
+    // insured's age only.
     varde: 68,
     enhet: "år",
     beskrivning: "Premier betalas och kapitalet växer fram till den här åldern. Riktåldern höjs med tiden, så den blir troligen högre än dagens för den som är ung nu",
@@ -86,13 +85,13 @@ export const parametrar = {
     varde: 0.06,
     enhet: "per år",
     beskrivning: "Förväntad real avkastning på aktier, före avgifter och skatt",
-    kalla: "Antagande – siffran från artiklarna, oklart om den är real. Andreas sätter",
+    kalla: "Antagande (Småspararguiden)",
   },
   realAvkastningRantor: {
     varde: 0.01,
     enhet: "per år",
     beskrivning: "Förväntad real avkastning på räntor, före avgifter och skatt",
-    kalla: "Antagande – siffran från artiklarna. Andreas sätter",
+    kalla: "Antagande (Småspararguiden)",
   },
 
   // --- Tax ----------------------------------------------------------------
@@ -106,46 +105,61 @@ export const parametrar = {
   },
 
   // --- Products -----------------------------------------------------------
-  // Equity share by age is given as points [age, share] and interpolated
-  // linearly between them. Before the first point the first value holds;
-  // after the last point the last value holds.
+  // Equity share comes in two forms:
+  //   perAlder:     points [age, share], interpolated linearly between them.
+  //                 Before the first point the first value holds; after the
+  //                 last point the last value holds.
+  //   forePension:  startandel until startArForePension years before the
+  //                 pension age, then linearly down to slutandel over
+  //                 langdAr years. Moves with the pension age.
+  //
   // Fee per year in kronor =
   //   min(tak, max(golv, procent * kapital + fastKr)) + procentUtanTak * kapital
+  // where procent = aktieandel * procentAktiedel + (1 - aktieandel) * procentRantedel.
   // A null tak or golv means no cap or no floor. procentUtanTak covers costs
-  // that are charged on top of the capped fee, such as Alecta's capital
-  // management cost.
+  // charged on top of a capped fee, such as Alecta's capital management cost.
   produkter: {
     alectaTrad: {
       namn: "Alecta traditionell försäkring",
-      aktieandelPerAlder: {
+      aktieandel: {
         // 60 % until 63, 50 % from 63 to 66, 40 % after 66.
-        varde: [[62, 0.60], [63, 0.50], [65, 0.50], [66, 0.40]],
+        typ: "perAlder",
+        punkter: [[62, 0.60], [63, 0.50], [65, 0.50], [66, 0.40]],
         kalla: "Andrahandskälla (minkapital.se, 2026). VERIFIERA mot Alecta",
       },
       avgift: {
-        procent: 0.0005,
+        // Alecta charges the same rate whatever the mix, so both parts are
+        // equal.
+        procentAktiedel: 0.0005,
+        procentRantedel: 0.0005,
         fastKr: 0,
         takKr: 480,
         golvKr: null,
         procentUtanTak: 0.0003,
-        kalla: "Alecta: 0,05 % per år, högst 40 kr/mån, plus kapitalförvaltningskostnad cirka 0,03 %",
+        kalla: "Alecta; Konsumenternas, Jämför tjänstepensioner ITP 1 (2026-10): 0,05 % per år, högst 40 kr/mån, plus kapitalförvaltningskostnad cirka 0,03 %",
       },
     },
     entrelosning: {
-      namn: "Länsförsäkringar fondförsäkring, entrélösningen",
-      aktieandelPerAlder: {
+      namn: "Länsförsäkringar fondförsäkring, entrélösningen (LF Entré ITP)",
+      aktieandel: {
         // All in equity funds until six years before pension, then moved
-        // gradually to 25 % equity at pension. "Gradually" is read as linear.
-        // Placed relative to pensionsalder (68).
-        varde: [[62, 1.0], [68, 0.25]],
-        kalla: "Länsförsäkringars förköpsinformation ITP (2026-01-01)",
+        // over to bond funds during 20 years (with lifelong payout) until 25 %
+        // remains in equities. The move is read as linear. With pension at 65
+        // this matches "normally starts at 59".
+        typ: "forePension",
+        startandel: 1.0,
+        startArForePension: 6,
+        langdAr: 20,
+        slutandel: 0.25,
+        kalla: "Länsförsäkringars förköpsinformation ITP (2026-01-01); Konsumenternas, Jämför tjänstepensioner ITP 1 (2026-10)",
       },
       avgift: {
-        // The fund fee is a blend of the equity and bond funds, weighted by
-        // the equity share for the year. LF states 0.08 % when young and
-        // 0.06 % at the end (25 % equity); the bond fee is derived from that.
-        procentAktiefond: 0.0008,
-        procentRantefond: 0.00053,
+        // Equity part: LF Global Index 80 % and LF Sverige Vision 20 %.
+        // Bond part: LF Kort Räntefond and LF Lång Räntefond. LF states the
+        // total as 0.08 % when young and 0.06 % at 25 % equity; the bond
+        // part's rate is derived from that.
+        procentAktiedel: 0.0008,
+        procentRantedel: 0.00053,
         fastKr: 0,
         takKr: null,
         golvKr: null,
@@ -156,6 +170,24 @@ export const parametrar = {
   },
 
   // --- Display ------------------------------------------------------------
+  minstaVinstForTrafikljus: {
+    varde: 10000,
+    enhet: "kr",
+    beskrivning: "Är vinsten med att flytta mindre än så visas inget trafikljus",
+    kalla: "Antagande",
+  },
+  trafikljusGulFran: {
+    varde: 0.1,
+    enhet: "andel av vinsten",
+    beskrivning: "Under den här andelen uppnådd vinst är trafikljuset rött",
+    kalla: "Antagande",
+  },
+  trafikljusGronFran: {
+    varde: 0.9,
+    enhet: "andel av vinsten",
+    beskrivning: "Från den här andelen uppnådd vinst är trafikljuset grönt",
+    kalla: "Antagande",
+  },
   aldersvarningFran: {
     varde: 55,
     enhet: "år",
