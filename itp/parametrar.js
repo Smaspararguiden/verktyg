@@ -45,13 +45,20 @@ export const parametrar = {
     beskrivning: "Ålder när premieinbetalningarna börjar",
     kalla: "ITP1-avtalet; Länsförsäkringars förköpsinformation ITP (2026-01-01)",
   },
-  pensionsalder: {
-    // The glide paths below are given as absolute ages and assume this
-    // pension age. Changing it means moving their points too.
+  premieSlutalder: {
     varde: 66,
     enhet: "år",
-    beskrivning: "Premier betalas och kapitalet växer fram till den här åldern",
+    beskrivning: "Ålder när premieinbetalningarna slutar",
     kalla: "ITP1-avtalet: premier betalas till 66 år sedan 2023 (Alecta, Ändrade åldersgränser i ITP-planen)",
+  },
+  pensionsalder: {
+    // One age for everyone, no adjustment per birth year. The glide paths
+    // below are given as absolute ages and assume this pension age;
+    // changing it means moving their points too.
+    varde: 68,
+    enhet: "år",
+    beskrivning: "Kapitalet växer fram till den här åldern. Riktåldern höjs med tiden, så den blir troligen högre än dagens för den som är ung nu",
+    kalla: "Antagande – samma ålder för alla",
   },
   andelObligatoriskTrad: {
     varde: 0.5,
@@ -132,7 +139,8 @@ export const parametrar = {
       aktieandelPerAlder: {
         // All in equity funds until six years before pension, then moved
         // gradually to 25 % equity at pension. "Gradually" is read as linear.
-        varde: [[60, 1.0], [66, 0.25]],
+        // Placed relative to pensionsalder (68).
+        varde: [[62, 1.0], [68, 0.25]],
         kalla: "Länsförsäkringars förköpsinformation ITP (2026-01-01)",
       },
       avgift: {

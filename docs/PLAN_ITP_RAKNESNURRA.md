@@ -22,7 +22,7 @@ flyttbar del.
 För varje år:
 
 1. **Lön** växer med real löneökning. **IBB** växer med sin egen parameter.
-2. **Premie** = 4,5 % av lönen upp till 7,5 IBB plus 30 % av lönen mellan
+2. **Premie** (från 25 till 66 år) = 4,5 % av lönen upp till 7,5 IBB plus 30 % av lönen mellan
    7,5 IBB och lönetaket. Hälften går till varje del.
 3. **Aktieandel** för delen, utifrån produkten och användarens ålder (punkter
    med ålder och aktieandel, linjärt däremellan).
@@ -58,6 +58,9 @@ Kantfall:
   tydligt i resultatet. Andelen uppnådd kapas vid 100 %.
 - **Framtida premier** antas gå dit där kapitalet ligger, tills vi vet hur
   avtalat.se visar inbetalningarna.
+
+Efter 66 år kommer inga premier, men kapitalet växer fram till
+pensionsåldern, som är 68 år för alla.
 
 ## Faser
 
