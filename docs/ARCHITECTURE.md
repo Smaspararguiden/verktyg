@@ -41,6 +41,9 @@ och knappen "Ladda ner år för år" ger tabellen från `berakna()` som CSV
 (semikolon och decimalkomma, för svenska Excel och Sheets). Inget lämnar
 webbläsaren.
 
+Den som inte har ITP1 i sin nuvarande anställning bockar ur en ruta. Då
+döljs lönen och `berakna()` får månadslön 0, vilket ger inga nya premier.
+
 Användarens ålder räknas som innevarande år minus födelseår. Den som är född
 före 1979 har ITP2 och får ett meddelande i stället för ett resultat.
 

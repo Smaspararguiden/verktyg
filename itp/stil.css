@@ -45,6 +45,9 @@
 
 body { margin: 0; background: var(--bakgrund); }
 
+/* Keep hidden elements hidden even where a rule sets display. */
+[hidden] { display: none !important; }
+
 main {
   max-width: 720px;
   margin: 0 auto;
@@ -93,6 +96,7 @@ input[inputmode] {
 input[inputmode]:focus { outline: 2px solid var(--fokus); outline-offset: 1px; }
 h1, h2 { color: var(--accent); }
 
+.kryss { display: flex; align-items: center; gap: 8px; }
 .val { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 12px; }
 .val label { margin: 0; }
 

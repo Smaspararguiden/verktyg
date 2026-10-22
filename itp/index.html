@@ -25,9 +25,16 @@
         <label>Födelseår
           <input name="fodelsear" inputmode="numeric" placeholder="t.ex. 1990">
         </label>
-        <label>Månadslön före skatt (kronor)
+        <label class="kryss">
+          <input type="checkbox" name="anstalld" checked>
+          Jag har ITP1 i min nuvarande anställning
+        </label>
+        <label data-anstalld>Månadslön före skatt (kronor)
           <input name="manadslon" inputmode="numeric" placeholder="t.ex. 45 000">
         </label>
+        <p class="hjalp" data-ej-anstalld hidden>
+          Vi räknar bara på det kapital du har i dag, utan nya inbetalningar.
+        </p>
       </fieldset>
 
       <fieldset>

@@ -23,7 +23,10 @@ function tal(namn) {
 
 function lasIndata() {
   const fodelsear = tal("fodelsear");
-  const manadslon = tal("manadslon");
+  // Without ITP1 in the current job no more premiums come in, which the
+  // calculation handles as a salary of zero.
+  const anstalld = form.elements.anstalld.checked;
+  const manadslon = anstalld ? tal("manadslon") : 0;
   const lage = form.elements.lage.value;
   let kapital;
   if (lage === "total") {
@@ -53,7 +56,9 @@ function uppdatera() {
   senaste = null;
 
   if (fodelsear === null || manadslon === null || kapital === null) {
-    meddelande("Fyll i födelseår, lön och ditt ITP1-kapital så räknar vi.");
+    meddelande(form.elements.anstalld.checked
+      ? "Fyll i födelseår, lön och ditt ITP1-kapital så räknar vi."
+      : "Fyll i födelseår och ditt ITP1-kapital så räknar vi.");
     return;
   }
   if (fodelsear < ITP1_FRAN_FODELSEAR) {
@@ -96,7 +101,8 @@ function visaResultat(indata, r) {
       <div><div class="etikett">Vad regeln om obligatorisk trad kostar dig</div>
         <div class="belopp">${kr(r.kostnadRegeln)}</div></div>
     </div>
-    <p class="hjalp">Kapital vid ${pa} år, i dagens penningvärde.</p>`);
+    <p class="hjalp">Kapital vid ${pa} år, i dagens penningvärde${indata.manadslon === 0
+      ? ", utan nya inbetalningar" : ""}.</p>`);
 
   if (r.trafikljus) {
     const texter = {
@@ -210,10 +216,14 @@ function visaParametrar() {
       </table></div>`).join("")}`;
 }
 
-// Switching between "total" and "parts" shows the matching fields.
+// Shows the fields that match the choices: "total" or "parts", and the
+// salary only for those with ITP1 in their current job.
 function visaLage() {
   const lage = form.elements.lage.value;
   for (const el of form.querySelectorAll("[data-lage]")) el.hidden = el.dataset.lage !== lage;
+  const anstalld = form.elements.anstalld.checked;
+  for (const el of form.querySelectorAll("[data-anstalld]")) el.hidden = !anstalld;
+  for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = anstalld;
 }
 
 form.addEventListener("input", () => { visaLage(); uppdatera(); });
