@@ -38,7 +38,11 @@ https://smaspararguiden.github.io/verktyg/itp/
 ## ITP-räknesnurran (`itp/`)
 
 `berakning.js` exporterar `berakna(parametrar, indata)`, där indata är
-`{ alder, manadslon, kapital: { obligatoriskTrad, flyttbarTrad, flyttbarFond } }`.
+`{ alder, manadslon, kapital: { obligatoriskTrad, flyttbarTrad, flyttbarFond }, andelPremieFond }`.
+`andelPremieFond` är andelen av hela premien som användaren valt att lägga i
+fond. Saknas den går allt till trad. `delaUppKapital(parametrar, trad, fond)`
+delar det användaren ser på avtalat.se, trad och fond, i obligatorisk och
+flyttbar del.
 Den bygger fyra scenarier (allt i trad, allt möjligt flyttat, allt flyttat,
 nuvarande), räknar vart och ett år för år och returnerar slutkapital, tabellen
 år för år och de härledda resultaten (vinst, kostnad för regeln, redan
@@ -57,8 +61,15 @@ och knappen "Ladda ner år för år" ger tabellen från `berakna()` som CSV
 (semikolon och decimalkomma, för svenska Excel och Sheets). Inget lämnar
 webbläsaren.
 
+Kapitalet anges på ett av två sätt: en total, som räknas som trad, eller en
+rad per försäkring med belopp och trad eller fond. Raderna summeras till trad
+och fond och delas upp med `delaUppKapital()`. Andelen av kommande
+inbetalningar till fond är ett valfritt fält. Det som användaren lämnar
+tomt och som vi därför gissar listas i resultatet under "Det här har vi
+antagit".
+
 Den som inte har ITP1 i sin nuvarande anställning bockar ur en ruta. Då
-döljs lönen och `berakna()` får månadslön 0, vilket ger inga nya premier.
+döljs lönen och kommande inbetalningar, och `berakna()` får månadslön 0, vilket ger inga nya premier.
 
 Användarens ålder räknas som innevarande år minus födelseår. Den som är född
 före 1979 har ITP2 och får ett meddelande i stället för ett resultat.
