@@ -49,7 +49,13 @@ rot.innerHTML = `
           Allt ligger i traditionell försäkring</label>
         <label><input type="radio" name="lage" value="delar">
           Jag har flera olika pensionsbolag</label>
+        <label><input type="radio" name="lage" value="ingen">
+          Vi struntar i sparat kapital</label>
       </div>
+
+      <p class="hjalp" data-lage="ingen" hidden>
+        Vi räknar bara på det som betalas in från och med nu, utifrån din lön.
+      </p>
 
       <div data-lage="trad">
         <label>Totalt ITP1-kapital
@@ -98,6 +104,7 @@ const form = rot.querySelector("form");
 const resultat = rot.querySelector(".resultat");
 
 const kr = (x) => `${(Math.round(x / 1000) * 1000).toLocaleString("sv-SE")} kr`;
+const krManad = (x) => `${(Math.round(x / 10) * 10).toLocaleString("sv-SE")} kr/mån`;
 const procent = (x, decimaler = 0) =>
   `${(x * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler })} %`;
 
@@ -153,7 +160,10 @@ function lasIndata() {
   const andelPremieFond = andelFond === null ? null : andelFond / 100;
 
   let kapital = null;
-  if (form.elements.lage.value === "trad") {
+  const lage = form.elements.lage.value;
+  if (lage === "ingen") {
+    kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  } else if (lage === "trad") {
     const total = tal("total");
     if (total !== null) kapital = delaUppKapital(p, total, 0);
   } else {
@@ -178,6 +188,10 @@ function uppdatera() {
     meddelande(form.elements.anstalld.checked
       ? "Fyll i födelseår, lön och ditt ITP1-kapital så räknar vi."
       : "Fyll i födelseår och ditt ITP1-kapital så räknar vi.");
+    return;
+  }
+  if (manadslon === 0 && form.elements.lage.value === "ingen") {
+    meddelande("Utan lön och utan sparat kapital finns det inget att räkna på.");
     return;
   }
   if (fodelsear < ITP1_FRAN_FODELSEAR) {
@@ -221,7 +235,20 @@ function visaResultat(indata, r) {
         <div class="belopp">${kr(r.kostnadRegeln)}</div></div>
     </div>
     <p class="hjalp">Kapital vid ${pa} år, i dagens penningvärde${indata.manadslon === 0
-      ? ", utan nya inbetalningar" : ""}.</p>`);
+      ? ", utan nya inbetalningar" : ""}${form.elements.lage.value === "ingen"
+      ? ", bara på det som betalas in från och med nu" : ""}.</p>`);
+
+  if (r.privatFlytt !== null) {
+    delar.push(`<h2>Som att spara själv</h2>
+      <div class="nyckeltal">
+        <div><div class="etikett">Att flytta allt som går motsvarar att du sparar</div>
+          <div class="belopp">${krManad(r.privatFlytt)}</div></div>
+        <div><div class="etikett">Om regeln togs bort och allt fick flyttas</div>
+          <div class="belopp">${krManad(r.privatUtanRegeln)}</div></div>
+      </div>
+      <p class="hjalp">Per månad i en global indexfond på ISK, varje månad fram
+        till ${pa} år, för samma pension efter skatt.</p>`);
+  }
 
   if (r.trafikljus) {
     const texter = {
@@ -307,6 +334,7 @@ function formateraVarde(post) {
 }
 
 function aktieandelText(a) {
+  if (a.typ === "fast") return `${procent(a.andel)} aktier hela tiden`;
   if (a.typ === "perAlder") {
     return a.punkter.map(([alder, andel]) => `${alder} år: ${procent(andel)}`).join(", ");
   }

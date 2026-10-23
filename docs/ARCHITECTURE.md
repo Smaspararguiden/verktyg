@@ -46,7 +46,9 @@ flyttbar del.
 Den bygger fyra scenarier (allt i trad, allt möjligt flyttat, allt flyttat,
 nuvarande), räknar vart och ett år för år och returnerar slutkapital, tabellen
 år för år och de härledda resultaten (vinst, kostnad för regeln, redan
-uppnått, trafikljus).
+uppnått, trafikljus). Den räknar också om vinsterna till eget sparande per
+månad med `privatSparandePerManad()`: vad användaren skulle behöva spara på
+ISK varje månad fram till pensionsåldern för samma pension efter skatt.
 
 Ett scenario är en lista av potter med produkt, startkapital och andel av
 premien. Produkterna (Alecta trad och entrélösningen) beskrivs helt i
@@ -61,8 +63,9 @@ och knappen "Ladda ner år för år" ger tabellen från `berakna()` som CSV
 (semikolon och decimalkomma, för svenska Excel och Sheets). Inget lämnar
 webbläsaren.
 
-Kapitalet anges på ett av två sätt: en total, som räknas som trad, eller en
-rad per försäkring med belopp och trad eller fond. Raderna summeras till trad
+Kapitalet anges på ett av tre sätt: en total, som räknas som trad, en rad
+per försäkring med belopp och trad eller fond, eller inte alls ("Vi struntar
+i sparat kapital"), som ger kapital 0. Raderna summeras till trad
 och fond och delas upp med `delaUppKapital()`. Andelen av kommande
 inbetalningar till fond är ett valfritt fält. Det som användaren lämnar
 tomt och som vi därför gissar listas i resultatet under "Det här har vi

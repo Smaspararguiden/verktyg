@@ -2,7 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import { parametrar } from "./parametrar.js";
-import { aktieandel, arligAvgift, arsPremie, berakna, delaUppKapital } from "./berakning.js";
+import {
+  aktieandel, arligAvgift, arsPremie, berakna, delaUppKapital, privatSparandePerManad,
+} from "./berakning.js";
 
 // Deep copy of the parameters, so each test can change values freely.
 const kopia = () => structuredClone(parametrar);
@@ -198,4 +200,48 @@ test("andelen till fond styr premierna och kapas vid den flyttbara delen", () =>
   // More than the movable half is not possible; the obligatory part stays.
   const [obl2, , fond2] = potter(0.8);
   narall(fond2.premie, obl2.premie, 1e-9);
+});
+
+test("eget sparande: utan avkastning, avgift och skatt är det vinsten delad på månaderna", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  p.iskSkatt.varde = 0;
+  p.skattPaPension.varde = 0;
+  const ar = p.pensionsalder.varde - 40;
+  narall(privatSparandePerManad(p, 40, 120000), 120000 / (ar * 12), 1e-9);
+});
+
+test("eget sparande jämförs efter skatt på pensionen", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  p.iskSkatt.varde = 0;
+  p.skattPaPension.varde = 0.3;
+  const ar = p.pensionsalder.varde - 40;
+  narall(privatSparandePerManad(p, 40, 120000), 0.7 * 120000 / (ar * 12), 1e-9);
+});
+
+test("eget sparande: med avkastning räcker det med mindre, och ISK-skatt kostar", () => {
+  const p = kopia();
+  const ar = p.pensionsalder.varde - 40;
+  const utanVaxt = 100000 * (1 - p.skattPaPension.varde) / (ar * 12);
+  const medVaxt = privatSparandePerManad(p, 40, 100000);
+  assert.ok(medVaxt < utanVaxt);
+  p.iskSkatt.varde = 0;
+  assert.ok(privatSparandePerManad(p, 40, 100000) < medVaxt);
+});
+
+test("eget sparande: ingen vinst ger noll, ingen tid kvar ger null", () => {
+  assert.equal(privatSparandePerManad(parametrar, 40, 0), 0);
+  assert.equal(privatSparandePerManad(parametrar, parametrar.pensionsalder.varde, 1000), null);
+});
+
+test("berakna ger eget sparande för flytten och för att slippa regeln", () => {
+  const r = berakna(kopia(), { alder: 35, manadslon: 45000, kapital: passiv });
+  assert.ok(r.privatFlytt > 0);
+  assert.ok(r.privatUtanRegeln > r.privatFlytt);
+});
+
+test("utan sparat kapital räknas bara de kommande premierna", () => {
+  const ingenting = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const r = berakna(kopia(), { alder: 35, manadslon: 45000, kapital: ingenting });
+  assert.ok(r.vinstFlytt > 0);
+  assert.equal(r.scenarier.alltTrad.ar[0].potter.every((x) => x.startkapital === 0), true);
 });
