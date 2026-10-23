@@ -238,6 +238,17 @@ function visaResultat(indata, r) {
       ? ", utan nya inbetalningar" : ""}${form.elements.lage.value === "ingen"
       ? ", bara på det som betalas in från och med nu" : ""}.</p>`);
 
+  if (r.trafikljus) {
+    const texter = {
+      rod: `Du har inte flyttat något än. Hela vinsten, ${kr(r.kvarAttHamta)}, finns kvar att hämta.`,
+      gul: `Du har redan fått ut ${procent(r.andelUppnadd)} av vinsten. ${kr(r.kvarAttHamta)} finns kvar att hämta.`,
+      gron: "Du har redan flyttat det som går. Bra jobbat!",
+    };
+    delar.push(`<div class="meddelande trafikljus">
+      <span class="lampa ${r.trafikljus}" aria-hidden="true"></span>
+      <span>${texter[r.trafikljus]}</span></div>`);
+  }
+
   if (r.privatFlytt !== null) {
     delar.push(`<h2>Som att spara själv</h2>
       <div class="nyckeltal">
@@ -248,17 +259,6 @@ function visaResultat(indata, r) {
       </div>
       <p class="hjalp">Per månad i en global indexfond på ISK, varje månad fram
         till ${pa} år, för samma pension efter skatt.</p>`);
-  }
-
-  if (r.trafikljus) {
-    const texter = {
-      rod: `Du har inte flyttat något än. Hela vinsten, ${kr(r.kvarAttHamta)}, finns kvar att hämta.`,
-      gul: `Du har redan fått ut ${procent(r.andelUppnadd)} av vinsten. ${kr(r.kvarAttHamta)} finns kvar att hämta.`,
-      gron: "Du har redan flyttat det som går. Bra jobbat!",
-    };
-    delar.push(`<div class="meddelande trafikljus">
-      <span class="lampa ${r.trafikljus}" aria-hidden="true"></span>
-      <span>${texter[r.trafikljus]}</span></div>`);
   }
 
   // Where the user left something out we guess, and say so.
