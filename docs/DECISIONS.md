@@ -148,3 +148,26 @@ till fond, högst den flyttbara halvan. Lämnas fältet tomt går alla nya
 inbetalningar till trad, och resultatet säger att vi har antagit det.
 
 Det ersätter antagandet att nya inbetalningar går dit kapitalet ligger i dag.
+
+## 13. Vinsten visas också som eget sparande per månad (2026-10-23)
+
+Vinsten med att flytta allt som går, och vinsten om regeln togs bort och allt
+fick flyttas, visas också som hur mycket användaren skulle behöva spara själv
+varje månad fram till pensionsåldern för samma effekt. Ett månadsbelopp är
+lättare att förstå än ett kapital långt fram.
+
+Det egna sparandet antas ligga på ISK i en global indexfond: bara aktier,
+samma reala avkastning som i pensionen, 0,2 % i avgift och ISK-skatt i stället
+för avkastningsskatt. Det skattefria beloppet på ISK räknas inte med, eftersom
+det delas med allt annat sparande personen har.
+
+Jämförelsen görs efter skatt. Pensionen beskattas som inkomst när den betalas
+ut, det egna sparandet på ISK gör det inte. Vinsten i pensionskapital räknas
+därför ner med skatten på pensionen innan den jämförs. Skattesatsen, 30 %, är
+ett antagande som inte är bestämt.
+
+## 14. Användaren kan strunta i sparat kapital (2026-10-23)
+
+Ett tredje val, "Vi struntar i sparat kapital", räknar bara på premierna från
+och med nu, utifrån lönen. Den som inte vill eller kan ta reda på sitt kapital
+får ändå ett svar.

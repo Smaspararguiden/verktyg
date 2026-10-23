@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–12).
+Vägvalen hittills står i `DECISIONS.md` (1–14).
 
 ## Modellen
 
@@ -113,7 +113,10 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
       rubriker och att temat inte knuffar våra komponenter.
 
 ### Fas 4 – Steg 2
-- [ ] Pension per månad och motsvarande privat sparande per månad.
+- [x] Motsvarande eget sparande per månad (`DECISIONS.md` 13).
+- [ ] Andreas bestämmer skatten på pensionen i jämförelsen (30 % är
+      platshållare).
+- [ ] Pension per månad.
 - [ ] Call to action: guide för flytt, donation, mejl till fackförbundet.
 - [ ] Lista över fackförbund och mejladresser, kanske som en publik sida.
 - [ ] Text om begränsningar (troligen i WordPress).

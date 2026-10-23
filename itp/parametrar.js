@@ -104,6 +104,24 @@ export const parametrar = {
     beskrivning: "Avkastningsskatt på pensionskapital 2026 (15 % av genomsnittlig statslåneränta 2025, 2,36 %)",
     kalla: "Skatteverket, allmänna råd SKV A 2026:1",
   },
+  skattPaPension: {
+    // Pension is taxed as income when paid out; money saved privately on an
+    // ISK is not. So a krona of pension capital is worth less than a krona
+    // saved privately, and the comparison is made after this tax.
+    varde: 0.30,
+    enhet: "andel av utbetalningen",
+    beskrivning: "Inkomstskatt på pensionen när den betalas ut. Används för att jämföra med eget sparande, som inte beskattas vid uttag",
+    kalla: "Antagande (Småspararguiden) – att bestämma",
+  },
+  iskSkatt: {
+    // (Government bond rate 30 Nov 2025, 2.55 %, + 1 percentage point) × 30 %.
+    // The tax-free amount (300 000 kr from 2026) is left out: it is shared
+    // with all of the person's other ISK savings.
+    varde: 0.01065,
+    enhet: "andel av kapitalet per år",
+    beskrivning: "Skatt på ISK 2026, för jämförelsen med eget sparande. Det skattefria beloppet räknar vi inte med",
+    kalla: "Skatteverket; statslåneräntan 30 november 2025 (2,55 %)",
+  },
 
   // --- Products -----------------------------------------------------------
   // Equity share comes in two forms:
@@ -120,6 +138,25 @@ export const parametrar = {
   // A null tak or golv means no cap or no floor. procentUtanTak covers costs
   // charged on top of a capped fee, such as Alecta's capital management cost.
   produkter: {
+    // Used only to compare with saving on one's own: what the user would
+    // have to save each month for the same effect on the pension.
+    privatIsk: {
+      namn: "Eget sparande på ISK i en global indexfond",
+      aktieandel: {
+        typ: "fast",
+        andel: 1.0,
+        kalla: "Antagande (Småspararguiden)",
+      },
+      avgift: {
+        procentAktiedel: 0.002,
+        procentRantedel: 0.002,
+        fastKr: 0,
+        takKr: null,
+        golvKr: null,
+        procentUtanTak: 0,
+        kalla: "Antagande (Småspararguiden): vanlig avgift för en global indexfond",
+      },
+    },
     alectaTrad: {
       namn: "Alecta traditionell försäkring",
       aktieandel: {

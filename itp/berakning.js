@@ -17,6 +17,7 @@ export function aktieandel(produkt, alder, pensionsalder) {
     if (alder >= start + a.langdAr) return a.slutandel;
     return a.startandel + (a.slutandel - a.startandel) * (alder - start) / a.langdAr;
   }
+  if (a.typ === "fast") return a.andel;
   throw new Error(`Okänd typ av aktieandel: ${a.typ}`);
 }
 
@@ -108,6 +109,31 @@ export function delaUppKapital(p, trad, fond) {
   return { obligatoriskTrad, flyttbarTrad: trad - obligatoriskTrad, flyttbarFond: fond };
 }
 
+// How much the user would have to save on their own each month, from now to
+// the pension age, to get the same as a gain in pension capital. The pension
+// is taxed when paid out and the private saving is not, so the comparison is
+// made after that tax. The private saving pays ISK tax instead of the yield
+// tax on pensions. Null when there are no years left.
+export function privatSparandePerManad(p, alder, vinstKr) {
+  const pensionsalder = p.pensionsalder.varde;
+  if (alder >= pensionsalder || vinstKr <= 0) return vinstKr <= 0 ? 0 : null;
+  const produkt = p.produkter.privatIsk;
+  const ra = p.realAvkastningAktier.varde;
+  const rr = p.realAvkastningRantor.varde;
+
+  // Capital at pension from saving 1 kr a month. Fees and tax are
+  // proportional to the capital, so the result scales with the amount.
+  let kapital = 0;
+  for (let a = alder; a < pensionsalder; a++) {
+    const andelAktier = aktieandel(produkt, a, pensionsalder);
+    const avkastning = andelAktier * ra + (1 - andelAktier) * rr;
+    const avgift = arligAvgift(produkt, kapital, andelAktier);
+    const skatt = p.iskSkatt.varde * kapital;
+    kapital = kapital * (1 + avkastning) + 12 * (1 + avkastning / 2) - avgift - skatt;
+  }
+  return vinstKr * (1 - p.skattPaPension.varde) / kapital;
+}
+
 // Builds the four scenarios from the user's capital. indata.kapital has
 // obligatoriskTrad, flyttbarTrad and flyttbarFond. indata.andelPremieFond is
 // the share of future premiums the user has chosen to put in funds; without
@@ -164,9 +190,15 @@ export function berakna(p, indata) {
     else trafikljus = "rod";
   }
 
+  // The same gains expressed as monthly private saving: moving what can be
+  // moved today, and moving everything if the rule were dropped.
+  const privatFlytt = privatSparandePerManad(p, indata.alder, vinstFlytt);
+  const privatUtanRegeln = privatSparandePerManad(p, indata.alder, vinstFlytt + kostnadRegeln);
+
   return {
     scenarier: utfall,
     vinstFlytt, kostnadRegeln, redanUppnatt, kvarAttHamta,
+    privatFlytt, privatUtanRegeln,
     andelUppnadd, trafikljus,
     aldersvarning: indata.alder >= p.aldersvarningFran.varde,
   };
