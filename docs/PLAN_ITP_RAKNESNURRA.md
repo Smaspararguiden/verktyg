@@ -124,7 +124,12 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [ ] Call to action, donation: Octany finns redan på sajten (målwidget,
       Swish-widget och flöde på kampanjsidan, insamlingssida
       smaspararguiden.octany.site/itp-kampanjen). Snyggast om man kan
-      donera utan att lämna sidan.
+      donera utan att lämna sidan. Två vägar, som vi väljer mellan senare:
+      lägga Octanys widgetar i WordPress direkt under kortkoden (ingen kod
+      från oss), eller låta snurran visa Swish-widgeten under resultatet med
+      en text som knyter an till användarens siffror (widgetens id i
+      kortkoden). Widgetarna laddas från Octany i besökarens webbläsare, som
+      på resten av sajten.
 - [ ] Call to action, mejla fackförbundet: förslag på mejltext med hur mycket
       pension användaren förlorar och adress till rätt fackrepresentant. Minst
       delar ligger hos oss, eftersom siffrorna bara finns i webbläsaren.

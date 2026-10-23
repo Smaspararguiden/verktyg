@@ -75,9 +75,9 @@ Den som inte har ITP1 i sin nuvarande anställning bockar ur en ruta. Då
 döljs lönen och kommande inbetalningar, och `berakna()` får månadslön 0, vilket ger inga nya premier.
 
 Användarens ålder räknas som innevarande år minus födelseår. Den som är född
-före 1979 har troligen ITP2 och får frågan om hen är säker på att hen har
-ITP1. Med rutan "Jag är säker på att jag har ITP1" ikryssad räknar sidan
-ändå.
+före 1979 har troligen ITP2. Under födelseåret förklaras det, och att vissa
+arbetsplatser har ITP1 för alla. Med rutan "Ja, jag har ITP1" ikryssad räknar
+sidan ändå.
 
 Stilarna i `stil.css` gäller bara inuti `.sg-itp`. Rubriker, text, fält,
 knappar och tabeller lämnas åt WordPress-temat. `index.html` är en

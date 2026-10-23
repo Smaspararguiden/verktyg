@@ -21,10 +21,19 @@ rot.innerHTML = `
       <label>Födelseår
         <input name="fodelsear" inputmode="numeric" placeholder="t.ex. 1990">
       </label>
-      <label class="kryss" data-fore-itp1 hidden>
-        <input type="checkbox" name="sakerItp1">
-        Jag är säker på att jag har ITP1
-      </label>
+      <div data-fore-itp1 hidden>
+        <p class="meddelande varning">
+          De flesta som är födda år ${ITP1_FRAN_FODELSEAR - 1} eller tidigare har
+          ITP2, som den här räknesnurran inte räknar på. Det finns vissa
+          arbetsplatser som har ITP1 för alla oavsett ålder, men det är ganska
+          ovanligt. Tror du att du jobbar eller har jobbat på en sådan? Kryssa i
+          rutan här under så räknar vi ändå.
+        </p>
+        <label class="kryss">
+          <input type="checkbox" name="sakerItp1">
+          Ja, jag har ITP1
+        </label>
+      </div>
       <label class="kryss">
         <input type="checkbox" name="anstalld" checked>
         Jag har ITP1 i min nuvarande anställning
@@ -201,12 +210,7 @@ function uppdatera() {
   // Most people born before this year have ITP2, but some have ITP1, so we
   // ask instead of stopping.
   if (fodelsear < ITP1_FRAN_FODELSEAR && !form.elements.sakerItp1.checked) {
-    meddelande(
-      `De flesta som är födda före ${ITP1_FRAN_FODELSEAR} har ITP2, som den här
-       räknesnurran inte räknar på. Är du säker på att du har ITP1? Kryssa i
-       rutan under födelseåret så räknar vi ändå.`,
-      "varning",
-    );
+    meddelande("Läs frågan under födelseåret. Kryssa i rutan där om du har ITP1, så räknar vi.");
     return;
   }
   const alder = new Date().getFullYear() - fodelsear;
