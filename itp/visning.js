@@ -240,9 +240,9 @@ function visaResultat(indata, r) {
 
   if (r.trafikljus) {
     const texter = {
-      rod: `Du har inte flyttat något än. Hela vinsten, ${kr(r.kvarAttHamta)}, finns kvar att hämta.`,
-      gul: `Du har redan fått ut ${procent(r.andelUppnadd)} av vinsten. ${kr(r.kvarAttHamta)} finns kvar att hämta.`,
-      gron: "Du har redan flyttat det som går. Bra jobbat!",
+      rod: `Du verkar inte ha flyttat något än. Hela vinsten, ${kr(r.kvarAttHamta)}, finns kvar att hämta.`,
+      gul: `Du verkar redan ha fått ut ungefär ${procent(r.andelUppnadd)} av vinsten. ${kr(r.kvarAttHamta)} finns kvar att hämta.`,
+      gron: "Du verkar redan ha flyttat det som går. Bra jobbat!",
     };
     delar.push(`<div class="meddelande trafikljus">
       <span class="lampa ${r.trafikljus}" aria-hidden="true"></span>
