@@ -96,6 +96,9 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
     725 000 kr)
 - [ ] Jämför med det befintliga kalkylarket där det täcker samma fall.
   - [x] Premien stämmer med kalkylarket (Andreas, 2026-10-31).
+  - [x] Avgift och skatt år 1 stämmer, i avrundade värden, med kalkylarket
+        när det också räknar Alectas kapitalförvaltningskostnad på 0,03 %
+        (Andreas, 2026-10-31).
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
 
