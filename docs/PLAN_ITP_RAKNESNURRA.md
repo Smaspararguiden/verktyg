@@ -99,6 +99,12 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
   - [x] Avgift och skatt år 1 stämmer, i avrundade värden, med kalkylarket
         när det också räknar Alectas kapitalförvaltningskostnad på 0,03 %
         (Andreas, 2026-10-31).
+  - [x] Hela förloppet till pension stämmer för noll startkapital och lön
+        över brytpunkten, med testvärdena (ingen real löne- och IBB-ökning,
+        Alecta 70 % aktier, entrélösningen 100 % aktier och 0,12 %, ingen
+        avkastning på årets premier). Efter 59 år skiljer Alectas avgiftstak,
+        som kalkylarket saknar (Andreas, 2026-10-31).
+  - [ ] Eget sparande per månad är inte jämfört.
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
 
