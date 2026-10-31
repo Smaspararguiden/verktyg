@@ -63,6 +63,7 @@ export function simuleraScenario(p, indata, potter) {
   const ra = p.realAvkastningAktier.varde;
   const rr = p.realAvkastningRantor.varde;
   const skatt = p.avkastningsskattPension.varde;
+  const delAr = p.avkastningsandelArsPremie.varde;
 
   const kapital = potter.map((pott) => pott.startkapital);
   const ar = [];
@@ -81,9 +82,9 @@ export function simuleraScenario(p, indata, potter) {
       const avgift = arligAvgift(produkt, k, andelAktier);
       const skattKr = skatt * k;
       const pottPremie = premie * pott.premieandel;
-      // Premiums arrive evenly over the year, so on average they earn half a
+      // Premiums arrive during the year, so they earn only part of the
       // year's return.
-      kapital[i] = k * (1 + avkastning) + pottPremie * (1 + avkastning / 2) - avgift - skattKr;
+      kapital[i] = k * (1 + avkastning) + pottPremie * (1 + avkastning * delAr) - avgift - skattKr;
       rad.potter.push({
         namn: pott.namn, produkt: pott.produkt, andelAktier, avkastning,
         startkapital: k, premie: pottPremie, avgift, skatt: skattKr, slutkapital: kapital[i],
@@ -129,7 +130,8 @@ export function privatSparandePerManad(p, alder, vinstKr) {
     const avkastning = andelAktier * ra + (1 - andelAktier) * rr;
     const avgift = arligAvgift(produkt, kapital, andelAktier);
     const skatt = p.iskSkatt.varde * kapital;
-    kapital = kapital * (1 + avkastning) + 12 * (1 + avkastning / 2) - avgift - skatt;
+    kapital = kapital * (1 + avkastning) + 12 * (1 + avkastning * p.avkastningsandelArsPremie.varde)
+      - avgift - skatt;
   }
   return vinstKr * (1 - p.skattPaPension.varde) / kapital;
 }

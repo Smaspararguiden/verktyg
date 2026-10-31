@@ -33,7 +33,9 @@ För varje år och pott:
    räntedelens avgift efter aktieandelen. Delen utan tak behövs för Alecta,
    vars kapitalförvaltningskostnad tas ut utöver den avgift som har tak.
 6. **Kapital vid årets slut** = kapital × (1 + avkastning)
-   + premie × (1 + avkastning/2) − avgift − skatt.
+   + premie × (1 + avkastning × andel) − avgift − skatt, där andelen
+   (`avkastningsandelArsPremie`, 0,5) är hur mycket av årets avkastning
+   årets premier får.
 
 Scenarier:
 

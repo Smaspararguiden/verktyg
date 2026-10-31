@@ -245,3 +245,20 @@ test("utan sparat kapital räknas bara de kommande premierna", () => {
   assert.ok(r.vinstFlytt > 0);
   assert.equal(r.scenarier.alltTrad.ar[0].potter.every((x) => x.startkapital === 0), true);
 });
+
+test("årets premier får den andel av årets avkastning som parametern säger", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  p.realAvkastningRantor.varde = 0.04;
+  const kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const forstaAret = (andel) => {
+    p.avkastningsandelArsPremie.varde = andel;
+    const rad = berakna(p, { alder: 40, manadslon: 40000, kapital }).scenarier.alltTrad.ar[0];
+    return { premie: rad.premie, slut: rad.potter.reduce((s, x) => s + x.slutkapital, 0) };
+  };
+  // Alecta's equity share times 0 % equity return leaves the bond return.
+  const r = 0.04 * (1 - aktieandel(p.produkter.alectaTrad, 40, p.pensionsalder.varde));
+  const noll = forstaAret(0);
+  narall(noll.slut, noll.premie, 1e-6);
+  const halv = forstaAret(0.5);
+  narall(halv.slut, halv.premie * (1 + r / 2), 1e-6);
+});

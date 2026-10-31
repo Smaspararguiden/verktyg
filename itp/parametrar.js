@@ -94,6 +94,15 @@ export const parametrar = {
     beskrivning: "Förväntad real avkastning på räntor, före avgifter och skatt",
     kalla: "Antagande (Småspararguiden)",
   },
+  avkastningsandelArsPremie: {
+    // Premiums (and monthly private saving) arrive evenly over the year, so
+    // on average they earn half a year's return in the year they are paid.
+    // 0 means no return until the next year.
+    varde: 0.5,
+    enhet: "andel av årets avkastning",
+    beskrivning: "Hur stor del av årets avkastning som årets inbetalningar får, eftersom de kommer in under året",
+    kalla: "Antagande (Småspararguiden): inbetalningar jämnt fördelade över året",
+  },
 
   // --- Tax ----------------------------------------------------------------
   avkastningsskattPension: {
