@@ -132,3 +132,8 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
 5. ~~Ska användaren dela upp traditionell försäkring i obligatorisk och
    valbar del?~~ Nej, avtalat.se visar inte delarna. Se `DECISIONS.md` 11.
+6. **Alectas aktieandel.** Ska diskuteras. Andreas tror att vi ska börja på
+   70 % när vi räknar in Alectas alternativa investeringar till viss del.
+   I dag 60 % till 63 år, från en andrahandskälla.
+7. **Vilken avgift vi räknar på för entrélösningen.** Dubbelkolla om
+   0,08–0,06 % är den totala avgiften eller bara förvaltningsavgiften.
