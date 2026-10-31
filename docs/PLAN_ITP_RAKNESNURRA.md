@@ -95,6 +95,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
     ger samma resultat i alla scenarier, 100 000 kr med 6 % i 34 år ger cirka
     725 000 kr)
 - [ ] Jämför med det befintliga kalkylarket där det täcker samma fall.
+  - [x] Premien stämmer med kalkylarket (Andreas, 2026-10-31).
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
 
