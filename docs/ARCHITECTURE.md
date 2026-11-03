@@ -79,8 +79,10 @@ döljs lönen och kommande inbetalningar, och `berakna()` får månadslön 0, vi
 
 Användarens ålder räknas som innevarande år minus födelseår. Den som är född
 före 1979 har troligen ITP2. Under födelseåret förklaras det, och att vissa
-arbetsplatser har ITP1 för alla. Med rutan "Ja, jag har ITP1" ikryssad räknar
-sidan ändå.
+arbetsplatser har ITP1 för alla. I stället för rutan om nuvarande anställning
+får de två rutor, båda urkryssade: ITP1 i nuvarande anställning (ger nya
+premier) och ITP1 i en tidigare anställning (bara sparat kapital). Med någon
+av dem ikryssad räknar sidan ändå.
 
 Stilarna i `stil.css` gäller bara inuti `.sg-itp`. Rubriker, text, fält,
 knappar och tabeller lämnas åt WordPress-temat. `index.html` är en

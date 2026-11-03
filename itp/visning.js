@@ -27,14 +27,18 @@ rot.innerHTML = `
           ITP2, som den här räknesnurran inte räknar på. Det finns vissa
           arbetsplatser som har ITP1 för alla oavsett ålder, men det är ganska
           ovanligt. Tror du att du jobbar eller har jobbat på en sådan? Kryssa i
-          rutan här under så räknar vi ändå.
+          det som stämmer här under så räknar vi ändå.
         </p>
         <label class="kryss">
-          <input type="checkbox" name="sakerItp1">
-          Ja, jag har ITP1
+          <input type="checkbox" name="nuItp1">
+          Ja. Jag har ITP1 i min nuvarande anställning.
+        </label>
+        <label class="kryss">
+          <input type="checkbox" name="tidigareItp1">
+          Ja. Jag har haft ITP1 i en tidigare anställning.
         </label>
       </div>
-      <label class="kryss">
+      <label class="kryss" data-ej-fore-itp1>
         <input type="checkbox" name="anstalld" checked>
         Jag har ITP1 i min nuvarande anställning
       </label>
@@ -161,11 +165,24 @@ function lasRader() {
   return nagot ? { trad, fond } : null;
 }
 
+// Born before ITP1_FRAN_FODELSEAR: most of them have ITP2, so they get
+// their own questions about ITP1.
+function foreItp1() {
+  const fodelsear = tal("fodelsear");
+  return fodelsear !== null && fodelsear < ITP1_FRAN_FODELSEAR;
+}
+
+// Whether premiums come in from the current job. Those born before
+// ITP1_FRAN_FODELSEAR answer it in their own box, unticked from the start.
+function nyaPremier() {
+  return foreItp1() ? form.elements.nuItp1.checked : form.elements.anstalld.checked;
+}
+
 function lasIndata() {
   const fodelsear = tal("fodelsear");
   // Without ITP1 in the current job no more premiums come in, which the
   // calculation handles as a salary of zero.
-  const anstalld = form.elements.anstalld.checked;
+  const anstalld = nyaPremier();
   const manadslon = anstalld ? tal("manadslon") : 0;
   // An empty field means the user has made no choice, so everything goes to
   // trad. The percentage is of the whole premium, as avtalat.se shows it.
@@ -198,7 +215,7 @@ function uppdatera() {
   visaSumma();
 
   if (fodelsear === null || manadslon === null || kapital === null) {
-    meddelande(form.elements.anstalld.checked
+    meddelande(nyaPremier()
       ? "Fyll i födelseår, lön och ditt ITP1-kapital så räknar vi."
       : "Fyll i födelseår och ditt ITP1-kapital så räknar vi.");
     return;
@@ -209,8 +226,8 @@ function uppdatera() {
   }
   // Most people born before this year have ITP2, but some have ITP1, so we
   // ask instead of stopping.
-  if (fodelsear < ITP1_FRAN_FODELSEAR && !form.elements.sakerItp1.checked) {
-    meddelande("Läs frågan under födelseåret. Kryssa i rutan där om du har ITP1, så räknar vi.");
+  if (foreItp1() && !form.elements.nuItp1.checked && !form.elements.tidigareItp1.checked) {
+    meddelande("Läs frågan under födelseåret. Kryssa i det som stämmer om du har ITP1, så räknar vi.");
     return;
   }
   const alder = new Date().getFullYear() - fodelsear;
@@ -411,12 +428,15 @@ function visaParametrar() {
 function visaLage() {
   const lage = form.elements.lage.value;
   for (const el of form.querySelectorAll("[data-lage]")) el.hidden = el.dataset.lage !== lage;
-  const anstalld = form.elements.anstalld.checked;
+  const anstalld = nyaPremier();
+  const fore = foreItp1();
   for (const el of form.querySelectorAll("[data-anstalld]")) el.hidden = !anstalld;
-  const fodelsear = tal("fodelsear");
-  const foreItp1 = fodelsear !== null && fodelsear < ITP1_FRAN_FODELSEAR;
-  for (const el of form.querySelectorAll("[data-fore-itp1]")) el.hidden = !foreItp1;
-  for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = anstalld;
+  for (const el of form.querySelectorAll("[data-fore-itp1]")) el.hidden = !fore;
+  for (const el of form.querySelectorAll("[data-ej-fore-itp1]")) el.hidden = fore;
+  // "Only today's capital" makes sense once the user has said they have
+  // ITP1 without new payments.
+  const utanPremier = !anstalld && (!fore || form.elements.tidigareItp1.checked);
+  for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = !utanPremier;
 }
 
 form.addEventListener("input", () => { visaLage(); uppdatera(); });
