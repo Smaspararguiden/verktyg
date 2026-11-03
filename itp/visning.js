@@ -25,11 +25,24 @@ rot.innerHTML = `
         <input type="checkbox" name="anstalld" checked>
         Jag har ITP1 i min nuvarande anställning
       </label>
-      <label data-anstalld>Månadslön före skatt (kronor)
-        <input name="manadslon" inputmode="numeric" placeholder="t.ex. 45 000">
-      </label>
       <p class="hjalp" data-ej-anstalld hidden>
         Vi räknar bara på det kapital du har i dag, utan nya inbetalningar.
+      </p>
+    </fieldset>
+
+    <fieldset data-anstalld>
+      <legend>Kommande inbetalningar</legend>
+      <label>Månadslön före skatt (kronor)
+        <input name="manadslon" inputmode="numeric" placeholder="t.ex. 45 000">
+      </label>
+      <label>Andel till fondförsäkring, i procent (valfritt)
+        <input name="andelFond" inputmode="numeric" placeholder="t.ex. 50">
+      </label>
+      <p class="hjalp">
+        Står på avtalat.se under Pensionskapital → Placering av kommande
+        inbetalningar. Högst 50 %, eftersom resten måste gå till traditionell
+        försäkring. Lämnar du fältet tomt räknar vi med att allt går till
+        traditionell försäkring.
       </p>
     </fieldset>
 
@@ -77,19 +90,6 @@ rot.innerHTML = `
         <button type="button" class="lagg-till">+ Lägg till försäkring</button>
         <p class="summa" aria-live="polite"></p>
       </div>
-    </fieldset>
-
-    <fieldset data-anstalld>
-      <legend>Kommande inbetalningar</legend>
-      <label>Andel till fondförsäkring, i procent (valfritt)
-        <input name="andelFond" inputmode="numeric" placeholder="t.ex. 50">
-      </label>
-      <p class="hjalp">
-        Står på avtalat.se under Pensionskapital → Placering av kommande
-        inbetalningar. Högst 50 %, eftersom resten måste gå till traditionell
-        försäkring. Lämnar du fältet tomt räknar vi med att allt går till
-        traditionell försäkring.
-      </p>
     </fieldset>
   </form>
 
