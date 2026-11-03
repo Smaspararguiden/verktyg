@@ -110,30 +110,49 @@ export function delaUppKapital(p, trad, fond) {
   return { obligatoriskTrad, flyttbarTrad: trad - obligatoriskTrad, flyttbarFond: fond };
 }
 
+// Saving a fixed amount each month on an ISK from now to the pension age,
+// year by year, in the same shape as simuleraScenario so the CSV can list
+// it next to the pension scenarios. The year's deposits earn the same part
+// of the year's return as the premiums do. ISK tax and fee are taken on the
+// capital at the start of the year.
+export function simuleraPrivat(p, alder, manadsbelopp) {
+  const pensionsalder = p.pensionsalder.varde;
+  const produkt = p.produkter.privatIsk;
+  const ra = p.realAvkastningAktier.varde;
+  const rr = p.realAvkastningRantor.varde;
+  const insattning = 12 * manadsbelopp;
+
+  let kapital = 0;
+  const ar = [];
+  for (let a = alder; a < pensionsalder; a++) {
+    const andelAktier = aktieandel(produkt, a, pensionsalder);
+    const avkastning = andelAktier * ra + (1 - andelAktier) * rr;
+    const k = kapital;
+    const avgift = arligAvgift(produkt, k, andelAktier);
+    const skatt = p.iskSkatt.varde * k;
+    kapital = k * (1 + avkastning) + insattning * (1 + avkastning * p.avkastningsandelArsPremie.varde)
+      - avgift - skatt;
+    ar.push({
+      alder: a, arslon: null, ibb: null, premie: insattning,
+      potter: [{
+        namn: "eget sparande", produkt: "privatIsk", andelAktier, avkastning,
+        startkapital: k, premie: insattning, avgift, skatt, slutkapital: kapital,
+      }],
+    });
+  }
+  return { slutkapital: kapital, ar };
+}
+
 // How much the user would have to save on their own each month, from now to
 // the pension age, to get the same as a gain in pension capital. The pension
 // is taxed when paid out and the private saving is not, so the comparison is
 // made after that tax. The private saving pays ISK tax instead of the yield
 // tax on pensions. Null when there are no years left.
 export function privatSparandePerManad(p, alder, vinstKr) {
-  const pensionsalder = p.pensionsalder.varde;
-  if (alder >= pensionsalder || vinstKr <= 0) return vinstKr <= 0 ? 0 : null;
-  const produkt = p.produkter.privatIsk;
-  const ra = p.realAvkastningAktier.varde;
-  const rr = p.realAvkastningRantor.varde;
-
-  // Capital at pension from saving 1 kr a month. Fees and tax are
-  // proportional to the capital, so the result scales with the amount.
-  let kapital = 0;
-  for (let a = alder; a < pensionsalder; a++) {
-    const andelAktier = aktieandel(produkt, a, pensionsalder);
-    const avkastning = andelAktier * ra + (1 - andelAktier) * rr;
-    const avgift = arligAvgift(produkt, kapital, andelAktier);
-    const skatt = p.iskSkatt.varde * kapital;
-    kapital = kapital * (1 + avkastning) + 12 * (1 + avkastning * p.avkastningsandelArsPremie.varde)
-      - avgift - skatt;
-  }
-  return vinstKr * (1 - p.skattPaPension.varde) / kapital;
+  if (alder >= p.pensionsalder.varde || vinstKr <= 0) return vinstKr <= 0 ? 0 : null;
+  // Fees and tax are proportional to the capital, so the capital from
+  // 1 kr a month scales with the amount.
+  return vinstKr * (1 - p.skattPaPension.varde) / simuleraPrivat(p, alder, 1).slutkapital;
 }
 
 // Builds the four scenarios from the user's capital. indata.kapital has
@@ -196,11 +215,15 @@ export function berakna(p, indata) {
   // moved today, and moving everything if the rule were dropped.
   const privatFlytt = privatSparandePerManad(p, indata.alder, vinstFlytt);
   const privatUtanRegeln = privatSparandePerManad(p, indata.alder, vinstFlytt + kostnadRegeln);
+  // The same saving year by year, for the CSV.
+  const privatAr = {};
+  if (privatFlytt) privatAr.egetSparandeFlytt = simuleraPrivat(p, indata.alder, privatFlytt);
+  if (privatUtanRegeln) privatAr.egetSparandeUtanRegeln = simuleraPrivat(p, indata.alder, privatUtanRegeln);
 
   return {
     scenarier: utfall,
     vinstFlytt, kostnadRegeln, redanUppnatt, kvarAttHamta,
-    privatFlytt, privatUtanRegeln,
+    privatFlytt, privatUtanRegeln, privatAr,
     andelUppnadd, trafikljus,
     aldersvarning: indata.alder >= p.aldersvarningFran.varde,
   };

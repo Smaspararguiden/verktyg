@@ -48,7 +48,9 @@ nuvarande), räknar vart och ett år för år och returnerar slutkapital, tabell
 år för år och de härledda resultaten (vinst, kostnad för regeln, redan
 uppnått, trafikljus). Den räknar också om vinsterna till eget sparande per
 månad med `privatSparandePerManad()`: vad användaren skulle behöva spara på
-ISK varje månad fram till pensionsåldern för samma pension efter skatt.
+ISK varje månad fram till pensionsåldern för samma pension efter skatt. Det
+egna sparandet räknas år för år i `simuleraPrivat()`, och `berakna()` returnerar
+de åren också (`privatAr`), så att de syns i CSV-filen.
 
 Ett scenario är en lista av potter med produkt, startkapital och andel av
 premien. Produkterna (Alecta trad och entrélösningen) beskrivs helt i
@@ -59,7 +61,8 @@ Tester: `itp/berakning.test.js`, körs med `node --test`.
 Visningen är `visning.js` och `stil.css`. `visning.js` ritar formuläret i
 sidans `.sg-itp`-element, läser det, anropar `berakna()` vid varje ändring och ritar resultatet. Den
 har inga egna siffror. "Så har vi räknat" ritas direkt från parameterfilen,
-och knappen "Ladda ner år för år" ger tabellen från `berakna()` som CSV
+och knappen "Ladda ner år för år" ger tabellen från `berakna()`, med det
+egna sparandet efter scenarierna, som CSV
 (semikolon och decimalkomma, för svenska Excel och Sheets). Inget lämnar
 webbläsaren.
 

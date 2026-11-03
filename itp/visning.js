@@ -298,14 +298,17 @@ function visaResultat(indata, r) {
   resultat.querySelector(".ladda-ner").addEventListener("click", laddaNerCsv);
 }
 
-// Year-by-year table for every scenario and pot, for checking by hand.
-// Semicolons and decimal commas so Swedish Excel and Sheets read it directly.
+// Year-by-year table for every scenario and pot, for checking by hand, and
+// the private saving that matches each gain; its last slutkapital is the
+// gain after tax on the pension. Semicolons and decimal commas so Swedish
+// Excel and Sheets read it directly.
 function laddaNerCsv() {
   if (!senaste) return;
-  const tal = (x) => String(Math.round(x * 100) / 100).replace(".", ",");
+  const tal = (x) => (x === null ? "" : String(Math.round(x * 100) / 100).replace(".", ","));
   const rader = [["scenario", "ålder", "årslön", "ibb", "pott", "produkt", "aktieandel",
     "avkastning", "startkapital", "premie", "avgift", "skatt", "slutkapital"]];
-  for (const [scenario, { ar }] of Object.entries(senaste.r.scenarier)) {
+  const alla = { ...senaste.r.scenarier, ...senaste.r.privatAr };
+  for (const [scenario, { ar }] of Object.entries(alla)) {
     for (const rad of ar) {
       for (const pott of rad.potter) {
         rader.push([scenario, rad.alder, tal(rad.arslon), tal(rad.ibb), pott.namn, pott.produkt,
