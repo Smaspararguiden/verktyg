@@ -104,6 +104,8 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
         Alecta 70 % aktier, entrélösningen 100 % aktier och 0,12 %, ingen
         avkastning på årets premier). Efter 59 år skiljer Alectas avgiftstak,
         som kalkylarket saknar (Andreas, 2026-10-31).
+  - [x] Startkapital utan premier stämmer: 100 000 kr i trad, och 100 000 kr
+        i trad plus 100 000 kr i fond (Andreas, 2026-11-03).
   - [ ] Eget sparande per månad är inte jämfört.
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
