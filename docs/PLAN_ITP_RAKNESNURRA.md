@@ -95,6 +95,16 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
     ger samma resultat i alla scenarier, 100 000 kr med 6 % i 34 år ger cirka
     725 000 kr)
 - [ ] Jämför med det befintliga kalkylarket där det täcker samma fall.
+  - [x] Premien stämmer med kalkylarket (Andreas, 2026-10-31).
+  - [x] Avgift och skatt år 1 stämmer, i avrundade värden, med kalkylarket
+        när det också räknar Alectas kapitalförvaltningskostnad på 0,03 %
+        (Andreas, 2026-10-31).
+  - [x] Hela förloppet till pension stämmer för noll startkapital och lön
+        över brytpunkten, med testvärdena (ingen real löne- och IBB-ökning,
+        Alecta 70 % aktier, entrélösningen 100 % aktier och 0,12 %, ingen
+        avkastning på årets premier). Efter 59 år skiljer Alectas avgiftstak,
+        som kalkylarket saknar (Andreas, 2026-10-31).
+  - [ ] Eget sparande per månad är inte jämfört.
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
 
@@ -132,3 +142,8 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
 5. ~~Ska användaren dela upp traditionell försäkring i obligatorisk och
    valbar del?~~ Nej, avtalat.se visar inte delarna. Se `DECISIONS.md` 11.
+6. **Alectas aktieandel.** Ska diskuteras. Andreas tror att vi ska börja på
+   70 % när vi räknar in Alectas alternativa investeringar till viss del.
+   I dag 60 % till 63 år, från en andrahandskälla.
+7. **Vilken avgift vi räknar på för entrélösningen.** Dubbelkolla om
+   0,08–0,06 % är den totala avgiften eller bara förvaltningsavgiften.
