@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { parametrar } from "./parametrar.js";
 import {
   aktieandel, arligAvgift, arsPremie, berakna, delaUppKapital, privatSparandePerManad,
+  simuleraPrivat,
 } from "./berakning.js";
 
 // Deep copy of the parameters, so each test can change values freely.
@@ -237,6 +238,28 @@ test("berakna ger eget sparande för flytten och för att slippa regeln", () => 
   const r = berakna(kopia(), { alder: 35, manadslon: 45000, kapital: passiv });
   assert.ok(r.privatFlytt > 0);
   assert.ok(r.privatUtanRegeln > r.privatFlytt);
+});
+
+test("eget sparande år för år slutar i vinsten efter skatt på pensionen", () => {
+  const p = kopia();
+  const r = berakna(p, { alder: 35, manadslon: 45000, kapital: passiv });
+  const efterSkatt = (vinst) => vinst * (1 - p.skattPaPension.varde);
+  const flytt = r.privatAr.egetSparandeFlytt;
+  narall(flytt.slutkapital, efterSkatt(r.vinstFlytt), 1e-6);
+  narall(r.privatAr.egetSparandeUtanRegeln.slutkapital,
+    efterSkatt(r.vinstFlytt + r.kostnadRegeln), 1e-6);
+  // One row a year from today's age, each depositing twelve monthly amounts.
+  assert.equal(flytt.ar.length, p.pensionsalder.varde - 35);
+  assert.equal(flytt.ar[0].alder, 35);
+  narall(flytt.ar[0].potter[0].premie, 12 * r.privatFlytt, 1e-9);
+});
+
+test("eget sparande: utan vinst finns inga år att visa", () => {
+  const ingenting = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const r = berakna(kopia(), { alder: 40, manadslon: 0, kapital: ingenting });
+  assert.equal(r.vinstFlytt, 0);
+  assert.deepEqual(r.privatAr, {});
+  assert.equal(simuleraPrivat(kopia(), 40, 0).slutkapital, 0);
 });
 
 test("utan sparat kapital räknas bara de kommande premierna", () => {
