@@ -31,12 +31,12 @@ rot.innerHTML = `
         </p>
         <label class="kryss">
           <input type="checkbox" name="sakerItp1">
-          Ja, jag har ITP1
+          Ja, jag har ITP1 nu eller har haft det tidigare
         </label>
       </div>
       <label class="kryss">
         <input type="checkbox" name="anstalld" checked>
-        Jag har ITP1 i min nuvarande anställning
+        Jag får inbetalningar till ITP1 i mitt nuvarande jobb
       </label>
       <p class="hjalp" data-ej-anstalld hidden>
         Vi räknar bara på det kapital du har i dag, utan nya inbetalningar.
