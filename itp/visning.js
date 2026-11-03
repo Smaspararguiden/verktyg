@@ -21,6 +21,19 @@ rot.innerHTML = `
       <label>Födelseår
         <input name="fodelsear" inputmode="numeric" placeholder="t.ex. 1990">
       </label>
+      <div data-fore-itp1 hidden>
+        <p class="meddelande varning">
+          De flesta som är födda år ${ITP1_FRAN_FODELSEAR - 1} eller tidigare har
+          ITP2, som den här räknesnurran inte räknar på. Det finns vissa
+          arbetsplatser som har ITP1 för alla oavsett ålder, men det är ganska
+          ovanligt. Tror du att du jobbar eller har jobbat på en sådan? Kryssa i
+          rutan här under så räknar vi ändå.
+        </p>
+        <label class="kryss">
+          <input type="checkbox" name="sakerItp1">
+          Ja, jag har ITP1
+        </label>
+      </div>
       <label class="kryss">
         <input type="checkbox" name="anstalld" checked>
         Jag har ITP1 i min nuvarande anställning
@@ -194,12 +207,10 @@ function uppdatera() {
     meddelande("Utan lön och utan sparat kapital finns det inget att räkna på.");
     return;
   }
-  if (fodelsear < ITP1_FRAN_FODELSEAR) {
-    meddelande(
-      `Är du född före ${ITP1_FRAN_FODELSEAR} har du troligen ITP2, som den här
-       räknesnurran inte räknar på.`,
-      "varning",
-    );
+  // Most people born before this year have ITP2, but some have ITP1, so we
+  // ask instead of stopping.
+  if (fodelsear < ITP1_FRAN_FODELSEAR && !form.elements.sakerItp1.checked) {
+    meddelande("Läs frågan under födelseåret. Kryssa i rutan där om du har ITP1, så räknar vi.");
     return;
   }
   const alder = new Date().getFullYear() - fodelsear;
@@ -399,6 +410,9 @@ function visaLage() {
   for (const el of form.querySelectorAll("[data-lage]")) el.hidden = el.dataset.lage !== lage;
   const anstalld = form.elements.anstalld.checked;
   for (const el of form.querySelectorAll("[data-anstalld]")) el.hidden = !anstalld;
+  const fodelsear = tal("fodelsear");
+  const foreItp1 = fodelsear !== null && fodelsear < ITP1_FRAN_FODELSEAR;
+  for (const el of form.querySelectorAll("[data-fore-itp1]")) el.hidden = !foreItp1;
   for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = anstalld;
 }
 

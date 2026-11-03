@@ -129,7 +129,25 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [ ] Andreas bestämmer skatten på pensionen i jämförelsen (30 % är
       platshållare).
 - [ ] Pension per månad.
-- [ ] Call to action: guide för flytt, donation, mejl till fackförbundet.
+- [ ] Call to action, guide för att flytta: i steg 1 en länk till
+      https://www.smaspararguiden.se/blogg/vad-skall-jag-valja-inom-itp-itp1-och-itp2/.
+      Senare en egen sida om hur man byter på avtalat.se, som även andra
+      sidor kan länka till.
+- [ ] Call to action, donation: Octany finns redan på sajten (målwidget,
+      Swish-widget och flöde på kampanjsidan, insamlingssida
+      smaspararguiden.octany.site/itp-kampanjen). Snyggast om man kan
+      donera utan att lämna sidan. Två vägar, som vi väljer mellan senare:
+      lägga Octanys widgetar i WordPress direkt under kortkoden (ingen kod
+      från oss), eller låta snurran visa Swish-widgeten under resultatet med
+      en text som knyter an till användarens siffror (widgetens id i
+      kortkoden). Widgetarna laddas från Octany i besökarens webbläsare, som
+      på resten av sajten.
+- [ ] Call to action, mejla fackförbundet: förslag på mejltext med hur mycket
+      pension användaren förlorar och adress till rätt fackrepresentant. Minst
+      delar ligger hos oss, eftersom siffrorna bara finns i webbläsaren.
+      Andreas funderar på hur det ska se ut och fungera.
+- [ ] Kanske: fackförbund som valfri uppgift. Ett alternativ är att fråga
+      först när användaren ska mejla och det verkligen behövs.
 - [ ] Lista över fackförbund och mejladresser, kanske som en publik sida.
 - [ ] Text om begränsningar (troligen i WordPress).
 - [ ] Mätning av antal användare och resultat.
