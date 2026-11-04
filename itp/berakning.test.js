@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 
 import { parametrar } from "./parametrar.js";
 import {
-  aktieandel, arligAvgift, arsPremie, berakna, delaUppKapital, privatSparandePerManad,
+  aktieandel, arligAvgift, arsPremie, berakna, collectumAvgift, delaUppKapital,
+  privatSparandePerManad,
   simuleraPrivat,
 } from "./berakning.js";
 
@@ -15,6 +16,7 @@ function utanAvkastningAvgiftSkatt(p) {
   p.realAvkastningAktier.varde = 0;
   p.realAvkastningRantor.varde = 0;
   p.avkastningsskattPension.varde = 0;
+  p.collectumAvgift.varde = 0;
   for (const produkt of Object.values(p.produkter)) {
     Object.assign(produkt.avgift, {
       procentAktiedel: 0, procentRantedel: 0, fastKr: 0, takKr: null, golvKr: null, procentUtanTak: 0,
@@ -31,9 +33,11 @@ const passiv = { obligatoriskTrad: 100000, flyttbarTrad: 100000, flyttbarFond: 0
 test("aktieandel per ålder interpoleras och är platt utanför punkterna", () => {
   const alecta = parametrar.produkter.alectaTrad;
   assert.equal(aktieandel(alecta, 30, 68), 0.70);
-  narall(aktieandel(alecta, 62.5, 68), 0.60, 1e-9);
-  assert.equal(aktieandel(alecta, 64, 68), 0.50);
-  assert.equal(aktieandel(alecta, 67, 68), 0.40);
+  narall(aktieandel(alecta, 62.5, 68), 0.65, 1e-9);
+  assert.equal(aktieandel(alecta, 63, 68), 0.60);
+  assert.equal(aktieandel(alecta, 64, 68), 0.60);
+  assert.equal(aktieandel(alecta, 66, 68), 0.50);
+  assert.equal(aktieandel(alecta, 67, 68), 0.50);
 });
 
 test("entrélösningens nedtrappning följer pensionsåldern", () => {
@@ -84,6 +88,38 @@ test("premier betalas varje år från nuvarande ålder till pensionsåldern", ()
   assert.equal(ar[0].alder, 40);
   assert.equal(ar.at(-1).alder, p.pensionsalder.varde - 1);
   assert.ok(ar.every((rad) => rad.premie > 0));
+});
+
+test("Collectums avgift är 0,55 % av premien och högst 450 kr per år", () => {
+  narall(collectumAvgift(parametrar, 20000), 110);
+  assert.equal(collectumAvgift(parametrar, 100000), 450);
+  assert.equal(collectumAvgift(parametrar, 0), 0);
+});
+
+test("Collectums avgift dras från premien innan den når potterna", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  p.collectumAvgift.varde = 0.0055;
+  const kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const r = berakna(p, { alder: 40, manadslon: 40000, kapital });
+  for (const s of Object.values(r.scenarier)) {
+    const rad = s.ar[0];
+    const inbetalt = rad.potter.reduce((summa, x) => summa + x.slutkapital, 0);
+    narall(inbetalt, rad.premie - collectumAvgift(p, rad.premie), 1e-6);
+  }
+});
+
+test("hög premie slår i Collectums tak, delat mellan potterna", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  p.collectumAvgift.varde = 0.0055;
+  const kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const rad = berakna(p, { alder: 40, manadslon: 150000, kapital }).scenarier.alltTrad.ar[0];
+  narall(rad.potter.reduce((summa, x) => summa + x.collectum, 0), 450, 1e-6);
+});
+
+test("eget sparande betalar ingen avgift till Collectum", () => {
+  const { ar } = simuleraPrivat(parametrar, 40, 1000);
+  assert.ok(ar.every((rad) => rad.potter[0].collectum === 0));
+  narall(ar[0].potter[0].premie, 12000, 1e-9);
 });
 
 test("utan lön kommer inga premier, men kapitalet växer", () => {
