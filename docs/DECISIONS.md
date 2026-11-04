@@ -204,6 +204,6 @@ cirka 0,09 % som motsvarar en fonds årliga avgift, och den redovisade
 avkastningen kan redan vara räknad efter de externa kostnaderna. Skillnaden är
 inte avgörande för resultatet.
 
-För entrélösningen visar jämförelsetabellen för ITP 0,07–0,06 % i årlig avgift
+För entrélösningen visar avtalat.se 0,07–0,06 % i årlig avgift
 (2026-11-04), och den totala avgiften ligger ofta en baspunkt högre. Det
 stämmer med 0,08 % när allt ligger i aktier.
