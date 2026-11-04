@@ -171,3 +171,25 @@ ett antagande som inte är bestämt.
 Ett tredje val, "Vi struntar i sparat kapital", räknar bara på premierna från
 och med nu, utifrån lönen. Den som inte vill eller kan ta reda på sitt kapital
 får ändå ett svar.
+
+## 15. Alecta räknas med 70 % aktier (2026-11-04)
+
+Alecta räknas med 70 % aktier till 63 år, 60 % från 63 och 50 % från 66.
+
+Alecta anger 60, 50 och 40 % aktier (faktablad 6187, från 15 mars 2026), men
+har också 20 % alternativa tillgångar i alla tre inriktningarna: fastigheter,
+alternativa krediter, infrastruktur och onoterat. De ligger mellan aktier och
+räntor i avkastning. Under 2021–2025 gav de 5,0 % per år, mot 11,5 % för
+aktierna och −0,4 % för räntorna i Alecta Optimal Pension, alltså knappt
+halvvägs. Hälften av de alternativa räknas därför som aktier, vilket ger 10
+procentenheter extra i varje steg.
+
+## 16. Collectums avgift dras från premien (2026-11-04)
+
+Modellen drar Collectums avgift, 0,55 % av premien och högst 450 kr per år,
+innan premien fördelas på potterna. Den är inte en avgift på kapitalet och
+det egna sparandet slipper den, så den hör hemma i jämförelsen med eget
+sparande.
+
+Taket hålls fast i dagens penningvärde, som Alectas avgiftstak. Det räknas på
+hela premien, eftersom Collectum anger det per år och anställning.

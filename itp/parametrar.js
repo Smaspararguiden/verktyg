@@ -62,6 +62,20 @@ export const parametrar = {
     beskrivning: "Den del av varje premie som måste gå till traditionell försäkring",
     kalla: "ITP1-avtalet",
   },
+  collectumAvgift: {
+    // Taken off the premium before it reaches the insurer, so it is the same
+    // whichever product the premium goes to.
+    varde: 0.0055,
+    enhet: "andel av premien",
+    beskrivning: "Collectums avgift, som dras från premien innan den betalas in till försäkringsbolaget",
+    kalla: "Collectum, Så beräknas Collectums avgift på ITP-premier (2026); Alecta, faktablad 6187",
+  },
+  collectumAvgiftTak: {
+    varde: 450,
+    enhet: "kr/år",
+    beskrivning: "Högsta avgift till Collectum per år och anställning",
+    kalla: "Collectum, Så beräknas Collectums avgift på ITP-premier (2026); Alecta, faktablad 6187",
+  },
 
   // --- Salary growth ------------------------------------------------------
   realLoneokning: {
@@ -169,10 +183,11 @@ export const parametrar = {
     alectaTrad: {
       namn: "Alecta traditionell försäkring",
       aktieandel: {
-        // 60 % until 63, 50 % from 63 to 66, 40 % after 66.
+        // Alecta's 60, 50 and 40 % plus half of the 20 % alternative assets:
+        // 70 % until 63, 60 % from 63 to 66, 50 % from 66.
         typ: "perAlder",
-        punkter: [[62, 0.60], [63, 0.50], [65, 0.50], [66, 0.40]],
-        kalla: "Andrahandskälla (minkapital.se, 2026). VERIFIERA mot Alecta",
+        punkter: [[62, 0.70], [63, 0.60], [65, 0.60], [66, 0.50]],
+        kalla: "Alecta, faktablad 6187 (från 15 mars 2026): 60 % aktier till 63 år, 50 % från 63 och 40 % senast vid 66, med 20 % alternativa tillgångar i alla tre. Hälften av de alternativa räknas som aktier (Småspararguiden)",
       },
       avgift: {
         // Alecta charges the same rate whatever the mix, so both parts are

@@ -334,15 +334,16 @@ function laddaNerCsv() {
   if (!senaste) return;
   const tal = (x) => (x === null ? "" : String(Math.round(x * 100) / 100).replace(".", ","));
   const rader = [["scenario", "ålder", "årslön", "ibb", "pott", "produkt", "aktieandel",
-    "avkastning", "startkapital", "premie", "avgift", "skatt", "slutkapital"]];
+    "avkastning", "startkapital", "collectumavgift", "premie efter collectum", "avgift", "skatt",
+    "slutkapital"]];
   const alla = { ...senaste.r.scenarier, ...senaste.r.privatAr };
   for (const [scenario, { ar }] of Object.entries(alla)) {
     for (const rad of ar) {
       for (const pott of rad.potter) {
         rader.push([scenario, rad.alder, tal(rad.arslon), tal(rad.ibb), pott.namn, pott.produkt,
           tal(pott.andelAktier * 100) + " %", tal(pott.avkastning * 100) + " %",
-          tal(pott.startkapital), tal(pott.premie), tal(pott.avgift), tal(pott.skatt),
-          tal(pott.slutkapital)]);
+          tal(pott.startkapital), tal(pott.collectum), tal(pott.premie), tal(pott.avgift),
+          tal(pott.skatt), tal(pott.slutkapital)]);
       }
     }
   }

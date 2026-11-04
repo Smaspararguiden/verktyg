@@ -55,6 +55,11 @@ export function arsPremie(p, arslon, ibb) {
   return p.premieUnderBrytpunkt.varde * under + p.premieOverBrytpunkt.varde * over;
 }
 
+// Collectum's fee in kronor on a year's premium.
+export function collectumAvgift(p, premie) {
+  return Math.min(p.collectumAvgiftTak.varde, p.collectumAvgift.varde * premie);
+}
+
 // Runs one scenario. A scenario is a list of pots ("potter"), each with a
 // product, a starting capital and the share of each year's premium that goes
 // into it. Returns the final capital and a year-by-year table.
@@ -72,6 +77,7 @@ export function simuleraScenario(p, indata, potter) {
 
   for (let alder = indata.alder; alder < pensionsalder; alder++) {
     const premie = alder >= p.premieStartalder.varde ? arsPremie(p, arslon, ibb) : 0;
+    const avgiftCollectum = collectumAvgift(p, premie);
     const rad = { alder, arslon, ibb, premie, potter: [] };
 
     potter.forEach((pott, i) => {
@@ -81,13 +87,16 @@ export function simuleraScenario(p, indata, potter) {
       const k = kapital[i];
       const avgift = arligAvgift(produkt, k, andelAktier);
       const skattKr = skatt * k;
-      const pottPremie = premie * pott.premieandel;
+      // Collectum takes its fee before the premium reaches the pots.
+      const pottCollectum = avgiftCollectum * pott.premieandel;
+      const pottPremie = premie * pott.premieandel - pottCollectum;
       // Premiums arrive during the year, so they earn only part of the
       // year's return.
       kapital[i] = k * (1 + avkastning) + pottPremie * (1 + avkastning * delAr) - avgift - skattKr;
       rad.potter.push({
         namn: pott.namn, produkt: pott.produkt, andelAktier, avkastning,
-        startkapital: k, premie: pottPremie, avgift, skatt: skattKr, slutkapital: kapital[i],
+        startkapital: k, collectum: pottCollectum, premie: pottPremie, avgift, skatt: skattKr,
+        slutkapital: kapital[i],
       });
     });
 
@@ -136,7 +145,7 @@ export function simuleraPrivat(p, alder, manadsbelopp) {
       alder: a, arslon: null, ibb: null, premie: insattning,
       potter: [{
         namn: "eget sparande", produkt: "privatIsk", andelAktier, avkastning,
-        startkapital: k, premie: insattning, avgift, skatt, slutkapital: kapital,
+        startkapital: k, collectum: 0, premie: insattning, avgift, skatt, slutkapital: kapital,
       }],
     });
   }
