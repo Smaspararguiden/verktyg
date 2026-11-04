@@ -73,6 +73,7 @@ test("premien är 4,5 % under brytpunkten, 30 % över och inget över taket", ()
 test("utan avkastning, avgift och skatt blir kapitalet startkapital plus premier", () => {
   const p = utanAvkastningAvgiftSkatt(kopia());
   p.realLoneokning.varde = 0;
+  p.karriarPaslag.varde = 0;
   p.realIbbOkning.varde = 0;
   const r = berakna(p, { alder: 40, manadslon: 40000, kapital: passiv });
   const ar = p.pensionsalder.varde - 40;
@@ -120,6 +121,24 @@ test("eget sparande betalar ingen avgift till Collectum", () => {
   const { ar } = simuleraPrivat(parametrar, 40, 1000);
   assert.ok(ar.every((rad) => rad.potter[0].collectum === 0));
   narall(ar[0].potter[0].premie, 12000, 1e-9);
+});
+
+test("lönen får karriärpåslaget till 50 år, sedan bara den allmänna ökningen", () => {
+  const ar = berakna(kopia(), { alder: 48, manadslon: 40000, kapital: passiv }).scenarier.alltTrad.ar;
+  narall(ar[1].arslon / ar[0].arslon, 1.025, 1e-9);
+  narall(ar[2].arslon / ar[1].arslon, 1.025, 1e-9);
+  narall(ar[3].arslon / ar[2].arslon, 1.015, 1e-9);
+});
+
+test("inkomstbasbeloppet får inget karriärpåslag", () => {
+  const ar = berakna(kopia(), { alder: 30, manadslon: 40000, kapital: passiv }).scenarier.alltTrad.ar;
+  narall(ar[1].ibb / ar[0].ibb, 1.015, 1e-9);
+});
+
+test("karriärpåslaget för lönen över brytpunkten med tiden", () => {
+  const ar = berakna(kopia(), { alder: 25, manadslon: 45000, kapital: passiv }).scenarier.alltTrad.ar;
+  assert.ok(ar[0].arslon < 7.5 * ar[0].ibb);
+  assert.ok(ar.find((rad) => rad.alder === 50).arslon > 7.5 * ar.find((rad) => rad.alder === 50).ibb);
 });
 
 test("utan lön kommer inga premier, men kapitalet växer", () => {

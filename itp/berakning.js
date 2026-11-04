@@ -101,7 +101,8 @@ export function simuleraScenario(p, indata, potter) {
     });
 
     ar.push(rad);
-    arslon *= 1 + p.realLoneokning.varde;
+    const karriar = alder < p.karriarTillAlder.varde ? p.karriarPaslag.varde : 0;
+    arslon *= 1 + p.realLoneokning.varde + karriar;
     ibb *= 1 + p.realIbbOkning.varde;
   }
 
