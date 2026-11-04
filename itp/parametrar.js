@@ -169,10 +169,10 @@ export const parametrar = {
     alectaTrad: {
       namn: "Alecta traditionell försäkring",
       aktieandel: {
-        // 60 % until 63, 50 % from 63 to 66, 40 % after 66.
+        // 70 % until 63, 50 % from 63 to 66, 40 % after 66.
         typ: "perAlder",
-        punkter: [[62, 0.60], [63, 0.50], [65, 0.50], [66, 0.40]],
-        kalla: "Andrahandskälla (minkapital.se, 2026). VERIFIERA mot Alecta",
+        punkter: [[62, 0.70], [63, 0.50], [65, 0.50], [66, 0.40]],
+        kalla: "Antagande (Småspararguiden), 70 % med Alectas alternativa investeringar delvis inräknade. Nedtrappningen från andrahandskälla (minkapital.se, 2026). VERIFIERA mot Alecta",
       },
       avgift: {
         // Alecta charges the same rate whatever the mix, so both parts are

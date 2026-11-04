@@ -30,8 +30,8 @@ const passiv = { obligatoriskTrad: 100000, flyttbarTrad: 100000, flyttbarFond: 0
 
 test("aktieandel per ålder interpoleras och är platt utanför punkterna", () => {
   const alecta = parametrar.produkter.alectaTrad;
-  assert.equal(aktieandel(alecta, 30, 68), 0.60);
-  narall(aktieandel(alecta, 62.5, 68), 0.55, 1e-9);
+  assert.equal(aktieandel(alecta, 30, 68), 0.70);
+  narall(aktieandel(alecta, 62.5, 68), 0.60, 1e-9);
   assert.equal(aktieandel(alecta, 64, 68), 0.50);
   assert.equal(aktieandel(alecta, 67, 68), 0.40);
 });

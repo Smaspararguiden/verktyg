@@ -171,3 +171,10 @@ ett antagande som inte är bestämt.
 Ett tredje val, "Vi struntar i sparat kapital", räknar bara på premierna från
 och med nu, utifrån lönen. Den som inte vill eller kan ta reda på sitt kapital
 får ändå ett svar.
+
+## 15. Alecta räknas med 70 % aktier (2026-11-04)
+
+Alecta räknas med 70 % aktier fram till 62 år, i stället för de 60 % som en
+andrahandskälla anger. Alectas alternativa investeringar räknas delvis in som
+aktier. Nedtrappningen därefter är oförändrad: 50 % från 63 år och 40 % från
+66 år.

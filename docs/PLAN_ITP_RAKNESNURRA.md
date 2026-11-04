@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–14).
+Vägvalen hittills står i `DECISIONS.md` (1–15).
 
 ## Modellen
 
@@ -84,7 +84,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [x] Ta reda på hur avtalat.se visar kapital och inbetalningar. Inmatningen
       är ombyggd efter det.
 - [x] Verifiera värdena markerade VERIFIERA i `parametrar.js`. Kvar: Alectas
-      aktieandel per ålder, som bara finns i andrahandskälla.
+      nedtrappning per ålder, som bara finns i andrahandskälla.
 - [x] Andreas sätter antagandena om avkastning (6 % aktier, 1 % räntor).
 - [ ] Andreas sätter antagandet om löneökning (1,5 % är platshållare).
 
@@ -112,9 +112,13 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
   - [x] Eget sparande per månad stämmer: värdet år för år, och trad-potten
         plus eget sparande blir lika med fond-potten efter skatt (Andreas,
         2026-11-04).
-  - [ ] Rimlighetstester, utan kalkylark: Alectas avgiftstak med och utan,
+  - [x] Rimlighetstester, utan kalkylark: Alectas avgiftstak med och utan,
         startkapital med mer än hälften i fond, och de riktiga parametrarna
         (nedtrappningarna, löneökningen och avkastningen på årets premier).
+        Gjorda av Claude, inte kontrollerade mot något annat än modellens egna
+        samband: resultaten går åt rätt håll, inget hopp vid hälften i fond,
+        och vinsten följer lön, premie och ålder. Körda med Alecta på både
+        60 % och 70 % aktier (2026-11-04).
   - [ ] Eventuellt: premier till fond, lön under brytpunkten, lön över taket
         och unga under 25.
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
@@ -172,8 +176,6 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
 5. ~~Ska användaren dela upp traditionell försäkring i obligatorisk och
    valbar del?~~ Nej, avtalat.se visar inte delarna. Se `DECISIONS.md` 11.
-6. **Alectas aktieandel.** Ska diskuteras. Andreas tror att vi ska börja på
-   70 % när vi räknar in Alectas alternativa investeringar till viss del.
-   I dag 60 % till 63 år, från en andrahandskälla.
+6. ~~Alectas aktieandel.~~ 70 % till 62 år, se `DECISIONS.md` 15.
 7. **Vilken avgift vi räknar på för entrélösningen.** Dubbelkolla om
    0,08–0,06 % är den totala avgiften eller bara förvaltningsavgiften.
