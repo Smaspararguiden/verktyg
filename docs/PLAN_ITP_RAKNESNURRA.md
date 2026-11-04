@@ -104,11 +104,19 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
   - [x] Hela förloppet till pension stämmer för noll startkapital och lön
         över brytpunkten, med testvärdena (ingen real löne- och IBB-ökning,
         Alecta 70 % aktier, entrélösningen 100 % aktier och 0,12 %, ingen
-        avkastning på årets premier). Efter 59 år skiljer Alectas avgiftstak,
-        som kalkylarket saknar (Andreas, 2026-10-31).
+        avkastning på årets premier). Kalkylarket saknar Alectas avgiftstak,
+        så med taket skiljer det när en pott passerar 960 000 kr. Utan taket
+        stämmer det hela vägen till 68 (Andreas, 2026-10-31 och 2026-11-04).
   - [x] Startkapital utan premier stämmer: 100 000 kr i trad, och 100 000 kr
         i trad plus 100 000 kr i fond (Andreas, 2026-11-03).
-  - [ ] Eget sparande per månad är inte jämfört.
+  - [x] Eget sparande per månad stämmer: värdet år för år, och trad-potten
+        plus eget sparande blir lika med fond-potten efter skatt (Andreas,
+        2026-11-04).
+  - [ ] Rimlighetstester, utan kalkylark: Alectas avgiftstak med och utan,
+        startkapital med mer än hälften i fond, och de riktiga parametrarna
+        (nedtrappningarna, löneökningen och avkastningen på årets premier).
+  - [ ] Eventuellt: premier till fond, lön under brytpunkten, lön över taket
+        och unga under 25.
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
 
