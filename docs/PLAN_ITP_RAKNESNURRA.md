@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–16).
+Vägvalen hittills står i `DECISIONS.md` (1–17).
 
 ## Modellen
 
@@ -178,10 +178,6 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 5. ~~Ska användaren dela upp traditionell försäkring i obligatorisk och
    valbar del?~~ Nej, avtalat.se visar inte delarna. Se `DECISIONS.md` 11.
 6. ~~Alectas aktieandel.~~ 70, 60 och 50 %, se `DECISIONS.md` 15.
-7. **Vilken avgift vi räknar på för entrélösningen.** Dubbelkolla om
-   0,08–0,06 % är den totala avgiften eller bara förvaltningsavgiften.
-8. **Alectas kapitalförvaltningskostnad: 0,03 % eller mer.** Modellen räknar på
-   0,03 %, som är Alectas interna kostnad. Totalt redovisar koncernen 0,14 %.
-   Med 0,14 % blir vinsten med att flytta cirka 6 % större. Andreas frågar
-   Alecta om vad Alecta Optimal Pension bär och om avkastningen redan är
-   räknad efter kostnaderna.
+7. ~~Vilken avgift vi räknar på för entrélösningen.~~ 0,08 %, se
+   `DECISIONS.md` 17.
+8. ~~Alectas kapitalförvaltningskostnad.~~ 0,03 %, se `DECISIONS.md` 17.
