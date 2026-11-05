@@ -117,6 +117,47 @@ test("hög premie slår i Collectums tak, delat mellan potterna", () => {
   narall(rad.potter.reduce((summa, x) => summa + x.collectum, 0), 450, 1e-6);
 });
 
+test("utan Collectums avgift når hela premien potterna", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  const kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const r = berakna(p, { alder: 40, manadslon: 70000, kapital });
+  for (const s of Object.values(r.scenarier)) {
+    const rad = s.ar[0];
+    narall(rad.potter.reduce((summa, x) => summa + x.slutkapital, 0), rad.premie, 1e-6);
+  }
+});
+
+test("hela premien som avgift, utan tak och utan kapital, ger noll i alla scenarier", () => {
+  const p = kopia();
+  p.collectumAvgift.varde = 1;
+  p.collectumAvgiftTak.varde = Infinity;
+  const kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const r = berakna(p, { alder: 30, manadslon: 70000, kapital });
+  for (const s of Object.values(r.scenarier)) narall(s.slutkapital, 0, 1e-6);
+  narall(r.vinstFlytt, 0, 1e-6);
+  narall(r.kostnadRegeln, 0, 1e-6);
+});
+
+test("hela premien som avgift, utan tak, ger samma som utan lön när det finns kapital", () => {
+  const p = kopia();
+  p.collectumAvgift.varde = 1;
+  p.collectumAvgiftTak.varde = Infinity;
+  const kapital = delaUppKapital(p, 400000, 100000);
+  const r = berakna(p, { alder: 45, manadslon: 70000, kapital });
+  const utanLon = berakna(kopia(), { alder: 45, manadslon: 0, kapital });
+  for (const namn of Object.keys(r.scenarier)) {
+    narall(r.scenarier[namn].slutkapital, utanLon.scenarier[namn].slutkapital, 1e-6);
+  }
+});
+
+test("hela premien som avgift, med taket kvar, drar bara taket", () => {
+  const p = utanAvkastningAvgiftSkatt(kopia());
+  p.collectumAvgift.varde = 1;
+  const kapital = { obligatoriskTrad: 0, flyttbarTrad: 0, flyttbarFond: 0 };
+  const rad = berakna(p, { alder: 40, manadslon: 40000, kapital }).scenarier.alltTrad.ar[0];
+  narall(rad.potter.reduce((summa, x) => summa + x.slutkapital, 0), rad.premie - 450, 1e-6);
+});
+
 test("eget sparande betalar ingen avgift till Collectum", () => {
   const { ar } = simuleraPrivat(parametrar, 40, 1000);
   assert.ok(ar.every((rad) => rad.potter[0].collectum === 0));

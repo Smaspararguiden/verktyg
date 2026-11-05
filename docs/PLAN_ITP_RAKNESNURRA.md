@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–18).
+Vägvalen hittills står i `DECISIONS.md` (1–20).
 
 ## Modellen
 
@@ -97,7 +97,8 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
   - kontrolltester (noll avkastning ger summan av premierna, samma aktieandel
     ger samma resultat i alla scenarier, 100 000 kr med 6 % i 34 år ger cirka
     725 000 kr)
-- [ ] Jämför med det befintliga kalkylarket där det täcker samma fall.
+- [x] Jämför med det befintliga kalkylarket där det täcker samma fall (klart enligt
+      Andreas, 2026-11-05).
   - [x] Premien stämmer med kalkylarket (Andreas, 2026-10-31).
   - [x] Avgift och skatt år 1 stämmer, i avrundade värden, med kalkylarket
         när det också räknar Alectas kapitalförvaltningskostnad på 0,03 %
@@ -121,8 +122,11 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
         och vinsten följer lön, premie och ålder. Körda med Alecta på både
         60 % och 70 % aktier (2026-11-04), före Collectums avgift och med
         nedtrappningen 50 och 40 %.
-  - [ ] Eventuellt: premier till fond, lön under brytpunkten, lön över taket
-        och unga under 25.
+  - [x] Rimlighetstesterna omkörda med dagens parametrar, inklusive Collectums
+        avgift, 70/60/50 % och karriärpåslaget. Avgift 0 % ger samma resultat
+        som koden före avgiften, och hela premien som avgift utan tak ger noll
+        utan kapital. Inte kontrollerade mot något annat än modellens egna
+        samband (Claude, 2026-11-05).
 - [x] Export av tabellen år för år till CSV, för stickprov för hand (knapp
       på sidan).
 
@@ -142,8 +146,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 
 ### Fas 4 – Steg 2
 - [x] Motsvarande eget sparande per månad (`DECISIONS.md` 13).
-- [ ] Andreas bestämmer skatten på pensionen i jämförelsen (30 % är
-      platshållare).
+- [x] Andreas bestämmer skatten på pensionen i jämförelsen, se `DECISIONS.md` 19.
 - [ ] Pension per månad.
 - [ ] Call to action, guide för att flytta: i steg 1 en länk till
       https://www.smaspararguiden.se/blogg/vad-skall-jag-valja-inom-itp-itp1-och-itp2/.
