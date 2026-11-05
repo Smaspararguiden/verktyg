@@ -164,7 +164,7 @@ det delas med allt annat sparande personen har.
 Jämförelsen görs efter skatt. Pensionen beskattas som inkomst när den betalas
 ut, det egna sparandet på ISK gör det inte. Vinsten i pensionskapital räknas
 därför ner med skatten på pensionen innan den jämförs. Skattesatsen, 30 %, är
-ett antagande som inte är bestämt.
+ett antagande som inte är bestämt. Bestämd i 19.
 
 ## 14. Användaren kan strunta i sparat kapital (2026-10-23)
 
@@ -223,3 +223,16 @@ Bland privatanställda tjänstemän 2025 är medellönen 44 900 kr vid 25–34 �
 1,9 och 1,1 % per år upp till toppen och sedan en svag nedgång, därav stoppet
 vid 50. Tvärsnittet visar också skillnader mellan generationer, så påslaget
 hålls försiktigt på 1 procentenhet.
+
+## 19. Skatten på pensionen är 30 % (2026-11-05)
+
+Skatten på pensionen i jämförelsen med eget sparande är 30 %. Andreas har
+bestämt det, och värdet är inte längre en platshållare. Det är ett antagande,
+inte en beräkning av någons faktiska skatt, och det påverkar bara beloppet för
+eget sparande per månad. Kapitalet och vinsten i kronor påverkas inte.
+
+## 20. Trafikljuset och åldersvarningen ligger kvar (2026-11-05)
+
+Andreas har gått igenom gränserna och behåller dem: rött under 10 % av vinsten,
+grönt från 90 %, inget trafikljus när vinsten är under 10 000 kr och
+åldersvarning från 55 år.

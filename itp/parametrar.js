@@ -147,7 +147,7 @@ export const parametrar = {
     varde: 0.30,
     enhet: "andel av utbetalningen",
     beskrivning: "Inkomstskatt på pensionen när den betalas ut. Används för att jämföra med eget sparande, som inte beskattas vid uttag",
-    kalla: "Antagande (Småspararguiden) – att bestämma",
+    kalla: "Antagande (Småspararguiden)",
   },
   iskSkatt: {
     // (Government bond rate 30 Nov 2025, 2.55 %, + 1 percentage point) × 30 %.
