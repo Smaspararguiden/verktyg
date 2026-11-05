@@ -207,3 +207,19 @@ inte avgörande för resultatet.
 För entrélösningen visar avtalat.se 0,07–0,06 % i årlig avgift
 (2026-11-04), och den totala avgiften ligger ofta en baspunkt högre. Det
 stämmer med 0,08 % när allt ligger i aktier.
+
+## 18. Lönen får ett karriärpåslag till 50 år (2026-11-04)
+
+Lönen växer 2,5 % per år till 50 år och sedan 1,5 %. Inkomstbasbeloppet växer
+1,5 % hela vägen.
+
+Inkomstbasbeloppet följer genomsnittet, som hålls nere av att de som lämnar
+arbetsmarknaden tjänar mer än de som kommer in. En enskild person gör också
+karriär. Skillnaden spelar roll eftersom den avgör när lönen passerar
+brytpunkten, där premien går från 4,5 % till 30 %.
+
+Bland privatanställda tjänstemän 2025 är medellönen 44 900 kr vid 25–34 år,
+54 000 kr vid 35–44, 60 100 kr vid 45–54 och 58 800 kr vid 55–64 (SCB). Det är
+1,9 och 1,1 % per år upp till toppen och sedan en svag nedgång, därav stoppet
+vid 50. Tvärsnittet visar också skillnader mellan generationer, så påslaget
+hålls försiktigt på 1 procentenhet.

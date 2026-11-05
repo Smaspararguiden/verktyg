@@ -79,16 +79,29 @@ export const parametrar = {
 
   // --- Salary growth ------------------------------------------------------
   realLoneokning: {
-    // Placeholder until the assumption is settled.
     varde: 0.015,
     enhet: "per år",
-    beskrivning: "Användarens reala löneökning",
+    beskrivning: "Allmän real löneökning, samma som för inkomstbasbeloppet",
     kalla: "Antagande (Småspararguiden)",
   },
+  karriarPaslag: {
+    // On top of the general growth, until karriarTillAlder. This is what moves
+    // the user's salary relative to the income base amount and the break point.
+    varde: 0.01,
+    enhet: "per år",
+    beskrivning: "Extra löneökning för lönekarriären, utöver den allmänna",
+    kalla: "Antagande (Småspararguiden). SCB, lönestrukturstatistik 2025 (privatanställda tjänstemän): medellönen ökar 1,9 och 1,1 % per år mellan åldersgrupperna från 25–34 till 45–54 år",
+  },
+  karriarTillAlder: {
+    varde: 50,
+    enhet: "år",
+    beskrivning: "Lönekarriären ger extra löneökning fram till den här åldern",
+    kalla: "Antagande (Småspararguiden). SCB, lönestrukturstatistik 2025 (privatanställda tjänstemän): medellönen är högst vid 45–54 år och något lägre vid 55–64 år",
+  },
   realIbbOkning: {
-    // Same as the salary growth by default: the user's salary then keeps
-    // its position relative to the break point. Setting it lower makes a
-    // larger part of the salary fall above the break point over time.
+    // Follows the general salary growth: it stands for the average, which
+    // has no career of its own since those who leave work earn more than
+    // those who enter.
     varde: 0.015,
     enhet: "per år",
     beskrivning: "Hur inkomstbasbeloppet, och därmed brytpunkten, växer realt",

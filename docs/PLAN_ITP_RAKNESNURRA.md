@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–17).
+Vägvalen hittills står i `DECISIONS.md` (1–18).
 
 ## Modellen
 
@@ -21,7 +21,8 @@ flesta scenarier (obligatorisk och flyttbar), tre i "nuvarande".
 
 För varje år och pott:
 
-1. **Lön** växer med real löneökning. **IBB** växer med sin egen parameter.
+1. **Lön** växer med real löneökning, plus ett karriärpåslag till 50 år. **IBB**
+   växer med sin egen parameter.
 2. **Premie** (från 25 år till pensionsåldern) = 4,5 % av lönen upp till 7,5 IBB plus 30 % av lönen mellan
    7,5 IBB och lönetaket. Collectums avgift (0,55 %, högst 450 kr per år) dras
    först. Hälften av resten går till varje del.
@@ -86,7 +87,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
       är ombyggd efter det.
 - [x] Verifiera värdena markerade VERIFIERA i `parametrar.js`.
 - [x] Andreas sätter antagandena om avkastning (6 % aktier, 1 % räntor).
-- [ ] Andreas sätter antagandet om löneökning (1,5 % är platshållare).
+- [x] Andreas sätter antagandet om löneökning, se `DECISIONS.md` 18.
 
 ### Fas 2 – Repo och beräkningsmodul
 - [x] Skapa repot och klona det lokalt.
