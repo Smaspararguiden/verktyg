@@ -21,10 +21,12 @@ beräkningsmodulen och läser parameterfilen för "Så har vi räknat".
 
 ## Publicering
 
-Pluginen läggs i `wp-content/plugins/smaspararguiden-verktyg/` på sajten:
-`smaspararguiden-verktyg.php` och verktygens mappar, som de ligger i repot.
-Första gången aktiveras den i WordPress. Därefter skrivs ändrade filer över
-via FTP, och sajtens cache rensas i WordPress.
+Pluginen ligger i `wp-content/plugins/smaspararguiden-verktyg/` på sajten:
+`smaspararguiden-verktyg.php` och de filer som verktygen laddar, för ITP-snurran
+`parametrar.js`, `berakning.js`, `visning.js` och `stil.css`. Första gången
+laddas den upp som en zip-fil via Tillägg i WordPress och aktiveras där. Zip-filen
+har filerna i en mapp som heter `smaspararguiden-verktyg`. Ändrade filer skrivs
+över via FTP, och sajtens cache rensas i WordPress.
 
 Kortkoden ger ett tomt element med klassen `sg-itp` och laddar `visning.js`
 som modul. Stilmallen läggs till av kortkoden, så den laddas bara på sidor
