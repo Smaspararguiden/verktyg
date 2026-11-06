@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–21).
+Vägvalen hittills står i `DECISIONS.md` (1–23).
 
 ## Modellen
 
@@ -151,8 +151,8 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
   - [x] Skarpa sajten på dator: fallet 1988 och 70 000 kr ger samma vinst som i
         testmiljön, 1 056 760 kr (Andreas, 2026-11-06).
   - [ ] Skarpa sajten på mobil.
-  - [ ] Inmatningsfälten ser små ut i temat. Vi väntar in kollegornas
-        synpunkter innan de ändras.
+  - [ ] Fälten och källorna (`DECISIONS.md` 22 och 23) i temat, först i
+        testmiljön och sedan på den skarpa sajten.
 - [ ] Publicera sidan och kontrollera den utifrån på dator och mobil, inklusive
       popups från Hustle.
 - [ ] Lägg in sidan i menyn. Sajtens meny är handplockad, så sidan hamnar inte

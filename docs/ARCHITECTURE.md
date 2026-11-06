@@ -86,9 +86,12 @@ får de två rutor, båda urkryssade: ITP1 i nuvarande anställning (ger nya
 premier) och ITP1 i en tidigare anställning (bara sparat kapital). Med någon
 av dem ikryssad räknar sidan ändå.
 
-Stilarna i `stil.css` gäller bara inuti `.sg-itp`. Rubriker, text, fält,
-knappar och tabeller lämnas åt WordPress-temat. `index.html` är en
+Stilarna i `stil.css` gäller bara inuti `.sg-itp`. Rubriker, text och tabeller
+lämnas åt WordPress-temat. Fält och knappar ärver sidans typsnitt och storlek
+och får lite luft av oss, eftersom temat inte stylar dem. `index.html` är en
 förhandsvisning med samma element och några regler som står i för temat.
+
+I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en knapp.
 
 Förhandsvisningen använder ES-moduler och måste därför visas via en
 webbserver, inte som fil. Lokalt: `python -m http.server` i repots rot och

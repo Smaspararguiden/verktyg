@@ -396,6 +396,17 @@ function visaSumma() {
     : "";
 }
 
+// One row of "Så har vi räknat", with its source in a row of its own that the
+// button opens.
+function parameterRad(etikett, varde, kalla) {
+  return `<tr>
+      <td>${etikett} <button type="button" class="visa-kalla" aria-label="Visa källan"
+        aria-expanded="false">ⓘ</button></td>
+      <td>${varde}</td>
+    </tr>
+    <tr class="kalla" hidden><td colspan="2">${kalla}</td></tr>`;
+}
+
 function visaParametrar() {
   const allmanna = Object.values(p).filter((post) => post && "varde" in post);
   const produkter = Object.values(p.produkter);
@@ -411,16 +422,14 @@ function visaParametrar() {
       försäkring. Har du haft fondförsäkring länge kan den delen vara något
       mindre, och vinsten med att flytta då något större.</p>
     <div class="tabell-rulla"><table>
-      <tr><th>Antagande</th><th>Värde</th><th>Källa</th></tr>
-      ${allmanna.map((post) => `<tr><td>${post.beskrivning}</td>
-        <td>${formateraVarde(post)}</td><td class="kalla">${post.kalla}</td></tr>`).join("")}
+      <tr><th>Antagande</th><th>Värde</th></tr>
+      ${allmanna.map((post) =>
+        parameterRad(post.beskrivning, formateraVarde(post), post.kalla)).join("")}
     </table></div>
     ${produkter.map((prod) => `<h3>${prod.namn}</h3>
       <div class="tabell-rulla"><table>
-        <tr><td>Aktieandel</td><td>${aktieandelText(prod.aktieandel)}</td>
-          <td class="kalla">${prod.aktieandel.kalla}</td></tr>
-        <tr><td>Avgift</td><td>${avgiftText(prod.avgift)}</td>
-          <td class="kalla">${prod.avgift.kalla}</td></tr>
+        ${parameterRad("Aktieandel", aktieandelText(prod.aktieandel), prod.aktieandel.kalla)}
+        ${parameterRad("Avgift", avgiftText(prod.avgift), prod.avgift.kalla)}
       </table></div>`).join("")}`;
 }
 
@@ -453,6 +462,13 @@ forsakringar.addEventListener("click", (e) => {
 // Three rows are enough for most people; more can be added.
 for (let i = 0; i < 3; i++) laggTillRad();
 form.addEventListener("submit", (e) => e.preventDefault());
+rot.querySelector(".parametrar").addEventListener("click", (e) => {
+  const knapp = e.target.closest(".visa-kalla");
+  if (!knapp) return;
+  const kallrad = knapp.closest("tr").nextElementSibling;
+  kallrad.hidden = !kallrad.hidden;
+  knapp.setAttribute("aria-expanded", String(!kallrad.hidden));
+});
 visaLage();
 visaParametrar();
 uppdatera();
