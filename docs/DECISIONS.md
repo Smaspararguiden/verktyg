@@ -262,3 +262,27 @@ Källkolumnen i "Så har vi räknat" tog plats från övrig text, och ingen käl
 en länk. Sajtens webbansvarig föreslog en ikon med tooltip. Varje källa öppnas
 i stället med en knapp, på en egen rad, eftersom en tooltip som visas vid hovring
 inte fungerar på pekskärm.
+
+## 24. Resultaten mäts i Plausible, högst en gång per sidvisning (2026-11-06)
+
+Vi vill veta hur många som får ett resultat och vilka resultat de får, med
+exakta belopp, så att de går att summera. Plausible finns redan på sajten och
+skickar via sajtens egen adress, så besökarens webbläsare behöver inte kontakta
+någon ny tjänst. Apps Script, Zapier och egen lagring valdes bort: de ger
+detaljer per rad, men också en ny mottagare eller mer att drifta.
+
+Det här lämnar webbläsaren: vinst, kostnad för regeln och kvar att hämta i hela
+tusental, de två sparbeloppen i tiotal kronor, trafikljuset, åldersgruppen och
+hur kapitalet angavs. Lön, kapital, fondandel och födelseår skickas inte. De
+behövs inte för siffrorna vi är intresserade av, och Plausibles villkor förbjuder
+personuppgifter i egenskaper. Med exakta resultat går det ibland att ungefärligt
+räkna ut lönen, till exempel för den som inte har något kapital. Vi kan inte
+koppla värdena till en namngiven person, men de kallas inte anonyma på sidan,
+utan sidan säger vad vi sparar.
+
+Resultatet visas vid varje knapptryck och går inte att ändra när det väl är
+skickat. Därför skickas det första gången besökaren lämnar sidan eller fliken,
+med siffrorna just då, och sedan inte mer under sidvisningen. Den som byter flik
+och sedan ändrar siffrorna räknas med de första, och den som laddar om sidan och
+räknar igen räknas en gång till. Att känna igen en återkommande besökare skulle
+kräva något sparat i webbläsaren, och det valdes bort.

@@ -12,6 +12,7 @@ smaspararguiden-verktyg.php   pluginen: en kortkod per verktyg
   parametrar.js   alla antaganden, med beskrivning och källa
   berakning.js    beräkningsmodulen: parametrar + indata -> siffror
   visning.js      visningen: ritar inmatning, resultat och "Så har vi räknat"
+  matning.js      vad som rapporteras till Plausible
   stil.css        stilar för verktygets egna komponenter
   index.html      förhandsvisning utanför WordPress
 ```
@@ -23,7 +24,7 @@ beräkningsmodulen och läser parameterfilen för "Så har vi räknat".
 
 Pluginen ligger i `wp-content/plugins/smaspararguiden-verktyg/` på sajten:
 `smaspararguiden-verktyg.php` och de filer som verktygen laddar, för ITP-snurran
-`parametrar.js`, `berakning.js`, `visning.js` och `stil.css`. Första gången
+`parametrar.js`, `berakning.js`, `visning.js`, `matning.js` och `stil.css`. Första gången
 laddas den upp som en zip-fil via Tillägg i WordPress och aktiveras där. Zip-filen
 har filerna i en mapp som heter `smaspararguiden-verktyg`. Ändrade filer skrivs
 över via FTP, och sajtens cache rensas i WordPress.
@@ -92,6 +93,16 @@ och får lite luft av oss, eftersom temat inte stylar dem. `index.html` är en
 förhandsvisning med samma element och några regler som står i för temat.
 
 I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en knapp.
+
+## Mätning
+
+`matning.js` bestämmer vilka värden som lämnar webbläsaren och testas fristående.
+`visning.js` skickar dem till sajtens Plausible som händelsen `ITP resultat`,
+högst en gång per sidvisning: första gången besökaren lämnar sidan eller fliken
+och det finns ett resultat. Händelsen syns bara om målet finns i Plausible, och
+gamla händelser läggs inte till i efterhand. Plausible verkar inte räkna inloggade
+på sajten, så mätningen provas i ett inkognitofönster. Förhandsvisningen har ingen
+Plausible och skickar inget.
 
 Förhandsvisningen använder ES-moduler och måste därför visas via en
 webbserver, inte som fil. Lokalt: `python -m http.server` i repots rot och

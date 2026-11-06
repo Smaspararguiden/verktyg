@@ -9,6 +9,7 @@
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
+const { MATHANDELSE, matvarden, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -112,6 +113,10 @@ rot.innerHTML = `
 
   <section class="resultat" aria-live="polite"></section>
 
+  <p class="hjalp">Lön, kapital och födelseår stannar i din webbläsare. Vi sparar
+    ditt resultat, till exempel hur mycket du kan vinna, och din åldersgrupp, utan
+    koppling till ditt namn.</p>
+
   <details>
     <summary>Så har vi räknat</summary>
     <div class="parametrar"></div>
@@ -120,8 +125,8 @@ rot.innerHTML = `
 const form = rot.querySelector("form");
 const resultat = rot.querySelector(".resultat");
 
-const kr = (x) => `${(Math.round(x / 1000) * 1000).toLocaleString("sv-SE")} kr`;
-const krManad = (x) => `${(Math.round(x / 10) * 10).toLocaleString("sv-SE")} kr/mån`;
+const kr = (x) => `${tusental(x).toLocaleString("sv-SE")} kr`;
+const krManad = (x) => `${tiotal(x).toLocaleString("sv-SE")} kr/mån`;
 const procent = (x, decimaler = 0) =>
   `${(x * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler })} %`;
 
@@ -448,6 +453,22 @@ function visaLage() {
   const utanPremier = !anstalld && (!fore || form.elements.tidigareItp1.checked);
   for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = !utanPremier;
 }
+
+// Reports the result once per page view, with the figures on the page at that
+// moment. Results appear on every keystroke, so nothing is sent until the
+// visitor leaves the page or the tab. The preview page has no Plausible.
+let rapporterat = false;
+function rapporteraResultat() {
+  if (rapporterat || !senaste || !window.plausible) return;
+  rapporterat = true;
+  window.plausible(MATHANDELSE, {
+    props: matvarden(senaste.r, senaste.indata.alder, form.elements.lage.value),
+  });
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") rapporteraResultat();
+});
+window.addEventListener("pagehide", rapporteraResultat);
 
 form.addEventListener("input", () => { visaLage(); uppdatera(); });
 rot.querySelector(".lagg-till").addEventListener("click", () => {
