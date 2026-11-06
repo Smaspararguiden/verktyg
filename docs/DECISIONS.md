@@ -117,6 +117,8 @@ Alla våra regler gäller bara inuti verktygets element (`.sg-itp`), så de
 når inte resten av sidan. Shadow DOM, som stänger ute temat helt, valdes
 bort: då försvinner också det vi vill ärva.
 
+Delvis ersatt av 22: fält och knappar ärver sidans typsnitt genom vår CSS.
+
 ## 11. Användaren anger trad och fond, vi räknar ut vad som går att flytta (2026-10-22)
 
 Avtalat.se visar kapitalet per bolag och försäkring, och för varje försäkring
@@ -245,3 +247,18 @@ Andreas kan då göra det själv med sin vanliga inloggning, utan FTP-uppgifter.
 Sajtens webbansvarig rådde oss att först prova i testmiljön, sedan installera
 på den skarpa sajten och där testa på en privat sida innan den publiceras. Så
 gjorde vi. Hur senare uppdateringar laddas upp är inte bestämt.
+
+## 22. Fält och knappar ärver sidans typsnitt (2026-11-06)
+
+Temat stylar inte fält och knappar, och webbläsare låter dem inte ärva typsnitt
+av sig själva. På sajten blev fälten därför små och fick webbläsarens typsnitt.
+Vår CSS ger dem `font: inherit` och lite luft. Vi väljer inget eget typsnitt:
+Andreas vill att sajtens tema styr det. Förhandsvisningen har inte längre egna
+regler för fält och knappar, eftersom de dolde felet.
+
+## 23. Källorna öppnas med en knapp (2026-11-06)
+
+Källkolumnen i "Så har vi räknat" tog plats från övrig text, och ingen källa är
+en länk. Sajtens webbansvarig föreslog en ikon med tooltip. Varje källa öppnas
+i stället med en knapp, på en egen rad, eftersom en tooltip som visas vid hovring
+inte fungerar på pekskärm.

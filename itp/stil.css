@@ -2,7 +2,8 @@
    element, so nothing here reaches the rest of the page. Headings, text,
    inputs, buttons and tables are left to the WordPress theme so the tool
    looks like the rest of the site; only the tool's own components (the
-   boxes, key figures, bars and traffic light) are styled here.
+   boxes, key figures, bars and traffic light) are styled here, plus the text
+   and spacing of inputs and buttons, which browsers do not take from the page.
    Colours are taken from smaspararguiden.se. */
 
 .sg-itp {
@@ -53,7 +54,10 @@
   max-width: none;
   box-sizing: border-box;
   margin-top: 4px;
+  padding: 8px 10px;
+  font: inherit;
 }
+.sg-itp button { padding: 8px 12px; font: inherit; cursor: pointer; }
 
 .sg-itp .kryss { display: flex; align-items: center; gap: 8px; }
 .sg-itp .val { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-bottom: 12px; }
@@ -128,4 +132,10 @@
 .sg-itp details { margin-top: 32px; border-top: 1px solid var(--kant); padding-top: 12px; }
 .sg-itp summary { cursor: pointer; font-weight: 700; }
 .sg-itp .tabell-rulla { overflow-x: auto; }
-.sg-itp td.kalla { color: var(--dampad); }
+.sg-itp .visa-kalla {
+  background: none;
+  border: none;
+  color: var(--dampad);
+  padding: 4px 6px;
+}
+.sg-itp tr.kalla td { color: var(--dampad); font-size: 0.9em; }
