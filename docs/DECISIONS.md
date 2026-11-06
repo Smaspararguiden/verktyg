@@ -91,7 +91,8 @@ som redan tar emot besöket. Sajtens webbansvarig rekommenderade samma väg:
 tredje parter kontaktas av servern, aldrig av besökarens webbläsare.
 
 Uppdatering sker för hand: filerna skrivs över via FTP och sajtens cache
-rensas i WordPress. Automatisk uppdatering från GitHub valdes bort på
+rensas i WordPress. Den första installationen gjordes med zip-fil, se 21.
+Automatisk uppdatering från GitHub valdes bort på
 webbansvarigs inrådan. Den kräver kod från tredje part i pluginen och ger
 GitHub en väg in till sajten, samma invändning som i 5. Priset är att en
 merge till `main` inte längre publicerar något på sajten.
@@ -236,3 +237,11 @@ eget sparande per månad. Kapitalet och vinsten i kronor påverkas inte.
 Andreas har gått igenom gränserna och behåller dem: rött under 10 % av vinsten,
 grönt från 90 %, inget trafikljus när vinsten är under 10 000 kr och
 åldersvarning från 55 år.
+
+## 21. Första installationen med zip-fil, testmiljön först (2026-11-06)
+
+Pluginen installerades som zip-fil via Tillägg i WordPress, inte via FTP.
+Andreas kan då göra det själv med sin vanliga inloggning, utan FTP-uppgifter.
+Sajtens webbansvarig rådde oss att först prova i testmiljön, sedan installera
+på den skarpa sajten och där testa på en privat sida innan den publiceras. Så
+gjorde vi. Hur senare uppdateringar laddas upp är inte bestämt.

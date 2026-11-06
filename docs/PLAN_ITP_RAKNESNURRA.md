@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–20).
+Vägvalen hittills står i `DECISIONS.md` (1–21).
 
 ## Modellen
 
@@ -137,12 +137,26 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [x] Sajtens färger (från chattens brand i smaspararboten).
 - [x] Typsnittet Lato, från repot (`itp/typsnitt/`).
 - [x] Publicera på GitHub Pages med `noindex`.
-- [ ] Testa på mobil via länken och låt andra testa.
+- [ ] Kollegorna testar på den privata sidan. En privat sida visas bara för
+      inloggade redaktörer och administratörer, så de behöver ett sådant konto,
+      eller så blir sidan lösenordsskyddad under testet.
 - [x] Bygg WordPress-pluginen med kortkoden `[itp_raknesnurra]`.
-- [ ] Ladda upp pluginen via FTP, aktivera den och lägg kortkoden på en dold
-      sida. Vem som laddar upp: webbansvarig eller Andreas.
+- [x] Installera pluginen, först i testmiljön och sedan på den skarpa sajten,
+      och lägg kortkoden på en privat sida (Andreas, 2026-11-06, se
+      `DECISIONS.md` 21).
 - [ ] Kontrollera snurran i temat, på dator och mobil: fält, knappar,
       rubriker och att temat inte knuffar våra komponenter.
+  - [x] Testmiljön: räknar rätt, CSV-filen stämmer och mobilbredden ser bra ut
+        (Andreas).
+  - [x] Skarpa sajten på dator: fallet 1988 och 70 000 kr ger samma vinst som i
+        testmiljön, 1 056 760 kr (Andreas, 2026-11-06).
+  - [ ] Skarpa sajten på mobil.
+  - [ ] Inmatningsfälten ser små ut i temat. Vi väntar in kollegornas
+        synpunkter innan de ändras.
+- [ ] Publicera sidan och kontrollera den utifrån på dator och mobil, inklusive
+      popups från Hustle.
+- [ ] Lägg in sidan i menyn. Sajtens meny är handplockad, så sidan hamnar inte
+      där av sig själv.
 
 ### Fas 4 – Steg 2
 - [x] Motsvarande eget sparande per månad (`DECISIONS.md` 13).
@@ -185,3 +199,11 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 7. ~~Vilken avgift vi räknar på för entrélösningen.~~ 0,08 %, se
    `DECISIONS.md` 17.
 8. ~~Alectas kapitalförvaltningskostnad.~~ 0,03 %, se `DECISIONS.md` 17.
+9. **Det kritiska felet på den skarpa sajten (2026-11-06).** WordPress visade
+   "Det har uppstått ett kritiskt fel" vid uppladdningen av pluginen eller när
+   sidan skapades, innan pluginen var aktiverad. Pluginens kod hade alltså inte
+   körts. Exakt när felet kom vet vi inte.
+   Felet har inte visat sig igen, och orsaken är okänd. Felmeddelandet finns
+   troligen i mejlet från WordPress eller i serverns felogg.
+10. **Hur uppdateringar laddas upp.** FTP eller zip-fil. Att ladda upp en
+    zip-fil över en installerad plugin är inte provat.

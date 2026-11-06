@@ -3,8 +3,9 @@
 This repo holds tools that Småspararguiden publishes on smaspararguiden.se,
 for example calculators. Each tool runs entirely in the visitor's browser:
 plain JavaScript, no build step. The tools are published as a WordPress plugin
-(`smaspararguiden-verktyg.php`, one shortcode per tool), uploaded by hand over
-FTP. GitHub Pages shows a preview.
+(`smaspararguiden-verktyg.php`, one shortcode per tool), uploaded by hand: a
+zip file through the WordPress admin the first time, then FTP. GitHub Pages
+shows a preview.
 
 Never modify code unless explicitly requested. Prefer discussion over
 implementation.
