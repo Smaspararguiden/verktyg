@@ -184,15 +184,14 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [ ] Lista över fackförbund och mejladresser, kanske som en publik sida.
 - [ ] Text om begränsningar (troligen i WordPress).
 - [ ] Mätning av antal användare och resultat (`DECISIONS.md` 24). Byggd. Kvar:
-      målet `ITP resultat` läggs upp i Plausible innan sidan publiceras, och
-      några testfall i inkognito visar att det kommer fram. Integritetspolicyn
-      behöver täcka det som sparas.
+      några testfall på sajten visar att raderna kommer fram, och
+      integritetspolicyn får en rad om det som sparas.
 
 ## Öppna frågor
 
 1. ~~Hur avtalat.se visar kapital och inbetalningar.~~ Se `DECISIONS.md` 11
    och 12.
-2. ~~Apps Script eller Zapier för att logga resultat.~~ Plausible, se
+2. ~~Apps Script eller Zapier för att logga resultat.~~ Apps Script, se
    `DECISIONS.md` 24.
 3. ~~Vilken data som skickas.~~ Se `DECISIONS.md` 24. Fackförbund är inte med.
 4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
