@@ -12,6 +12,9 @@ körs i webbläsaren utan en server eller en nedladdning på flera megabyte.
 
 Inget byggsteg och inga ramverk: filerna publiceras som de är.
 
+Beräkningen körs fortfarande i webbläsaren, men uppgifterna lämnar nu datorn för
+statistiken, se 24.
+
 ## 2. Beräkning skild från visning (2026-10-22)
 
 Varje verktyg har en beräkningsmodul som tar parametrar och användarens data
@@ -88,7 +91,8 @@ webbläsare sidan från GitHub, som då fick IP-adress, tidpunkt och vilken
 sida på smaspararguiden.se besökaren var på. IP-adressen är en
 personuppgift. Som plugin pratar webbläsaren bara med smaspararguiden.se,
 som redan tar emot besöket. Sajtens webbansvarig rekommenderade samma väg:
-tredje parter kontaktas av servern, aldrig av besökarens webbläsare.
+tredje parter kontaktas av servern, aldrig av besökarens webbläsare. För
+statistiken görs ett undantag, se 24.
 
 Uppdatering sker för hand: filerna skrivs över via FTP och sajtens cache
 rensas i WordPress. Den första installationen gjordes med zip-fil, se 21.
@@ -262,3 +266,32 @@ Källkolumnen i "Så har vi räknat" tog plats från övrig text, och ingen käl
 en länk. Sajtens webbansvarig föreslog en ikon med tooltip. Varje källa öppnas
 i stället med en knapp, på en egen rad, eftersom en tooltip som visas vid hovring
 inte fungerar på pekskärm.
+
+## 24. Resultaten sparas i ett Google-ark, högst en gång per sidvisning (2026-11-07)
+
+Vi vill veta hur många som får ett resultat och vilka resultat de får, med
+exakta belopp, och kunna räkna på det i efterhand. Sajtens Plausible valdes bort:
+det är byggt för besöksstatistik, data går inte att radera eller hämta ut på ett
+smidigt sätt, och personuppgifter är inte tillåtna där. En fil eller en tabell på
+sajtens server valdes också bort: det kräver att vi driftar kod som skriver på
+servern och tar emot anrop från vem som helst, och en fil i pluginens mapp raderas
+vid en uppdatering med zip-fil. Tabellen är nästa steg om arket inte räcker.
+Webbläsaren skickar samma värden oavsett mottagare, så bara adressen ändras då.
+
+Apps Script är enklast att bygga och ändra, och arket går att läsa direkt. Det är
+ett undantag från att besökarens webbläsare inte ska kontakta tredje part (9):
+Google får besökarens IP-adress i anropet, men den når varken skriptet eller
+arket. Anropet görs utan kakor och utan sidans adress.
+
+Det här sparas: dagen, allt besökaren fyllt i och allt vi räknat ut och visar.
+Beräknade belopp avrundas som på sidan. IP-adress och klockslag sparas inte, så en
+rad går inte att para ihop med sajtens loggar. Sidan säger vad vi sparar, och
+integritetspolicyn får en rad om det. Vi ser inget samtycke som krävs för det här,
+och det är Andreas bedömning som ansvarig.
+
+Resultatet visas vid varje knapptryck och går inte att ändra när det väl är
+skickat. Därför skickas det första gången besökaren lämnar sidan eller fliken,
+med siffrorna just då, och sedan inte mer under sidvisningen. Den som byter flik
+och sedan ändrar siffrorna räknas med de första, och den som laddar om sidan och
+räknar igen räknas en gång till. Att känna igen en återkommande besökare skulle
+kräva något sparat i webbläsaren, och det valdes bort.

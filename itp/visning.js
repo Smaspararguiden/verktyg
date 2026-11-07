@@ -9,6 +9,7 @@
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
+const { INSAMLINGSADRESS, matvarden, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -112,6 +113,10 @@ rot.innerHTML = `
 
   <section class="resultat" aria-live="polite"></section>
 
+  <p class="hjalp">När du lämnar sidan sparar vi det du har fyllt i och ditt
+    resultat i vår statistik, i ett kalkylark hos Google. Vi sparar inte ditt namn
+    eller din IP-adress, och bara dagen, inte klockslaget.</p>
+
   <details>
     <summary>Så har vi räknat</summary>
     <div class="parametrar"></div>
@@ -120,8 +125,8 @@ rot.innerHTML = `
 const form = rot.querySelector("form");
 const resultat = rot.querySelector(".resultat");
 
-const kr = (x) => `${(Math.round(x / 1000) * 1000).toLocaleString("sv-SE")} kr`;
-const krManad = (x) => `${(Math.round(x / 10) * 10).toLocaleString("sv-SE")} kr/mån`;
+const kr = (x) => `${tusental(x).toLocaleString("sv-SE")} kr`;
+const krManad = (x) => `${tiotal(x).toLocaleString("sv-SE")} kr/mån`;
 const procent = (x, decimaler = 0) =>
   `${(x * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler })} %`;
 
@@ -150,19 +155,26 @@ function laggTillRad() {
   forsakringar.append(rad);
 }
 
-// Sums the rows into trad and fund, or null if no amount is filled in.
-function lasRader() {
-  let trad = 0;
-  let fond = 0;
-  let nagot = false;
+// The rows that have an amount.
+function ifyllda() {
+  const lista = [];
   for (const rad of forsakringar.querySelectorAll(".rad")) {
     const belopp = talFran(rad.querySelector(".belopp-falt"));
     if (belopp === null) continue;
-    nagot = true;
-    if (rad.querySelector('input[value="fond"]').checked) fond += belopp;
-    else trad += belopp;
+    const sparform = rad.querySelector('input[value="fond"]').checked ? "fond" : "trad";
+    lista.push({ belopp, sparform });
   }
-  return nagot ? { trad, fond } : null;
+  return lista;
+}
+
+// Sums the rows into trad and fund, or null if no amount is filled in.
+function lasRader() {
+  const lista = ifyllda();
+  if (!lista.length) return null;
+  const summa = (sparform) => lista
+    .filter((f) => f.sparform === sparform)
+    .reduce((s, f) => s + f.belopp, 0);
+  return { trad: summa("trad"), fond: summa("fond") };
 }
 
 // Born before ITP1_FRAN_FODELSEAR: most of them have ITP2, so they get
@@ -448,6 +460,39 @@ function visaLage() {
   const utanPremier = !anstalld && (!fore || form.elements.tidigareItp1.checked);
   for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = !utanPremier;
 }
+
+// Reports the result once per page view, with the figures on the page at that
+// moment. Results appear on every keystroke, so nothing is sent until the
+// visitor leaves the page or the tab. Sent without cookies or the page's address,
+// and a failure is never shown: the visitor already has their result.
+let rapporterat = false;
+function rapporteraResultat() {
+  if (rapporterat || !senaste) return;
+  rapporterat = true;
+  const varden = matvarden({
+    r: senaste.r,
+    indata: senaste.indata,
+    fodelsear: tal("fodelsear"),
+    lage: form.elements.lage.value,
+    itp1Nu: nyaPremier(),
+    itp1Tidigare: foreItp1() ? form.elements.tidigareItp1.checked : null,
+    forsakringar: ifyllda(),
+    vard: location.hostname,
+    version: new URLSearchParams(versionsfraga).get("ver"),
+  });
+  fetch(INSAMLINGSADRESS, {
+    method: "POST",
+    mode: "no-cors",
+    credentials: "omit",
+    referrerPolicy: "no-referrer",
+    keepalive: true,
+    body: JSON.stringify(varden),
+  }).catch(() => {});
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") rapporteraResultat();
+});
+window.addEventListener("pagehide", rapporteraResultat);
 
 form.addEventListener("input", () => { visaLage(); uppdatera(); });
 rot.querySelector(".lagg-till").addEventListener("click", () => {

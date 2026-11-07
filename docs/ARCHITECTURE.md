@@ -12,8 +12,10 @@ smaspararguiden-verktyg.php   pluginen: en kortkod per verktyg
   parametrar.js   alla antaganden, med beskrivning och källa
   berakning.js    beräkningsmodulen: parametrar + indata -> siffror
   visning.js      visningen: ritar inmatning, resultat och "Så har vi räknat"
+  matning.js      vad som sparas om ett resultat, och vart det skickas
   stil.css        stilar för verktygets egna komponenter
   index.html      förhandsvisning utanför WordPress
+apps-script/      skript som tar emot resultat och sparar dem i ett Google-ark
 ```
 
 Beräkningsmodulen importerar inget från visningen. Visningen anropar
@@ -23,7 +25,7 @@ beräkningsmodulen och läser parameterfilen för "Så har vi räknat".
 
 Pluginen ligger i `wp-content/plugins/smaspararguiden-verktyg/` på sajten:
 `smaspararguiden-verktyg.php` och de filer som verktygen laddar, för ITP-snurran
-`parametrar.js`, `berakning.js`, `visning.js` och `stil.css`. Första gången
+`parametrar.js`, `berakning.js`, `visning.js`, `matning.js` och `stil.css`. Första gången
 laddas den upp som en zip-fil via Tillägg i WordPress och aktiveras där. Zip-filen
 har filerna i en mapp som heter `smaspararguiden-verktyg`. Ändrade filer skrivs
 över via FTP, och sajtens cache rensas i WordPress.
@@ -65,7 +67,7 @@ sidans `.sg-itp`-element, läser det, anropar `berakna()` vid varje ändring och
 har inga egna siffror. "Så har vi räknat" ritas direkt från parameterfilen,
 och knappen "Ladda ner år för år" ger tabellen från `berakna()`, med det
 egna sparandet efter scenarierna, som CSV
-(semikolon och decimalkomma, för svenska Excel och Sheets). Inget lämnar
+(semikolon och decimalkomma, för svenska Excel och Sheets). Filen skapas i
 webbläsaren.
 
 Kapitalet anges på ett av tre sätt: en total, som räknas som trad, en rad
@@ -92,6 +94,23 @@ och får lite luft av oss, eftersom temat inte stylar dem. `index.html` är en
 förhandsvisning med samma element och några regler som står i för temat.
 
 I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en knapp.
+
+## Mätning
+
+`matning.js` bestämmer vilka värden som lämnar webbläsaren och testas fristående.
+`visning.js` skickar dem direkt från webbläsaren till ett Apps Script, högst en
+gång per sidvisning: första gången besökaren lämnar sidan eller fliken och det
+finns ett resultat. Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje
+värde och lägger en rad i fliken `Resultat` i det Google-ark det hör till. Är
+något okänt eller orimligt sparas ingen rad.
+
+Sidan vet inte om raden sparades, eftersom svaret från Google inte går att läsa.
+Rader från allt annat än sajten, som förhandsvisningen och testmiljön, märks
+`test` i kolumnen `kalla`.
+
+Skriptet klistras in i arket för hand. En ändring gäller först efter Deploy →
+Manage deployments → New version, och adressen är då densamma. Ett nytt fält
+läggs sist i skriptets lista och läggs till för hand i arkets rubrikrad.
 
 Förhandsvisningen använder ES-moduler och måste därför visas via en
 webbserver, inte som fil. Lokalt: `python -m http.server` i repots rot och
