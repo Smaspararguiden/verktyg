@@ -23,7 +23,7 @@ function nyFlik(rader = []) {
   };
 }
 
-function ladda(flik = null) {
+function ladda(flik = null, nyckel = null) {
   const miljo = {
     console,
     SpreadsheetApp: {
@@ -38,6 +38,16 @@ function ladda(flik = null) {
   };
   const kod = readFileSync(new URL("./itp-resultat.gs", import.meta.url), "utf8");
   vm.runInNewContext(kod, miljo);
+  // const declarations do not land on the sandbox object, so read them back.
+  const nyckelEgenskap = vm.runInNewContext("NYCKEL_EGENSKAP", miljo);
+  miljo.PropertiesService = {
+    getScriptProperties: () => ({
+      getProperty: (namn) => (namn === nyckelEgenskap ? nyckel : null),
+    }),
+  };
+  for (const namn of ["RUBRIKER", "KOD_KOLUMN", "MAX_SOKNING"]) {
+    miljo[namn] = vm.runInNewContext(namn, miljo);
+  }
   return { ...miljo, flik: () => flik };
 }
 
@@ -131,4 +141,45 @@ test("provkörningen ger en rad märkt som test", () => {
   const s = ladda();
   s.provkor();
   assert.equal(varde(s, 1, "kalla"), "test");
+});
+
+test("med nyckel i skriptet krävs samma nyckel i anropet", () => {
+  const s = ladda(null, "hemlig");
+  assert.equal(s.doPost(post(giltig)), "avvisad");
+  // Apps Script gives e.parameter values as strings, as here.
+  const med = (nyckel) => ({ postData: { contents: JSON.stringify(giltig) }, parameter: { nyckel } });
+  assert.equal(s.doPost(med("fel")), "avvisad");
+  // only the first character right is not enough
+  assert.equal(s.doPost(med("h")), "avvisad");
+  assert.equal(s.doPost(med("hemlig")), "ok");
+  assert.equal(s.flik().rader.length, 2);
+  // utan egenskapen satt accepteras alla anrop, så utrullning kan ske i valfri ordning
+  assert.equal(ladda().doPost(post(giltig)), "ok");
+});
+
+test("fel nyckel skapar inget ark", () => {
+  const s = ladda(null, "hemlig");
+  s.doPost(post(giltig));
+  assert.equal(s.flik(), null);
+});
+
+test("kodsökningen läser bara de senaste MAX_SOKNING raderna", () => {
+  const s = ladda();
+  const { RUBRIKER, KOD_KOLUMN, MAX_SOKNING } = s;
+  const gammalKod = "a".repeat(32);
+  const rader = [RUBRIKER.slice()];
+  for (let i = 0; i <= MAX_SOKNING; i++) {
+    const rad = RUBRIKER.map(() => "");
+    rad[0] = "2026-11-09";
+    rad[KOD_KOLUMN - 1] = i === 0 ? gammalKod : "b".repeat(28) + String(i).padStart(4, "0");
+    rader.push(rad);
+  }
+  const s2 = ladda(nyFlik(rader));
+  const senasteKod = rader[rader.length - 1][KOD_KOLUMN - 1];
+  // a code among the last rows overwrites its row
+  s2.doPost(post({ ...giltig, kod: senasteKod, manadslon: 50000 }));
+  assert.equal(rader.length, MAX_SOKNING + 2);
+  // a code older than MAX_SOKNING rows gets a new row instead
+  s2.doPost(post({ ...giltig, kod: gammalKod }));
+  assert.equal(rader.length, MAX_SOKNING + 3);
 });
