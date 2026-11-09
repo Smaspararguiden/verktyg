@@ -183,7 +183,7 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
       först när användaren ska mejla och det verkligen behövs.
 - [ ] Lista över fackförbund och mejladresser, kanske som en publik sida.
 - [ ] Text om begränsningar (troligen i WordPress).
-- [ ] Mätning av antal användare och resultat (`DECISIONS.md` 24). Byggd. Kvar:
+- [ ] Mätning av antal användare och resultat (`DECISIONS.md` 24 och 25). Byggd. Kvar:
       några testfall på sajten visar att raderna kommer fram, och
       integritetspolicyn får en rad om det som sparas.
 
