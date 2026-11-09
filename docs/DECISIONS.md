@@ -348,3 +348,25 @@ Kodsökningen läser nu bara de senaste 5000 raderna i stället för hela kolumn
 blir långsam när arket växer. En sidvisning skickar igen inom några minuter, så en
 kod äldre än så får en dubblettrad i stället för att skriva över, vilket är okej
 för statistiken.
+
+## 28. Statistik-endpointen är taktsbegränsad och vidarebefordrar bara små JSON-objekt (2026-11-09)
+
+`POST /wp-json/sgv/v1/itp-resultat` är öppen för alla, som sidan själv, och varje
+anrop höll tidigare en PHP-arbetare upp till tio sekunder mot Google. En flod av
+anrop kunde då ta ner sajten, och vem som helst kunde skicka förfalskade rader till
+arket genom sajten. Nu räknas anrop per adress och totalt (10 respektive 120 per
+minut) i transienter innan något skickas vidare, och överskridande ger 429. Kroppen
+ska vara högst 3000 tecken och ett JSON-objekt med högst 30 strängnycklar, och
+timeouten mot skriptet är 5 sekunder. Google är ibland långsamt att starta, och med
+3 sekunder räknades många anrop som misslyckade fast raden sparades. Endast räknare
+över skickade, misslyckade och begränsade anrop sparas i wp_options
+(`sgv_matning_stat`), aldrig rapporterna.
+
+Räkningen per adress sparar en hash av besökarens IP-adress som nyckel i en
+transient, i en minut. Det är det enda om besökaren som sajten sparar för
+statistiken, och det görs för att skydda sajten.
+
+Allt ligger i pluginen, så inget behöver ändras i wp-config.php eller i nginx.
+Saknas X-Forwarded-For blir adressräkningen en global gräns, vilket fortfarande
+skyddar PHP-arbetarna. Filversionen är nu en hash av senaste ändringstiden, så
+serverns klocka inte syns i URL:erna.
