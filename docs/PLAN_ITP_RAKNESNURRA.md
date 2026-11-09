@@ -11,7 +11,7 @@ Den här planen lever bara medan bygget pågår. När det är klart flyttas det 
 fortfarande gäller in i `ARCHITECTURE.md` (hur det fungerar), `DECISIONS.md`
 (varför) och `FUTURE_DEV.md` (vad som inte är byggt), och planen raderas.
 
-Vägvalen hittills står i `DECISIONS.md` (1–23).
+Vägvalen hittills står i `DECISIONS.md` (1–24).
 
 ## Modellen
 
@@ -183,15 +183,17 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
       först när användaren ska mejla och det verkligen behövs.
 - [ ] Lista över fackförbund och mejladresser, kanske som en publik sida.
 - [ ] Text om begränsningar (troligen i WordPress).
-- [ ] Mätning av antal användare och resultat.
+- [ ] Mätning av antal användare och resultat (`DECISIONS.md` 24). Byggd. Kvar:
+      några testfall på sajten visar att raderna kommer fram, och
+      integritetspolicyn får en rad om det som sparas.
 
 ## Öppna frågor
 
 1. ~~Hur avtalat.se visar kapital och inbetalningar.~~ Se `DECISIONS.md` 11
    och 12.
-2. **Apps Script eller Zapier** för att logga resultat till ett Google Sheet.
-3. **Vilken data som skickas**, till exempel om fackförbund ska med.
-   Småspararguidens GDPR-policy gäller.
+2. ~~Apps Script eller Zapier för att logga resultat.~~ Apps Script, se
+   `DECISIONS.md` 24.
+3. ~~Vilken data som skickas.~~ Se `DECISIONS.md` 24. Fackförbund är inte med.
 4. ~~Iframe eller WordPress-plugin.~~ Plugin, se `DECISIONS.md` 9.
 5. ~~Ska användaren dela upp traditionell försäkring i obligatorisk och
    valbar del?~~ Nej, avtalat.se visar inte delarna. Se `DECISIONS.md` 11.
