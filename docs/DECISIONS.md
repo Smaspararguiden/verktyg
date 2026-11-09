@@ -295,3 +295,23 @@ med siffrorna just då, och sedan inte mer under sidvisningen. Den som byter fli
 och sedan ändrar siffrorna räknas med de första, och den som laddar om sidan och
 räknar igen räknas en gång till. Att känna igen en återkommande besökare skulle
 kräva något sparat i webbläsaren, och det valdes bort.
+
+När och hur ofta det skickas ersätts av 25.
+
+## 25. En rad per sidvisning, med det besökaren såg sist (2026-11-09)
+
+Den som ska räkna behöver oftast hämta sina uppgifter på avtalat.se eller
+minpension.se i en annan flik. Med en rad vid första flikbytet (24) kom ofta en
+gissning eller ett halvfärdigt resultat med i stället för de riktiga siffrorna.
+
+Därför skickas sidvisningen varje gång besökaren lämnar sidan eller fliken, om
+något har ändrats, och skriptet skriver över sidvisningens rad i stället för att
+lägga till en. Raden känns igen på en slumpad kod som bara finns i sidans minne.
+Den sparas inte i webbläsaren, så det krävs inget samtycke enligt reglerna om
+kakor, och den säger inget om besökaren. Den som laddar om sidan, eller vars
+mobil har stängt sidan i bakgrunden, får en ny kod och en ny rad.
+
+Även sidvisningar utan resultat sparas, med det som är ifyllt så långt, så att
+det syns hur långt de kommer som inte blir klara. Inget skickas innan besökaren
+har fyllt i något. Raden visar alltid läget sist besökaren lämnade sidan, så den
+som tar bort ett fält efter ett resultat får en rad utan resultat.

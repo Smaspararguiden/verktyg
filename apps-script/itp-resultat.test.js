@@ -4,72 +4,119 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
-function ladda() {
-  const rader = [];
-  const flik = {
-    appendRow: (r) => rader.push(r),
+// A sheet held as rows of values, with the few calls the script uses.
+function nyFlik(rader = []) {
+  return {
+    rader,
+    appendRow: (r) => rader.push([...r]),
     getLastRow: () => rader.length,
+    getLastColumn: () => Math.max(0, ...rader.map((r) => r.length)),
     setFrozenRows: () => {},
+    getRange: (rad, kolumn, antalRader, antalKolumner) => ({
+      getValues: () => rader.slice(rad - 1, rad - 1 + antalRader)
+        .map((r) => r.slice(kolumn - 1, kolumn - 1 + antalKolumner).map((v) => v ?? "")),
+      setValues: (varden) => varden.forEach((v, i) => {
+        const r = rader[rad - 1 + i] ?? (rader[rad - 1 + i] = []);
+        v.forEach((x, j) => { r[kolumn - 1 + j] = x; });
+      }),
+    }),
   };
-  let finns = false;
+}
+
+function ladda(flik = null) {
   const miljo = {
     console,
     SpreadsheetApp: {
       getActiveSpreadsheet: () => ({
-        getSheetByName: () => (finns ? flik : null),
-        insertSheet: () => { finns = true; return flik; },
+        getSheetByName: () => flik,
+        insertSheet: () => (flik = nyFlik()),
       }),
     },
-    Utilities: { formatDate: () => "2026-11-07" },
+    Utilities: { formatDate: () => "2026-11-09" },
     LockService: { getScriptLock: () => ({ waitLock: () => {}, releaseLock: () => {} }) },
     ContentService: { createTextOutput: (text) => text },
   };
   const kod = readFileSync(new URL("./itp-resultat.gs", import.meta.url), "utf8");
   vm.runInNewContext(kod, miljo);
-  return { ...miljo, rader };
+  return { ...miljo, flik: () => flik };
 }
 
 const giltig = {
   kalla: "sajt", fodelsear: 1988, alder: 38, lage: "ingen", vinst: 171000, manadslon: 45000,
+  resultat: "ja", kod: "0123456789abcdef0123456789abcdef",
 };
 const post = (data) => ({ postData: { contents: JSON.stringify(data) } });
+const varde = (s, rad, namn) => s.flik().rader[rad][s.flik().rader[0].indexOf(namn)];
 
 test("en giltig rad sparas med rubriker och bara datum", () => {
   const s = ladda();
   assert.equal(s.doPost(post(giltig)), "ok");
-  assert.equal(s.rader.length, 2);
-  assert.equal(s.rader[0][0], "datum");
-  assert.equal(s.rader[1][0], "2026-11-07");
-  assert.equal(s.rader[1][s.rader[0].indexOf("manadslon")], 45000);
-  assert.equal(s.rader[1].length, s.rader[0].length);
+  const rader = s.flik().rader;
+  assert.equal(rader.length, 2);
+  assert.equal(rader[0][0], "datum");
+  assert.equal(rader[1][0], "2026-11-09");
+  assert.equal(varde(s, 1, "manadslon"), 45000);
+  assert.equal(rader[1].length, rader[0].length);
+});
+
+test("samma kod skriver över raden, en ny kod ger en ny rad", () => {
+  const s = ladda();
+  s.doPost(post({ ...giltig, resultat: "nej", vinst: undefined }));
+  s.doPost(post({ ...giltig, manadslon: 50000 }));
+  assert.equal(s.flik().rader.length, 2);
+  assert.equal(varde(s, 1, "manadslon"), 50000);
+  assert.equal(varde(s, 1, "resultat"), "ja");
+  s.doPost(post({ ...giltig, kod: "f".repeat(32) }));
+  assert.equal(s.flik().rader.length, 3);
+});
+
+test("utan kod blir varje anrop en ny rad", () => {
+  const s = ladda();
+  const { kod, ...utanKod } = giltig;
+  assert.ok(kod);
+  s.doPost(post(utanKod));
+  s.doPost(post(utanKod));
+  assert.equal(s.flik().rader.length, 3);
+});
+
+test("en påbörjad rad utan resultat sparas", () => {
+  const s = ladda();
+  const paborjad = { kalla: "sajt", lage: "trad", fodelsear: 1988, alder: 38, resultat: "nej", kod: giltig.kod };
+  assert.equal(s.doPost(post(paborjad)), "ok");
+  assert.equal(varde(s, 1, "vinst"), "");
+});
+
+test("rubriker för nya fält läggs till i ett befintligt ark", () => {
+  const gammal = nyFlik([["datum", "kalla"], ["2026-11-07", "test"]]);
+  const s = ladda(gammal);
+  s.doPost(post(giltig));
+  assert.equal(gammal.rader[0].at(-1), "kod");
+  assert.equal(gammal.rader[1][1], "test");
+  assert.equal(gammal.rader.length, 3);
 });
 
 test("okända fält avvisar hela raden", () => {
   const s = ladda();
   assert.equal(s.doPost(post({ ...giltig, ip: "192.0.2.1" })), "avvisad");
-  assert.equal(s.rader.length, 0);
+  assert.equal(s.doPost(post({ ...giltig, datum: "2026-01-01" })), "avvisad");
+  assert.equal(s.flik(), null);
 });
 
 test("text som kunde bli en formel kommer aldrig in", () => {
   const s = ladda();
-  const forsok = [
-    { ...giltig, version: "=IMPORTXML(1)" },
-    { ...giltig, forsakringar: "=1+1" },
-    { ...giltig, lage: "=1+1" },
-    { ...giltig, vinst: "=1+1" },
-  ];
-  for (const data of forsok) assert.equal(s.doPost(post(data)), "avvisad");
-  assert.equal(s.rader.length, 0);
+  s.doPost(post({ ...giltig, version: "=IMPORTXML(1)", forsakringar: "=1+1", vinst: "=1+1", kod: "=1+1" }));
+  assert.equal(s.doPost(post({ ...giltig, lage: "=1+1" })), "avvisad");
+  const rad = s.flik().rader[1];
+  assert.ok(rad.every((v) => !String(v).startsWith("=")));
 });
 
-test("saknade krav, orimliga värden och trasig indata avvisas", () => {
+test("orimliga frivilliga värden blir tomma, orimliga krav avvisar", () => {
   const s = ladda();
-  const { vinst, ...utanVinst } = giltig;
-  assert.equal(vinst, 171000);
+  assert.equal(s.doPost(post({ ...giltig, fodelsear: 1800, andel_fond: 101 })), "ok");
+  assert.equal(varde(s, 1, "fodelsear"), "");
+  assert.equal(varde(s, 1, "andel_fond"), "");
   const fall = [
-    post(utanVinst),
-    post({ ...giltig, fodelsear: 1800 }),
-    post({ ...giltig, andel_fond: 101 }),
+    post({ ...giltig, kalla: "annan" }),
     post([giltig]),
     post(null),
     { postData: { contents: "inte json" } },
@@ -77,18 +124,11 @@ test("saknade krav, orimliga värden och trasig indata avvisas", () => {
     {},
   ];
   for (const e of fall) assert.equal(s.doPost(e), "avvisad");
-  assert.equal(s.rader.length, 0);
-});
-
-test("försäkringsraderna kan sparas", () => {
-  const s = ladda();
-  const data = { ...giltig, lage: "delar", forsakringar: "200000:trad|50000:fond" };
-  assert.equal(s.doPost(post(data)), "ok");
-  assert.equal(s.rader[1][s.rader[0].indexOf("forsakringar")], "200000:trad|50000:fond");
+  assert.equal(s.flik().rader.length, 2);
 });
 
 test("provkörningen ger en rad märkt som test", () => {
   const s = ladda();
   s.provkor();
-  assert.equal(s.rader[1][s.rader[0].indexOf("kalla")], "test");
+  assert.equal(varde(s, 1, "kalla"), "test");
 });

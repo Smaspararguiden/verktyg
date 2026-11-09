@@ -9,7 +9,7 @@
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
-const { INSAMLINGSADRESS, matvarden, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
+const { INSAMLINGSADRESS, matvarden, nyKod, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -215,6 +215,8 @@ function lasIndata() {
   return { fodelsear, manadslon, kapital, andelPremieFond };
 }
 
+const alderFran = (fodelsear) => new Date().getFullYear() - fodelsear;
+
 function meddelande(text, klass = "") {
   resultat.innerHTML = `<div class="meddelande ${klass}">${text}</div>`;
 }
@@ -242,7 +244,7 @@ function uppdatera() {
     meddelande("Läs frågan under födelseåret. Kryssa i det som stämmer om du har ITP1, så räknar vi.");
     return;
   }
-  const alder = new Date().getFullYear() - fodelsear;
+  const alder = alderFran(fodelsear);
   if (alder >= p.pensionsalder.varde || alder < 16) {
     meddelande("Kontrollera födelseåret.", "varning");
     return;
@@ -461,24 +463,31 @@ function visaLage() {
   for (const el of form.querySelectorAll("[data-ej-anstalld]")) el.hidden = !utanPremier;
 }
 
-// Reports the result once per page view, with the figures on the page at that
-// moment. Results appear on every keystroke, so nothing is sent until the
-// visitor leaves the page or the tab. Sent without cookies or the page's address,
-// and a failure is never shown: the visitor already has their result.
-let rapporterat = false;
-function rapporteraResultat() {
-  if (rapporterat || !senaste) return;
-  rapporterat = true;
+// Reports the page view each time the visitor leaves the page or the tab, if
+// anything has changed since last time, with what is on the page at that moment.
+// The same code each time lets the receiver keep one row per page view, with
+// the last figures. Nothing is sent before the visitor has typed something.
+// Sent without cookies or the page's address, and a failure is never shown.
+const kod = nyKod();
+let andrat = false;
+function rapportera() {
+  if (!andrat) return;
+  andrat = false;
+  const { fodelsear, manadslon, kapital, andelPremieFond } = lasIndata();
   const varden = matvarden({
-    r: senaste.r,
-    indata: senaste.indata,
-    fodelsear: tal("fodelsear"),
+    r: senaste ? senaste.r : null,
+    fodelsear,
+    alder: fodelsear === null ? null : alderFran(fodelsear),
+    manadslon,
+    kapital,
+    andelPremieFond,
     lage: form.elements.lage.value,
     itp1Nu: nyaPremier(),
     itp1Tidigare: foreItp1() ? form.elements.tidigareItp1.checked : null,
     forsakringar: ifyllda(),
     vard: location.hostname,
     version: new URLSearchParams(versionsfraga).get("ver"),
+    kod,
   });
   fetch(INSAMLINGSADRESS, {
     method: "POST",
@@ -490,11 +499,11 @@ function rapporteraResultat() {
   }).catch(() => {});
 }
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "hidden") rapporteraResultat();
+  if (document.visibilityState === "hidden") rapportera();
 });
-window.addEventListener("pagehide", rapporteraResultat);
+window.addEventListener("pagehide", rapportera);
 
-form.addEventListener("input", () => { visaLage(); uppdatera(); });
+form.addEventListener("input", () => { andrat = true; visaLage(); uppdatera(); });
 rot.querySelector(".lagg-till").addEventListener("click", () => {
   laggTillRad();
   forsakringar.lastElementChild.querySelector(".belopp-falt").focus();
@@ -502,6 +511,7 @@ rot.querySelector(".lagg-till").addEventListener("click", () => {
 forsakringar.addEventListener("click", (e) => {
   if (!e.target.closest(".ta-bort")) return;
   e.target.closest(".rad").remove();
+  andrat = true;
   uppdatera();
 });
 // Three rows are enough for most people; more can be added.

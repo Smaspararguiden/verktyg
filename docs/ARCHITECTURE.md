@@ -98,11 +98,17 @@ I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en kn
 ## Mätning
 
 `matning.js` bestämmer vilka värden som lämnar webbläsaren och testas fristående.
-`visning.js` skickar dem direkt från webbläsaren till ett Apps Script, högst en
-gång per sidvisning: första gången besökaren lämnar sidan eller fliken och det
-finns ett resultat. Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje
-värde och lägger en rad i fliken `Resultat` i det Google-ark det hör till. Är
-något okänt eller orimligt sparas ingen rad.
+`visning.js` skickar dem direkt från webbläsaren till ett Apps Script varje gång
+besökaren lämnar sidan eller fliken, om något har ändrats sedan förra gången.
+Inget skickas innan besökaren har fyllt i något. Varje sidvisning får en slumpad
+kod som bara finns i sidans minne och skickas med varje gång.
+
+Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje värde och sparar i
+fliken `Resultat` i det Google-ark det hör till. Finns koden redan skrivs den
+raden över, annars läggs en ny till. Det blir en rad per sidvisning med det
+besökaren såg sist, och kolumnen `resultat` säger om sidan visade ett resultat.
+Ett okänt fält eller ett ogiltigt obligatoriskt värde ger ingen rad, och ett
+ogiltigt frivilligt värde blir en tom cell.
 
 Sidan vet inte om raden sparades, eftersom svaret från Google inte går att läsa.
 Rader från allt annat än sajten, som förhandsvisningen och testmiljön, märks
@@ -110,7 +116,7 @@ Rader från allt annat än sajten, som förhandsvisningen och testmiljön, märk
 
 Skriptet klistras in i arket för hand. En ändring gäller först efter Deploy →
 Manage deployments → New version, och adressen är då densamma. Ett nytt fält
-läggs sist i skriptets lista och läggs till för hand i arkets rubrikrad.
+läggs sist i skriptets lista. Skriptet lägger själv till dess rubrik.
 
 Förhandsvisningen använder ES-moduler och måste därför visas via en
 webbserver, inte som fil. Lokalt: `python -m http.server` i repots rot och
