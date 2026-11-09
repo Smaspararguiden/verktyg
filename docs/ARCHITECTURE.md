@@ -113,7 +113,9 @@ fliken `Resultat` i det Google-ark det hör till. Finns koden redan skrivs den
 raden över, annars läggs en ny till. Det blir en rad per sidvisning med det
 besökaren såg sist, och kolumnen `resultat` säger om sidan visade ett resultat.
 Ett okänt fält eller ett ogiltigt obligatoriskt värde ger ingen rad, och ett
-ogiltigt frivilligt värde blir en tom cell.
+ogiltigt frivilligt värde blir en tom cell. Koden söks bara bland de senaste 5000
+raderna. När egenskapen `SGV_NYCKEL` är satt i skriptet krävs samma nyckel som
+`?nyckel=` i anropet; pluginen skickar sin kopia från WordPress-databasen.
 
 Varken sidan eller pluginen vet om raden sparades. Rader från allt annat än
 sajten, som testmiljön, märks `test` i kolumnen `kalla`.
