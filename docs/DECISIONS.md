@@ -334,3 +334,17 @@ försvinner, i stället för att försökas igen.
 Pluginen får därmed sin första kod som tar emot anrop från vem som helst. Den
 släpper bara igenom små JSON-objekt och skickar dem bara till skriptet, som
 kontrollerar varje värde.
+
+## 27. Mottagaren kräver en nyckel när en är satt, och söker bara bland de senaste raderna (2026-11-09)
+
+Adressen till Apps Script är publik, för förhandsvisningen publicerar repot, så vem
+som helst kunde skriva rader direkt i arket. När egenskapen `SGV_NYCKEL` är satt i
+skriptet kräver `doPost` samma värde som `?nyckel=...`. Sajtens plugin håller sin
+kopia i WordPress-databasen, se 29. Innan egenskapen är satt accepteras alla anrop,
+så utrullningen kan göras i vilken ordning som helst, men sätt egenskapen sist.
+`provkor()` går förbi `doPost` och fungerar alltid.
+
+Kodsökningen läser nu bara de senaste 5000 raderna i stället för hela kolumnen, som
+blir långsam när arket växer. En sidvisning skickar igen inom några minuter, så en
+kod äldre än så får en dubblettrad i stället för att skriva över, vilket är okej
+för statistiken.

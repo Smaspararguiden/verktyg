@@ -1,13 +1,19 @@
 // Receives one page view of the ITP1 calculator and keeps it as a row in the
 // spreadsheet this script belongs to. The page sends again each time the visitor
-// leaves it, with the same code, and the row is then overwritten. The address is
-// open to anyone, so only checked values are written. It never returns the sheet.
-// Google does not give the script the visitor's IP address, and the row holds
-// the date only.
+// leaves it, with the same code, and the row is then overwritten. When the script
+// property SGV_NYCKEL is set, requests must carry it as ?nyckel=...; the site's
+// plugin keeps its copy in the WordPress database. Only checked values are
+// written, and the script never returns the sheet. Google does not give the
+// script the visitor's IP address, and the row holds the date only.
 
 const FLIK = "Resultat";
 const MAX_TECKEN = 3000;
 const MAX_RADER = 100000;
+// How far back the code lookup reads. A page view sends again within minutes,
+// so an older code getting a new row instead of an overwrite is fine.
+const MAX_SOKNING = 5000;
+// The script property that holds the shared key, when one is set.
+const NYCKEL_EGENSKAP = "SGV_NYCKEL";
 
 const JA_NEJ = ["ja", "nej"];
 const STORT_BELOPP = 100000000000;
@@ -90,13 +96,16 @@ function hamtaFlik() {
   return flik;
 }
 
-// The row number that holds this page view's code, or 0.
+// The row number that holds this page view's code, or 0. Only the last
+// MAX_SOKNING rows are read: a full-column scan gets slow as the sheet grows.
 function radForKod(flik, kod) {
-  const antal = flik.getLastRow() - 1;
+  const sista = flik.getLastRow();
+  const antal = Math.min(sista - 1, MAX_SOKNING);
   if (!kod || antal < 1) return 0;
-  const koder = flik.getRange(2, KOD_KOLUMN, antal, 1).getValues();
+  const start = sista - antal + 1;
+  const koder = flik.getRange(start, KOD_KOLUMN, antal, 1).getValues();
   for (let i = koder.length - 1; i >= 0; i--) {
-    if (koder[i][0] === kod) return i + 2;
+    if (koder[i][0] === kod) return start + i;
   }
   return 0;
 }
@@ -125,6 +134,12 @@ function spara(indata) {
 }
 
 function doPost(e) {
+  // When a key is set in the script properties, requests without it are
+  // refused. Without one, everything is accepted, so deployment order is free.
+  const nyckel = PropertiesService.getScriptProperties().getProperty(NYCKEL_EGENSKAP);
+  if (nyckel && (!e || !e.parameter || !e.parameter.nyckel || e.parameter.nyckel[0] !== nyckel)) {
+    return ContentService.createTextOutput("avvisad");
+  }
   let sparad = false;
   try {
     const text = e && e.postData ? e.postData.contents : "";
