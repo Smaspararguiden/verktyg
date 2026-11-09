@@ -130,6 +130,11 @@ const krManad = (x) => `${tiotal(x).toLocaleString("sv-SE")} kr/mån`;
 const procent = (x, decimaler = 0) =>
   `${(x * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler })} %`;
 
+// Escapes a text for HTML. Visitor input is parsed as digits before it is
+// rendered, so this is for the static texts from the parameter file.
+const html = (s) => String(s).replace(/[&<>"']/g,
+  (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
 // Accepts "45 000", "45000" and "45 000 kr".
 function talFran(falt) {
   const varde = falt.value.replace(/[^\d]/g, "");
@@ -414,11 +419,11 @@ function visaSumma() {
 // button opens.
 function parameterRad(etikett, varde, kalla) {
   return `<tr>
-      <td>${etikett} <button type="button" class="visa-kalla" aria-label="Visa källan"
+      <td>${html(etikett)} <button type="button" class="visa-kalla" aria-label="Visa källan"
         aria-expanded="false">ⓘ</button></td>
-      <td>${varde}</td>
+      <td>${html(varde)}</td>
     </tr>
-    <tr class="kalla" hidden><td colspan="2">${kalla}</td></tr>`;
+    <tr class="kalla" hidden><td colspan="2">${html(kalla)}</td></tr>`;
 }
 
 function visaParametrar() {

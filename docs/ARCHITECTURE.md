@@ -68,7 +68,8 @@ har inga egna siffror. "Så har vi räknat" ritas direkt från parameterfilen,
 och knappen "Ladda ner år för år" ger tabellen från `berakna()`, med det
 egna sparandet efter scenarierna, som CSV
 (semikolon och decimalkomma, för svenska Excel och Sheets). Filen skapas i
-webbläsaren.
+webbläsaren. Texterna i "Så har vi räknat" HTML-escapas innan de ritas, så även
+parameterfilens texter är säkra att rendera.
 
 Kapitalet anges på ett av tre sätt: en total, som räknas som trad, en rad
 per försäkring med belopp och trad eller fond, eller inte alls ("Vi struntar
