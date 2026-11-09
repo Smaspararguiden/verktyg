@@ -316,7 +316,7 @@ det syns hur långt de kommer som inte blir klara. Inget skickas innan besökare
 har fyllt i något. Raden visar alltid läget sist besökaren lämnade sidan, så den
 som tar bort ett fält efter ett resultat får en rad utan resultat.
 
-## 26. Statistiken går via sajtens server (2026-11-10)
+## 26. Statistiken går via sajtens server (2026-11-09)
 
 Med anropet direkt från webbläsaren (24) fick Google besökarens IP-adress. Det
 kan kräva samtycke, och sajtens webbansvarig påpekade att det bröt mot hans
