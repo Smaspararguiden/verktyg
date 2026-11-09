@@ -1,10 +1,6 @@
-// What the ITP1 calculator saves about a page view, and where it is sent. Only
-// the values below leave the browser; what they are and why is in DECISIONS.md.
-// The receiver checks them again, see apps-script/itp-resultat.gs.
-
-// Not a secret: the browser needs it, so anyone can read it.
-export const INSAMLINGSADRESS =
-  "https://script.google.com/macros/s/AKfycbwTc68eThpPp1CJRe8imSGomzMnPSdIPq428ZxiTSBLidKz_il-deyUxKOVVKgTvbaz/exec";
+// What the ITP1 calculator saves about a page view. Only the values below leave
+// the browser; what they are and why is in DECISIONS.md. The plugin passes them
+// on, and the receiver checks them again, see apps-script/itp-resultat.gs.
 
 const SAJTENS_VARD = "www.smaspararguiden.se";
 

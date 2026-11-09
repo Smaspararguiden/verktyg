@@ -98,10 +98,15 @@ I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en kn
 ## Mätning
 
 `matning.js` bestämmer vilka värden som lämnar webbläsaren och testas fristående.
-`visning.js` skickar dem direkt från webbläsaren till ett Apps Script varje gång
-besökaren lämnar sidan eller fliken, om något har ändrats sedan förra gången.
-Inget skickas innan besökaren har fyllt i något. Varje sidvisning får en slumpad
-kod som bara finns i sidans minne och skickas med varje gång.
+`visning.js` skickar dem varje gång besökaren lämnar sidan eller fliken, om
+något har ändrats sedan förra gången. Inget skickas innan besökaren har fyllt i
+något. Varje sidvisning får en slumpad kod som bara finns i sidans minne och
+skickas med varje gång.
+
+Webbläsaren skickar till pluginen på sajten, `POST /wp-json/sgv/v1/itp-resultat`,
+som genast skickar vidare till ett Apps Script och inte sparar något. Google ser
+då sajtens server, inte besökaren. Pluginen ger sidan adressen i kortkodens
+`data-insamling`. Förhandsvisningen har ingen sådan adress och skickar inget.
 
 Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje värde och sparar i
 fliken `Resultat` i det Google-ark det hör till. Finns koden redan skrivs den
@@ -110,9 +115,8 @@ besökaren såg sist, och kolumnen `resultat` säger om sidan visade ett resulta
 Ett okänt fält eller ett ogiltigt obligatoriskt värde ger ingen rad, och ett
 ogiltigt frivilligt värde blir en tom cell.
 
-Sidan vet inte om raden sparades, eftersom svaret från Google inte går att läsa.
-Rader från allt annat än sajten, som förhandsvisningen och testmiljön, märks
-`test` i kolumnen `kalla`.
+Varken sidan eller pluginen vet om raden sparades. Rader från allt annat än
+sajten, som testmiljön, märks `test` i kolumnen `kalla`.
 
 Skriptet klistras in i arket för hand. En ändring gäller först efter Deploy →
 Manage deployments → New version, och adressen är då densamma. Ett nytt fält

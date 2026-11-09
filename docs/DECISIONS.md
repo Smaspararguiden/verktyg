@@ -92,7 +92,7 @@ sida på smaspararguiden.se besökaren var på. IP-adressen är en
 personuppgift. Som plugin pratar webbläsaren bara med smaspararguiden.se,
 som redan tar emot besöket. Sajtens webbansvarig rekommenderade samma väg:
 tredje parter kontaktas av servern, aldrig av besökarens webbläsare. För
-statistiken görs ett undantag, se 24.
+statistiken gjordes ett undantag i 24, som togs bort i 26.
 
 Uppdatering sker för hand: filerna skrivs över via FTP och sajtens cache
 rensas i WordPress. Den första installationen gjordes med zip-fil, se 21.
@@ -281,7 +281,7 @@ Webbläsaren skickar samma värden oavsett mottagare, så bara adressen ändras 
 Apps Script är enklast att bygga och ändra, och arket går att läsa direkt. Det är
 ett undantag från att besökarens webbläsare inte ska kontakta tredje part (9):
 Google får besökarens IP-adress i anropet, men den når varken skriptet eller
-arket. Anropet görs utan kakor och utan sidans adress.
+arket. Anropet görs utan kakor och utan sidans adress. Undantaget togs bort, se 26.
 
 Det här sparas: dagen, allt besökaren fyllt i och allt vi räknat ut och visar.
 Beräknade belopp avrundas som på sidan. IP-adress och klockslag sparas inte, så en
@@ -315,3 +315,22 @@ mobil har stängt sidan i bakgrunden, får en ny kod och en ny rad.
 det syns hur långt de kommer som inte blir klara. Inget skickas innan besökaren
 har fyllt i något. Raden visar alltid läget sist besökaren lämnade sidan, så den
 som tar bort ett fält efter ett resultat får en rad utan resultat.
+
+## 26. Statistiken går via sajtens server (2026-11-10)
+
+Med anropet direkt från webbläsaren (24) fick Google besökarens IP-adress. Det
+kan kräva samtycke, och sajtens webbansvarig påpekade att det bröt mot hans
+princip om tredje part (9). Nu skickar webbläsaren till pluginen på sajten, som
+genast skickar vidare till Apps Script. Google ser bara serverns adress, och
+pluginen skickar inte vidare besökarens.
+
+Att spara i en fil eller tabell och skicka till Google var 15:e minut valdes bort.
+Det kräver lagring på servern som ska rensas och överleva uppdateringar, och
+WordPress schemalagda körningar går bara när sajten har besök. Skriptet behöver
+också slå ihop flera anrop med samma kod. Att skicka vidare direkt lagrar inget
+och lämnar skriptet som det är. Nackdelen är att ett anrop som misslyckas
+försvinner, i stället för att försökas igen.
+
+Pluginen får därmed sin första kod som tar emot anrop från vem som helst. Den
+släpper bara igenom små JSON-objekt och skickar dem bara till skriptet, som
+kontrollerar varje värde.
