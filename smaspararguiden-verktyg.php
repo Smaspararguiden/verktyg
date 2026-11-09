@@ -132,7 +132,7 @@ function sgv_itp_resultat(WP_REST_Request $anrop): WP_REST_Response
     $svar = wp_remote_post(sgv_insamlings_url(), [
         'body' => $text,
         'headers' => ['Content-Type' => 'text/plain'],
-        'timeout' => 3,
+        'timeout' => 5,
         'redirection' => 0,
     ]);
     if (is_wp_error($svar) || wp_remote_retrieve_response_code($svar) >= 400) {
