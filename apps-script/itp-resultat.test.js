@@ -146,8 +146,12 @@ test("provkörningen ger en rad märkt som test", () => {
 test("med nyckel i skriptet krävs samma nyckel i anropet", () => {
   const s = ladda(null, "hemlig");
   assert.equal(s.doPost(post(giltig)), "avvisad");
-  assert.equal(s.doPost({ postData: { contents: JSON.stringify(giltig) }, parameter: { nyckel: ["fel"] } }), "avvisad");
-  assert.equal(s.doPost({ postData: { contents: JSON.stringify(giltig) }, parameter: { nyckel: ["hemlig"] } }), "ok");
+  // Apps Script gives e.parameter values as strings, as here.
+  const med = (nyckel) => ({ postData: { contents: JSON.stringify(giltig) }, parameter: { nyckel } });
+  assert.equal(s.doPost(med("fel")), "avvisad");
+  // only the first character right is not enough
+  assert.equal(s.doPost(med("h")), "avvisad");
+  assert.equal(s.doPost(med("hemlig")), "ok");
   assert.equal(s.flik().rader.length, 2);
   // utan egenskapen satt accepteras alla anrop, så utrullning kan ske i valfri ordning
   assert.equal(ladda().doPost(post(giltig)), "ok");

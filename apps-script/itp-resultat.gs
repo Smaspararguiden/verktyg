@@ -136,8 +136,10 @@ function spara(indata) {
 function doPost(e) {
   // When a key is set in the script properties, requests without it are
   // refused. Without one, everything is accepted, so deployment order is free.
+  // e.parameter holds each query parameter as a string (e.parameters would
+  // hold arrays), so the whole key is compared.
   const nyckel = PropertiesService.getScriptProperties().getProperty(NYCKEL_EGENSKAP);
-  if (nyckel && (!e || !e.parameter || !e.parameter.nyckel || e.parameter.nyckel[0] !== nyckel)) {
+  if (nyckel && (!e || !e.parameter || e.parameter.nyckel !== nyckel)) {
     return ContentService.createTextOutput("avvisad");
   }
   let sparad = false;
