@@ -9,7 +9,7 @@
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
-const { INSAMLINGSADRESS, matvarden, nyKod, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
+const { matvarden, nyKod, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -467,11 +467,14 @@ function visaLage() {
 // anything has changed since last time, with what is on the page at that moment.
 // The same code each time lets the receiver keep one row per page view, with
 // the last figures. Nothing is sent before the visitor has typed something.
-// Sent without cookies or the page's address, and a failure is never shown.
+// It goes to this site, which passes it on, so the visitor's browser never
+// contacts Google. Sent without cookies, and a failure is never shown.
 const kod = nyKod();
 let andrat = false;
 function rapportera() {
-  if (!andrat) return;
+  // The plugin gives the address; the preview page has none.
+  const insamling = rot.dataset.insamling;
+  if (!andrat || !insamling) return;
   andrat = false;
   const { fodelsear, manadslon, kapital, andelPremieFond } = lasIndata();
   const varden = matvarden({
@@ -489,9 +492,8 @@ function rapportera() {
     version: new URLSearchParams(versionsfraga).get("ver"),
     kod,
   });
-  fetch(INSAMLINGSADRESS, {
+  fetch(insamling, {
     method: "POST",
-    mode: "no-cors",
     credentials: "omit",
     referrerPolicy: "no-referrer",
     keepalive: true,
