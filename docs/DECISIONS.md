@@ -334,3 +334,19 @@ försvinner, i stället för att försökas igen.
 Pluginen får därmed sin första kod som tar emot anrop från vem som helst. Den
 släpper bara igenom små JSON-objekt och skickar dem bara till skriptet, som
 kontrollerar varje värde.
+
+## 28. Statistik-endpointen är taktsbegränsad och vidarebefordrar bara små JSON-objekt (2026-11-09)
+
+`POST /wp-json/sgv/v1/itp-resultat` är öppen för alla, som sidan själv, och varje
+anrop höll tidigare en PHP-arbetare upp till tio sekunder mot Google. En flod av
+anrop kunde då ta ner sajten, och vem som helst kunde skicka förfalskade rader till
+arket genom sajten. Nu räknas anrop per adress och totalt (10 respektive 120 per
+minut) i transienter innan något skickas vidare, och överskridande ger 429. Kroppen
+ska vara högst 3000 tecken och ett JSON-objekt med högst 30 strängnycklar, och
+timeouten mot skriptet är 3 sekunder. Endast räknare över skickade, misslyckade och
+begränsade anrop sparas i wp_options (`sgv_matning_stat`), aldrig rapporterna.
+
+Allt ligger i pluginen, så inget behöver ändras i wp-config.php eller i nginx.
+Saknas X-Forwarded-For blir adressräkningen en global gräns, vilket fortfarande
+skyddar PHP-arbetarna. Filversionen är nu en hash av senaste ändringstiden, så
+serverns klocka inte syns i URL:erna.

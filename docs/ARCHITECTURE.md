@@ -32,7 +32,7 @@ har filerna i en mapp som heter `smaspararguiden-verktyg`. Ändrade filer skrivs
 
 Kortkoden ger ett tomt element med klassen `sg-itp` och laddar `visning.js`
 som modul. Stilmallen läggs till av kortkoden, så den laddas bara på sidor
-som använder verktyget. Alla filadresser får `?ver=` med den senaste
+som använder verktyget. Alla filadresser får `?ver=` med en hash av den senaste
 ändringstiden bland verktygets filer. `visning.js` laddar de andra modulerna
 med samma `?ver=`, så en uppladdning byter alla adresser på en gång.
 
@@ -107,6 +107,9 @@ Webbläsaren skickar till pluginen på sajten, `POST /wp-json/sgv/v1/itp-resulta
 som genast skickar vidare till ett Apps Script och inte sparar något. Google ser
 då sajtens server, inte besökaren. Pluginen ger sidan adressen i kortkodens
 `data-insamling`. Förhandsvisningen har ingen sådan adress och skickar inget.
+Endpointen är taktsbegränsad (10 anrop per minut och adress, 120 totalt, svar 429
+vid överskridande) och tar bara emot små JSON-objekt med strängnycklar; pluginen
+sparar bara räknare över anrop i databasen, aldrig rapporterna.
 
 Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje värde och sparar i
 fliken `Resultat` i det Google-ark det hör till. Finns koden redan skrivs den
