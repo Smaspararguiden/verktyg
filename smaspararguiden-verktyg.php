@@ -53,6 +53,19 @@ add_shortcode('itp_raknesnurra', 'sgv_itp_raknesnurra');
 const SGV_ITP_INSAMLING = 'https://script.google.com/macros/s/AKfycbwTc68eThpPp1CJRe8imSGomzMnPSdIPq428ZxiTSBLidKz_il-deyUxKOVVKgTvbaz/exec';
 
 /**
+ * The address reports are forwarded to. When the site has a key in the
+ * sgv_itp_nyckel option, it is added as a query parameter; the script checks
+ * it against its SGV_NYCKEL property when one is set there.
+ */
+function sgv_insamlings_url(): string
+{
+    $nyckel = (string) get_option('sgv_itp_nyckel', '');
+    return $nyckel === ''
+        ? SGV_ITP_INSAMLING
+        : SGV_ITP_INSAMLING . '?nyckel=' . rawurlencode($nyckel);
+}
+
+/**
  * Passes one report from the calculator on to the Apps Script, so that Google
  * sees this server instead of the visitor. Nothing is stored here, and the
  * visitor's address is not passed on. Open to anyone, like the page itself, so
@@ -66,7 +79,7 @@ function sgv_itp_resultat(WP_REST_Request $anrop): WP_REST_Response
     }
     // The script saves the row before it answers with a redirect, which is
     // not followed. A failure is not reported: the visitor never waits for it.
-    wp_remote_post(SGV_ITP_INSAMLING, [
+    wp_remote_post(sgv_insamlings_url(), [
         'body' => $text,
         'headers' => ['Content-Type' => 'text/plain'],
         'timeout' => 10,
@@ -81,3 +94,97 @@ add_action('rest_api_init', function (): void {
         'permission_callback' => '__return_true',
     ]);
 });
+
+// Settings -> Småspararguiden: the key for the statistics receiver, a link to
+// the sheet, counters for the reports passing through and a test button.
+// Built only with WordPress' own admin controls. Only configuration and
+// counts are stored in the database, never report contents.
+add_action('admin_init', function (): void {
+    if (get_option('sgv_itp_nyckel') === false) {
+        add_option('sgv_itp_nyckel', wp_generate_password(32, false));
+    }
+    register_setting('sgv_verktyg', 'sgv_itp_ark', [
+        'type' => 'string',
+        'sanitize_callback' => 'esc_url_raw',
+        'default' => '',
+    ]);
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    if (isset($_POST['sgv_ny_nyckel']) && check_admin_referer('sgv_ny_nyckel')) {
+        update_option('sgv_itp_nyckel', wp_generate_password(32, false));
+        wp_safe_redirect(add_query_arg(['nyckel' => 'ny'], admin_url('options-general.php?page=sgv-verktyg')));
+        exit;
+    }
+    if (isset($_POST['sgv_provrapport']) && check_admin_referer('sgv_provrapport')) {
+        // A row marked test, sent through the same endpoint the page uses.
+        wp_remote_post(rest_url('sgv/v1/itp-resultat'), [
+            'body' => (string) json_encode([
+                'kalla' => 'test',
+                'lage' => 'ingen',
+                'resultat' => 'nej',
+                'kod' => bin2hex(random_bytes(16)),
+            ]),
+            'headers' => ['Content-Type' => 'application/json'],
+            'timeout' => 5,
+            'redirection' => 0,
+        ]);
+        wp_safe_redirect(add_query_arg(['prov' => 'skickad'], admin_url('options-general.php?page=sgv-verktyg')));
+        exit;
+    }
+});
+
+add_action('admin_menu', function (): void {
+    add_options_page('Småspararguidens verktyg', 'Småspararguiden', 'manage_options', 'sgv-verktyg', 'sgv_admin_sida');
+});
+
+function sgv_admin_sida(): void
+{
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    $nyckel = (string) get_option('sgv_itp_nyckel', '');
+    $ark = (string) get_option('sgv_itp_ark', '');
+    $stat = get_option('sgv_matning_stat', []);
+    echo '<div class="wrap">';
+    echo '<h1>Småspararguidens verktyg</h1>';
+    if (isset($_GET['nyckel'])) {
+        echo '<div class="notice notice-success"><p>Ny nyckel skapad. Sätt samma värde i egenskapen <code>SGV_NYCKEL</code> i Apps Script.</p></div>';
+    }
+    if (isset($_GET['prov'])) {
+        echo '<div class="notice notice-info"><p>Provrad skickad genom endpointen, märkt <code>test</code> i arket.</p></div>';
+    }
+    echo '<h2>Statistik från ITP-räknesnurran</h2>';
+    echo '<p>Rapporter skickas vidare till Apps Script och sparas i dess Google-ark. I WordPress sparas bara räknare, aldrig rapporterna.</p>';
+    echo '<table class="widefat striped"><thead><tr><th>Anrop till statistik-endpointen</th><th>Antal</th></tr></thead><tbody>';
+    echo '<tr><td>Skickade vidare</td><td>' . (int) ($stat['skickade'] ?? 0) . '</td></tr>';
+    echo '<tr><td>Misslyckade vidarebefordringar</td><td>' . (int) ($stat['misslyckade'] ?? 0) . '</td></tr>';
+    echo '<tr><td>Begränsade (429)</td><td>' . (int) ($stat['begransade'] ?? 0) . '</td></tr>';
+    echo '</tbody></table>';
+    echo '<h2>Kalkylark</h2>';
+    echo '<form method="post" action="options.php">';
+    settings_fields('sgv_verktyg');
+    echo '<table class="form-table" role="presentation"><tr>';
+    echo '<th scope="row"><label for="sgv_itp_ark">Länk till Google-arket</label></th>';
+    echo '<td><input type="url" name="sgv_itp_ark" id="sgv_itp_ark" class="regular-text" value="' . esc_attr($ark) . '"></td>';
+    echo '</tr></table>';
+    submit_button();
+    echo '</form>';
+    if ($ark !== '') {
+        echo '<p><a class="button" href="' . esc_url($ark) . '" target="_blank" rel="noopener">Öppna kalkylarket</a></p>';
+    }
+    echo '<h2>Nyckel till statistikmottagaren</h2>';
+    echo '<p>Skickas med varje rapport som <code>?nyckel=</code>. Sätt samma värde i egenskapen <code>SGV_NYCKEL</code> i Apps Script; tills dess accepteras alla anrop där.</p>';
+    echo '<form method="post" action="">';
+    wp_nonce_field('sgv_ny_nyckel');
+    echo '<input type="text" class="regular-text" readonly value="' . esc_attr($nyckel) . '" onclick="this.select()"> ';
+    submit_button('Skapa ny nyckel', 'secondary', 'sgv_ny_nyckel');
+    echo '</form>';
+    echo '<h2>Prova kedjan</h2>';
+    echo '<p>Skickar en rad märkt <code>test</code> från sajten genom endpointen till arket.</p>';
+    echo '<form method="post" action="">';
+    wp_nonce_field('sgv_provrapport');
+    submit_button('Skicka provrad', 'secondary', 'sgv_provrapport');
+    echo '</form>';
+    echo '</div>';
+}

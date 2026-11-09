@@ -334,3 +334,14 @@ försvinner, i stället för att försökas igen.
 Pluginen får därmed sin första kod som tar emot anrop från vem som helst. Den
 släpper bara igenom små JSON-objekt och skickar dem bara till skriptet, som
 kontrollerar varje värde.
+
+## 29. Nyckeln till statistikmottagaren ligger i wp_options och visas i admin (2026-11-09)
+
+Repot publiceras via GitHub Pages, så en nyckel i en fil i repot skulle vara
+offentlig. Därför ligger nyckeln i WordPress-databasen (`sgv_itp_nyckel`), skapad
+första gången någon öppnar en admin-sida, och visas på Inställningar ->
+Småspararguiden för den med behörigheten manage_options. Sidan är byggd enbart med
+WordPress inbyggda admin-komponenter, utan egen CSS. Där finns också en länk till
+kalkylarket, räknare över anrop till endpointen (se 28) och en knapp som skickar en
+provrad märkt `test` genom hela kedjan. Export av statistiken sker fortfarande från
+själva kalkylarket; här sparas aldrig rapportinnehåll.

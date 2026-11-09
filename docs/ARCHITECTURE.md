@@ -125,3 +125,8 @@ läggs sist i skriptets lista. Skriptet lägger själv till dess rubrik.
 Förhandsvisningen använder ES-moduler och måste därför visas via en
 webbserver, inte som fil. Lokalt: `python -m http.server` i repots rot och
 sedan `/itp/`.
+
+Under Inställningar -> Småspararguiden finns nyckeln till mottagaren (i
+wp_options, skickad som `?nyckel=`), en länk till kalkylarket, räknare över anrop
+till endpointen och en knapp som skickar en provrad märkt `test` genom hela
+kedjan. Sidan är byggd enbart med WordPress inbyggda admin-komponenter.
