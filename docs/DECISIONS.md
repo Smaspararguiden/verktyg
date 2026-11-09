@@ -370,3 +370,14 @@ Allt ligger i pluginen, så inget behöver ändras i wp-config.php eller i nginx
 Saknas X-Forwarded-For blir adressräkningen en global gräns, vilket fortfarande
 skyddar PHP-arbetarna. Filversionen är nu en hash av senaste ändringstiden, så
 serverns klocka inte syns i URL:erna.
+
+## 29. Nyckeln till statistikmottagaren ligger i wp_options och visas i admin (2026-11-09)
+
+Repot publiceras via GitHub Pages, så en nyckel i en fil i repot skulle vara
+offentlig. Därför ligger nyckeln i WordPress-databasen (`sgv_itp_nyckel`), skapad
+första gången någon öppnar en admin-sida, och visas på Inställningar ->
+Småspararguiden för den med behörigheten manage_options. Sidan är byggd enbart med
+WordPress inbyggda admin-komponenter, utan egen CSS. Där finns också en länk till
+kalkylarket, räknare över anrop till endpointen (se 28) och en knapp som skickar en
+provrad märkt `test` genom hela kedjan. Export av statistiken sker fortfarande från
+själva kalkylarket; här sparas aldrig rapportinnehåll.
