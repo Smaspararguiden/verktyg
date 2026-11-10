@@ -68,11 +68,14 @@ har inga egna siffror. "Så har vi räknat" ritas direkt från parameterfilen,
 och knappen "Ladda ner år för år" ger tabellen från `berakna()`, med det
 egna sparandet efter scenarierna, som CSV
 (semikolon och decimalkomma, för svenska Excel och Sheets). Filen skapas i
-webbläsaren. Staplarna för kapitalet vid 68 år och CSV-knappen ligger i en
-hopfälld ruta, och den hålls öppen när resultatet ritas om. Allt som sajten
-lägger under kortkoden, som uppmaningar och Octanys widgetar, ligger i
-WordPress och syns därför nära resultatet. Förhandsvisningen visar en
-platshållare där. Texterna i "Så har vi räknat" HTML-escapas innan de ritas, så även
+webbläsaren. Under huvudresultatet ligger en hopfälld ruta, "Se ditt kapital
+vid 68 år och hur vi har räknat", med antagandena, staplarna för kapitalet och
+CSV-knappen, och inuti den "Ditt kapital" och "Så har vi räknat" som egna
+expandrar. Rutan ritas inte om, och "Ditt kapital" hålls öppen när resultatet
+ritas om. Allt som sajten lägger under kortkoden, som uppmaningar och Octanys
+widgetar, ligger i WordPress och syns därför direkt efter huvudresultatet.
+Förhandsvisningen visar en platshållare där. Texten om vad vi sparar står
+överst i snurran. Texterna i "Så har vi räknat" HTML-escapas innan de ritas, så även
 parameterfilens texter är säkra att rendera.
 
 Kapitalet anges på ett av tre sätt: en total, som räknas som trad, en rad

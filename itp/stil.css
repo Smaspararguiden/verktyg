@@ -107,6 +107,8 @@
 .sg-itp .staplar { margin: 16px 0; }
 .sg-itp .stapel { margin: 0 0 12px; }
 .sg-itp .stapel .rubrik { display: flex; justify-content: space-between; gap: 12px; }
+/* The amount stays on one line; the label wraps instead. */
+.sg-itp .stapel .rubrik strong { white-space: nowrap; }
 .sg-itp .stapel .spar {
   height: 14px;
   background: var(--kant);
@@ -131,6 +133,9 @@
 
 .sg-itp details { margin-top: 32px; border-top: 1px solid var(--kant); padding-top: 12px; }
 .sg-itp summary { cursor: pointer; font-weight: 700; }
+/* Expanders inside the outer one sit closer. */
+.sg-itp details details { margin-top: 16px; }
+.sg-itp .lagring { margin: 0 0 16px; }
 .sg-itp .tabell-rulla { overflow-x: auto; }
 .sg-itp .visa-kalla {
   background: none;
