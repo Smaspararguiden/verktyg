@@ -391,3 +391,17 @@ anrop till Google är klara inom 3 sekunder, så väntetiden är 3 sekunder i st
 för 5 (28). Det som tar längre tid räknas som misslyckat i räknarna på
 inställningssidan. Om raden ändå sparas i de fallen vet vi inte, så vi följer
 räknaren och höjer bara om den visar många misslyckade.
+
+## 31. Kapitalet vid 68 år fälls ihop, och uppmaningarna ligger i WordPress (2026-11-10)
+
+Under resultatet ska det finnas uppmaningar att flytta, att donera via Octanys
+Swish-widget och senare att skriva till facket. De byggs med vanliga block i
+WordPress under kortkoden i stället för i pluginen, så att de går att ändra utan
+en ny version och widgetarna används som på resten av sajten. Kortkoden ritar
+hela snurran i ett stycke, så blocken hamnar efter den. Med staplarna och
+CSV-knappen hopfällda kommer de ändå strax efter antagandena, där besökaren
+fortfarande läser.
+
+Att flytta in blocken mitt i resultatet valdes bort tills vidare. Resultatet
+ritas om vid varje knapptryck, så det kräver mer kod för att blocken inte ska
+försvinna. Det är nästa steg om avståndet visar sig för stort.
