@@ -125,6 +125,14 @@ rot.innerHTML = `
 const form = rot.querySelector("form");
 const resultat = rot.querySelector(".resultat");
 
+// Whether the visitor has opened "Ditt kapital". The result is drawn again on
+// every keystroke, so the state is kept here. toggle does not bubble, hence the
+// capture.
+let kapitalOppen = false;
+resultat.addEventListener("toggle", (e) => {
+  if (e.target.matches("details.kapital")) kapitalOppen = e.target.open;
+}, true);
+
 const kr = (x) => `${tusental(x).toLocaleString("sv-SE")} kr`;
 const krManad = (x) => `${tiotal(x).toLocaleString("sv-SE")} kr/mån`;
 const procent = (x, decimaler = 0) =>
@@ -334,12 +342,16 @@ function visaResultat(indata, r) {
     ["Allt i fondförsäkring, om regeln togs bort", s.alltFlyttat.slutkapital, "fond"],
   ];
   const max = Math.max(...rader.map(([, v]) => v));
-  delar.push(`<h2>Ditt kapital vid ${pa} år</h2><div class="staplar">${rader
+  // Folded, so that what the site puts under the tool comes soon after the result.
+  delar.push(`<details class="kapital"${kapitalOppen ? " open" : ""}>
+    <summary>Ditt kapital vid ${pa} år</summary>
+    <div class="staplar">${rader
     .map(([namn, varde, klass]) => `<div class="stapel ${klass}">
       <div class="rubrik"><span>${namn}</span><strong>${kr(varde)}</strong></div>
       <div class="spar"><div class="fyllning" style="width:${(varde / max) * 100}%"></div></div>
     </div>`).join("")}</div>
-    <button type="button" class="ladda-ner">Ladda ner år för år (CSV)</button>`);
+    <button type="button" class="ladda-ner">Ladda ner år för år (CSV)</button>
+  </details>`);
 
   resultat.innerHTML = delar.join("");
   resultat.querySelector(".ladda-ner").addEventListener("click", laddaNerCsv);
