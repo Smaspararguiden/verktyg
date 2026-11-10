@@ -360,7 +360,7 @@ ska vara högst 3000 tecken och ett JSON-objekt med högst 30 strängnycklar, oc
 timeouten mot skriptet är 5 sekunder. Google är ibland långsamt att starta, och med
 3 sekunder räknades många anrop som misslyckade fast raden sparades. Endast räknare
 över skickade, misslyckade och begränsade anrop sparas i wp_options
-(`sgv_matning_stat`), aldrig rapporterna.
+(`sgv_matning_stat`), aldrig rapporterna. Väntetiden ändrades till 3 sekunder, se 30.
 
 Räkningen per adress sparar en hash av besökarens IP-adress som nyckel i en
 transient, i en minut. Det är det enda om besökaren som sajten sparar för
@@ -381,3 +381,13 @@ WordPress inbyggda admin-komponenter, utan egen CSS. Där finns också en länk 
 kalkylarket, räknare över anrop till endpointen (se 28) och en knapp som skickar en
 provrad märkt `test` genom hela kedjan. Export av statistiken sker fortfarande från
 själva kalkylarket; här sparas aldrig rapportinnehåll.
+
+## 30. Väntetiden mot Google är 3 sekunder (2026-11-10)
+
+Varje anrop till statistikadressen håller en PHP-process medan pluginen väntar på
+Google, och servern har ett begränsat antal sådana. Väntar varje anrop länge kan
+servern sluta svara på andra sidor. Sajtens webbansvarig bedömer att nästan alla
+anrop till Google är klara inom 3 sekunder, så väntetiden är 3 sekunder i stället
+för 5 (28). Det som tar längre tid räknas som misslyckat i räknarna på
+inställningssidan. Om raden ändå sparas i de fallen vet vi inte, så vi följer
+räknaren och höjer bara om den visar många misslyckade.
