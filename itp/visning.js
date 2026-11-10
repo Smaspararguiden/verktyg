@@ -16,6 +16,10 @@ const ITP1_FRAN_FODELSEAR = 1979;
 
 const rot = document.querySelector(".sg-itp");
 rot.innerHTML = `
+  <p class="hjalp lagring">När du lämnar sidan sparar vi det du har fyllt i och ditt
+    resultat i vår statistik, i ett kalkylark hos Google. Vi sparar inte ditt namn
+    eller din IP-adress, och bara dagen, inte klockslaget.</p>
+
   <form autocomplete="off">
     <fieldset>
       <legend>Om dig</legend>
@@ -113,23 +117,27 @@ rot.innerHTML = `
 
   <section class="resultat" aria-live="polite"></section>
 
-  <p class="hjalp">När du lämnar sidan sparar vi det du har fyllt i och ditt
-    resultat i vår statistik, i ett kalkylark hos Google. Vi sparar inte ditt namn
-    eller din IP-adress, och bara dagen, inte klockslaget.</p>
-
-  <details>
-    <summary>Så har vi räknat</summary>
-    <div class="parametrar"></div>
+  <details class="mer">
+    <summary>Se ditt kapital vid 68 år och hur vi har räknat</summary>
+    <div class="resultat-mer"></div>
+    <details>
+      <summary>Så har vi räknat</summary>
+      <div class="parametrar"></div>
+    </details>
   </details>`;
 
 const form = rot.querySelector("form");
 const resultat = rot.querySelector(".resultat");
+// The folded part of the result: assumptions and the capital at the pension
+// age. It sits in a static expander, so that what the site puts under the tool
+// comes right after the main result.
+const resultatMer = rot.querySelector(".resultat-mer");
 
 // Whether the visitor has opened "Ditt kapital". The result is drawn again on
 // every keystroke, so the state is kept here. toggle does not bubble, hence the
 // capture.
 let kapitalOppen = false;
-resultat.addEventListener("toggle", (e) => {
+resultatMer.addEventListener("toggle", (e) => {
   if (e.target.matches("details.kapital")) kapitalOppen = e.target.open;
 }, true);
 
@@ -232,6 +240,7 @@ const alderFran = (fodelsear) => new Date().getFullYear() - fodelsear;
 
 function meddelande(text, klass = "") {
   resultat.innerHTML = `<div class="meddelande ${klass}">${text}</div>`;
+  resultatMer.innerHTML = "";
 }
 
 let senaste = null;
@@ -330,8 +339,10 @@ function visaResultat(indata, r) {
       fondförsäkring ligger i Länsförsäkringars entrélösning. Har du valt andra
       fonder kan det bli både bättre och sämre.`);
   }
+  // Assumptions and the capital go into the folded part.
+  const mer = [];
   if (antaganden.length) {
-    delar.push(`<div class="meddelande varning"><strong>Det här har vi antagit</strong>
+    mer.push(`<div class="meddelande varning"><strong>Det här har vi antagit</strong>
       <ul>${antaganden.map((a) => `<li>${a}</li>`).join("")}</ul></div>`);
   }
 
@@ -342,8 +353,7 @@ function visaResultat(indata, r) {
     ["Allt i fondförsäkring, om regeln togs bort", s.alltFlyttat.slutkapital, "fond"],
   ];
   const max = Math.max(...rader.map(([, v]) => v));
-  // Folded, so that what the site puts under the tool comes soon after the result.
-  delar.push(`<details class="kapital"${kapitalOppen ? " open" : ""}>
+  mer.push(`<details class="kapital"${kapitalOppen ? " open" : ""}>
     <summary>Ditt kapital vid ${pa} år</summary>
     <div class="staplar">${rader
     .map(([namn, varde, klass]) => `<div class="stapel ${klass}">
@@ -354,7 +364,8 @@ function visaResultat(indata, r) {
   </details>`);
 
   resultat.innerHTML = delar.join("");
-  resultat.querySelector(".ladda-ner").addEventListener("click", laddaNerCsv);
+  resultatMer.innerHTML = mer.join("");
+  resultatMer.querySelector(".ladda-ner").addEventListener("click", laddaNerCsv);
 }
 
 // Year-by-year table for every scenario and pot, for checking by hand, and

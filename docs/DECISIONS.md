@@ -405,3 +405,20 @@ fortfarande läser.
 Att flytta in blocken mitt i resultatet valdes bort tills vidare. Resultatet
 ritas om vid varje knapptryck, så det kräver mer kod för att blocken inte ska
 försvinna. Det är nästa steg om avståndet visar sig för stort.
+
+Även antagandena och "Så har vi räknat" fälldes ihop, se 32.
+
+## 32. Allt utom huvudresultatet ligger i en expander (2026-11-10)
+
+Med bara kapitalet hopfällt (31) låg antagandena, texten om vad vi sparar och
+"Så har vi räknat" fortfarande mellan resultatet och uppmaningarna, och på
+datorn scrollade man lätt inte så långt. Nu ligger antagandena, kapitalet och
+"Så har vi räknat" i en ruta, "Se ditt kapital vid 68 år och hur vi har räknat",
+direkt efter huvudresultatet. Kapitalet och beräkningen blir expandrar inuti den,
+alltså dubbla för den som vill se dem.
+
+Antagandena syns därmed inte längre utan ett klick. Det är en avvägning: de
+säger till exempel att vi räknat som om allt ligger i traditionell försäkring,
+men uppmaningarna väger tyngre. Texten om vad vi sparar flyttades i stället
+överst i snurran, så att besökaren ser den innan hen fyller i något och den inte
+göms i rutan.
