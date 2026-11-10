@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.5
+ * Version: 0.1.6
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
@@ -137,7 +137,7 @@ function sgv_itp_resultat(WP_REST_Request $anrop): WP_REST_Response
     $svar = wp_remote_post(sgv_insamlings_url(), [
         'body' => $text,
         'headers' => ['Content-Type' => 'text/plain'],
-        'timeout' => 5,
+        'timeout' => 3,
         'redirection' => 0,
     ]);
     if (is_wp_error($svar) || wp_remote_retrieve_response_code($svar) >= 400) {
