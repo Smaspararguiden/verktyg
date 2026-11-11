@@ -146,7 +146,7 @@
 .sg-itp tr.kalla td { color: var(--dampad); font-size: 0.9em; }
 
 /* The mail to the union, in its own box under the calculator. Its buttons are
-   the theme's own (wp-element-button), like the other buttons there. */
+   the theme's own, in the markup of its button block, like the buttons above. */
 .sg-itp-facket [hidden] { display: none !important; }
 .sg-itp-facket .hjalp { color: var(--dampad); font-size: 0.9em; margin: 8px 0; }
 .sg-itp-facket .mejl { margin-top: 12px; }
@@ -159,4 +159,12 @@
 .sg-itp-facket .amne { margin: 0 0 12px; }
 .sg-itp-facket .brodtext { white-space: pre-wrap; }
 .sg-itp-facket .knappar { display: flex; flex-wrap: wrap; gap: 8px; }
-.sg-itp-facket button { font: inherit; cursor: pointer; }
+/* Equally wide side by side; never narrower than their text, so on a narrow
+   screen they wrap and each fills the line. On the narrowest, the text wraps. */
+.sg-itp-facket .knappar > .wp-block-button { flex: 1 1 0; min-width: max-content; }
+@media (max-width: 400px) {
+  .sg-itp-facket .knappar > .wp-block-button { flex-basis: 100%; min-width: 0; }
+}
+.sg-itp-facket .knappar .wp-block-button__link {
+  display: block; width: 100%; box-sizing: border-box; text-align: center;
+}

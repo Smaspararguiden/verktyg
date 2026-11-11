@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.12
+ * Version: 0.1.13
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
