@@ -10,6 +10,7 @@ const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
 const { matvarden, nyKod, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
+const { mejl } = await import(`./facket.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -533,7 +534,83 @@ document.addEventListener("visibilitychange", () => {
 });
 window.addEventListener("pagehide", rapportera);
 
-form.addEventListener("input", () => { andrat = true; visaLage(); uppdatera(); });
+// The mail to the union, in the box that [itp_mejl_till_facket] puts on the
+// page, wherever the site has placed it. It follows the result as it changes.
+const facket = document.querySelector(".sg-itp-facket");
+if (facket) {
+  facket.innerHTML = `
+    <button type="button" class="wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</button>
+    <div class="mejl" hidden>
+      <p class="hjalp vanta">Räkna först, så kommer dina siffror med i mejlet.</p>
+      <div class="mejltext"></div>
+      <div class="knappar">
+        <button type="button" class="wp-element-button kopiera">Kopiera texten</button>
+        <a class="wp-element-button oppna" href="#">Öppna i mejlprogrammet</a>
+      </div>
+      <p class="hjalp kopierat" aria-live="polite"></p>
+      <p class="hjalp">Fyll i ditt namn och skicka till ditt förbund eller till fackklubben på jobbet.</p>
+    </div>`;
+  const visa = facket.querySelector(".visa-mejl");
+  visa.addEventListener("click", () => {
+    const ruta = facket.querySelector(".mejl");
+    ruta.hidden = !ruta.hidden;
+    visa.setAttribute("aria-expanded", String(!ruta.hidden));
+    visa.textContent = ruta.hidden ? "Visa mejlet" : "Dölj mejlet";
+  });
+  facket.querySelector(".kopiera").addEventListener("click", kopieraMejl);
+}
+
+function aktuelltMejl() {
+  return senaste ? mejl(senaste.r) : null;
+}
+
+function visaFacket() {
+  if (!facket) return;
+  const m = aktuelltMejl();
+  facket.querySelector(".vanta").hidden = Boolean(m);
+  facket.querySelector(".mejltext").hidden = !m;
+  facket.querySelector(".knappar").hidden = !m;
+  facket.querySelector(".kopierat").textContent = "";
+  if (!m) return;
+  facket.querySelector(".mejltext").innerHTML = `<p class="amne"><strong>Ämne:</strong> ${m.amne}</p>
+    <div class="brodtext">${m.text}</div>`;
+  facket.querySelector(".oppna").href =
+    `mailto:?subject=${encodeURIComponent(m.amne)}&body=${encodeURIComponent(m.text)}`;
+}
+
+// Copies subject and text. Where the browser does not allow the clipboard, the
+// text is selected and the older copy command is tried; if that fails too, the
+// visitor copies the selection by hand.
+async function kopieraMejl() {
+  const m = aktuelltMejl();
+  if (!m) return;
+  const status = facket.querySelector(".kopierat");
+  const kopierat = "Kopierat! Klistra in i ett nytt mejl.";
+  try {
+    await navigator.clipboard.writeText(`Ämne: ${m.amne}\n\n${m.text}`);
+    status.textContent = kopierat;
+  } catch {
+    const markering = window.getSelection();
+    const omrade = document.createRange();
+    omrade.selectNodeContents(facket.querySelector(".mejltext"));
+    markering.removeAllRanges();
+    markering.addRange(omrade);
+    if (document.execCommand("copy")) {
+      markering.removeAllRanges();
+      status.textContent = kopierat;
+    } else {
+      status.textContent = "Texten är markerad. Kopiera den med Ctrl+C eller genom att hålla fingret på den.";
+    }
+  }
+}
+
+// Everything that follows the figures: the result and the mail.
+function uppdateraAllt() {
+  uppdatera();
+  visaFacket();
+}
+
+form.addEventListener("input", () => { andrat = true; visaLage(); uppdateraAllt(); });
 rot.querySelector(".lagg-till").addEventListener("click", () => {
   laggTillRad();
   forsakringar.lastElementChild.querySelector(".belopp-falt").focus();
@@ -542,7 +619,7 @@ forsakringar.addEventListener("click", (e) => {
   if (!e.target.closest(".ta-bort")) return;
   e.target.closest(".rad").remove();
   andrat = true;
-  uppdatera();
+  uppdateraAllt();
 });
 // Three rows are enough for most people; more can be added.
 for (let i = 0; i < 3; i++) laggTillRad();
@@ -556,4 +633,4 @@ rot.querySelector(".parametrar").addEventListener("click", (e) => {
 });
 visaLage();
 visaParametrar();
-uppdatera();
+uppdateraAllt();

@@ -13,6 +13,7 @@ smaspararguiden-verktyg.php   pluginen: en kortkod per verktyg
   berakning.js    beräkningsmodulen: parametrar + indata -> siffror
   visning.js      visningen: ritar inmatning, resultat och "Så har vi räknat"
   matning.js      vad som sparas om ett resultat, och vart det skickas
+  facket.js       mejlet till facket, med användarens belopp
   stil.css        stilar för verktygets egna komponenter
   index.html      förhandsvisning utanför WordPress
 apps-script/      skript som tar emot resultat och sparar dem i ett Google-ark
@@ -25,7 +26,7 @@ beräkningsmodulen och läser parameterfilen för "Så har vi räknat".
 
 Pluginen ligger i `wp-content/plugins/smaspararguiden-verktyg/` på sajten:
 `smaspararguiden-verktyg.php` och de filer som verktygen laddar, för ITP-snurran
-`parametrar.js`, `berakning.js`, `visning.js`, `matning.js` och `stil.css`. Första gången
+`parametrar.js`, `berakning.js`, `visning.js`, `matning.js`, `facket.js` och `stil.css`. Första gången
 laddas den upp som en zip-fil via Tillägg i WordPress och aktiveras där. Zip-filen
 har filerna i en mapp som heter `smaspararguiden-verktyg`. Ändrade filer skrivs
 över via FTP, och sajtens cache rensas i WordPress.
@@ -102,6 +103,18 @@ och får lite luft av oss, eftersom temat inte stylar dem. `index.html` är en
 förhandsvisning med samma element och några regler som står i för temat.
 
 I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en knapp.
+
+## Mejl till facket
+
+Kortkoden `[itp_mejl_till_facket]` ger en tom ruta som sajten placerar bland
+sina egna block under snurran. `visning.js`, som laddas av `[itp_raknesnurra]`
+på samma sida, letar upp rutan och fyller den med en knapp som visar ett mejl
+till facket. Mejlet skapas av `facket.js` från resultatet och följer det när
+användaren ändrar något. Beloppen är vad regeln kostar och vad det motsvarar i
+månadssparande, det vill säga skillnaden mellan sparandet utan regeln och med
+flytt. Mejlet går att kopiera eller öppna i mejlprogrammet, utan mottagare.
+Rubrik och inledande text ligger i WordPress. Utan snurran på sidan förblir
+rutan tom.
 
 ## Mätning
 

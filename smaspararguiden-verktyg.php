@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.8
+ * Version: 0.1.9
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
@@ -48,6 +48,18 @@ function sgv_itp_raknesnurra(): string
         . '<script type="module" src="' . esc_url($bas . 'visning.js?ver=' . $ver) . '"></script>';
 }
 add_shortcode('itp_raknesnurra', 'sgv_itp_raknesnurra');
+
+/**
+ * [itp_mejl_till_facket]: an empty box that visning.js, loaded by
+ * [itp_raknesnurra] on the same page, fills with a mail to the union holding
+ * the visitor's figures. The site places it among its own blocks. On a page
+ * without the calculator it stays empty.
+ */
+function sgv_itp_mejl_till_facket(): string
+{
+    return '<div class="sg-itp-facket"></div>';
+}
+add_shortcode('itp_mejl_till_facket', 'sgv_itp_mejl_till_facket');
 
 // The Apps Script that keeps the calculator's statistics in a Google sheet, see
 // apps-script/itp-resultat.gs. Not a secret.
