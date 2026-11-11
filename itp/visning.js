@@ -547,17 +547,20 @@ const egetMejl = facket ? {
 const hjalpText = (facket?.dataset.hjalp || "").trim();
 const raknaForstText = (facket?.dataset.raknaForst || "").trim()
   || "Räkna först, så kommer dina siffror med i mejlet.";
+// The buttons are links with role="button": the theme styles a <button> with
+// a smaller, lighter font than the links in its button blocks.
 if (facket) {
   facket.innerHTML = `
     <div class="wp-block-buttons"><div class="wp-block-button">
-      <button type="button" class="wp-block-button__link wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</button>
+      <a href="#" role="button" class="wp-block-button__link wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</a>
     </div></div>
     <div class="mejl" hidden>
       <p class="hjalp vanta"></p>
       <div class="mejltext"></div>
       <div class="wp-block-buttons knappar">
-        <div class="wp-block-button"><button type="button" class="wp-block-button__link wp-element-button kopiera">Kopiera texten</button></div>
-        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button oppna" href="#">Öppna i mejlprogrammet</a></div>
+        <div class="wp-block-button"><a href="#" role="button" class="wp-block-button__link wp-element-button kopiera">Kopiera texten</a></div>
+        <!-- The theme's colour classes, the same as the "Till avtalat.se" button. -->
+        <div class="wp-block-button"><a class="wp-block-button__link has-accent-4-color has-accent-1-background-color has-text-color has-background has-link-color wp-element-button oppna" href="#">Öppna i mejlprogrammet</a></div>
       </div>
       <p class="hjalp kopierat" aria-live="polite"></p>
       <p class="hjalp efter"></p>
@@ -566,13 +569,22 @@ if (facket) {
   facket.querySelector(".vanta").textContent = raknaForstText;
   facket.querySelector(".efter").textContent = hjalpText;
   const visa = facket.querySelector(".visa-mejl");
-  visa.addEventListener("click", () => {
+  knapp(visa, () => {
     const ruta = facket.querySelector(".mejl");
     ruta.hidden = !ruta.hidden;
     visa.setAttribute("aria-expanded", String(!ruta.hidden));
     visa.textContent = ruta.hidden ? "Visa mejlet" : "Dölj mejlet";
   });
-  facket.querySelector(".kopiera").addEventListener("click", kopieraMejl);
+  knapp(facket.querySelector(".kopiera"), kopieraMejl);
+}
+
+// Makes a link with role="button" act like one: no jump to "#", and the space
+// bar works as well as Enter.
+function knapp(lank, gor) {
+  lank.addEventListener("click", (e) => { e.preventDefault(); gor(); });
+  lank.addEventListener("keydown", (e) => {
+    if (e.key === " ") { e.preventDefault(); gor(); }
+  });
 }
 
 function aktuelltMejl() {
