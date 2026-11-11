@@ -543,19 +543,26 @@ const egetMejl = facket ? {
   amne: (facket.dataset.amne || "").trim(),
   mall: mallFranHtml(facket.querySelector("template.mall")?.innerHTML || ""),
 } : {};
+// The box's help texts, also from the shortcode. Without hjalp there is none.
+const hjalpText = (facket?.dataset.hjalp || "").trim();
+const raknaForstText = (facket?.dataset.raknaForst || "").trim()
+  || "Räkna först, så kommer dina siffror med i mejlet.";
 if (facket) {
   facket.innerHTML = `
     <button type="button" class="wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</button>
     <div class="mejl" hidden>
-      <p class="hjalp vanta">Räkna först, så kommer dina siffror med i mejlet.</p>
+      <p class="hjalp vanta"></p>
       <div class="mejltext"></div>
       <div class="knappar">
         <button type="button" class="wp-element-button kopiera">Kopiera texten</button>
         <a class="wp-element-button oppna" href="#">Öppna i mejlprogrammet</a>
       </div>
       <p class="hjalp kopierat" aria-live="polite"></p>
-      <p class="hjalp">Fyll i ditt namn och skicka till ditt förbund eller till fackklubben på jobbet.</p>
+      <p class="hjalp efter"></p>
     </div>`;
+  // Set as text, since they come from the site's editor.
+  facket.querySelector(".vanta").textContent = raknaForstText;
+  facket.querySelector(".efter").textContent = hjalpText;
   const visa = facket.querySelector(".visa-mejl");
   visa.addEventListener("click", () => {
     const ruta = facket.querySelector(".mejl");
@@ -576,6 +583,8 @@ function visaFacket() {
   facket.querySelector(".vanta").hidden = Boolean(m);
   facket.querySelector(".mejltext").hidden = !m;
   facket.querySelector(".knappar").hidden = !m;
+  // The help text is about sending the mail, so it follows it.
+  facket.querySelector(".efter").hidden = !m || !hjalpText;
   facket.querySelector(".kopierat").textContent = "";
   if (!m) return;
   // The text comes from the site's editor, so it goes in as text, not HTML.
