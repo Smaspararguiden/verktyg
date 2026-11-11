@@ -549,13 +549,15 @@ const raknaForstText = (facket?.dataset.raknaForst || "").trim()
   || "Räkna först, så kommer dina siffror med i mejlet.";
 if (facket) {
   facket.innerHTML = `
-    <button type="button" class="wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</button>
+    <div class="wp-block-buttons"><div class="wp-block-button">
+      <button type="button" class="wp-block-button__link wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</button>
+    </div></div>
     <div class="mejl" hidden>
       <p class="hjalp vanta"></p>
       <div class="mejltext"></div>
-      <div class="knappar">
-        <button type="button" class="wp-element-button kopiera">Kopiera texten</button>
-        <a class="wp-element-button oppna" href="#">Öppna i mejlprogrammet</a>
+      <div class="wp-block-buttons knappar">
+        <div class="wp-block-button"><button type="button" class="wp-block-button__link wp-element-button kopiera">Kopiera texten</button></div>
+        <div class="wp-block-button"><a class="wp-block-button__link wp-element-button oppna" href="#">Öppna i mejlprogrammet</a></div>
       </div>
       <p class="hjalp kopierat" aria-live="polite"></p>
       <p class="hjalp efter"></p>
