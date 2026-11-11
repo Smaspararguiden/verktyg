@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.10
+ * Version: 0.1.11
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
@@ -54,10 +54,24 @@ add_shortcode('itp_raknesnurra', 'sgv_itp_raknesnurra');
  * [itp_raknesnurra] on the same page, fills with a mail to the union holding
  * the visitor's figures. The site places it among its own blocks. On a page
  * without the calculator it stays empty.
+ *
+ * The site can write the mail itself:
+ * [itp_mejl_till_facket amne="..."]text with {kostnad} and {per_manad}[/itp_mejl_till_facket].
+ * The text goes to the page as it is, in a <template> that the browser does
+ * not show, and visning.js turns WordPress's paragraphs back into plain text.
+ * Without a subject or text, the calculator's own is used.
+ *
+ * @param array|string $atts    Shortcode attributes; '' when there are none.
+ * @param string|null  $content The text between the tags, if any.
  */
-function sgv_itp_mejl_till_facket(): string
+function sgv_itp_mejl_till_facket($atts = [], ?string $content = null): string
 {
-    return '<div class="sg-itp-facket"></div>';
+    $atts = shortcode_atts(['amne' => ''], $atts, 'itp_mejl_till_facket');
+    $mall = trim((string) $content) === ''
+        ? ''
+        : '<template class="mall">' . $content . '</template>';
+    return '<div class="sg-itp-facket" data-amne="' . esc_attr($atts['amne']) . '">'
+        . $mall . '</div>';
 }
 add_shortcode('itp_mejl_till_facket', 'sgv_itp_mejl_till_facket');
 

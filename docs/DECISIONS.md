@@ -436,3 +436,16 @@ månadsbelopp som nämns är vad regeln ensam kostar, alltså skillnaden mellan 
 två sparbeloppen på sidan. Den siffran står inte på sidan, och därför uttrycks
 meningen som vad kravet kostar, inte som "mer i pension". Steg 2, att välja
 förbund och få förslag på mottagare, ska få plats i samma ruta.
+
+## 34. Mejlet till facket skrivs i WordPress (2026-11-11)
+
+Ordalydelsen i mejlet ändras oftare än snurran, och varje ändring krävde en ny
+version av pluginet. Nu kan texten skrivas mellan kortkodens taggar, där
+resten av uppmaningarna redan redigeras (31). Beloppen kommer in genom
+platshållare, eftersom de bara finns i snurran (33).
+
+Ett textfält på pluginets inställningssida valdes bort: WordPress hade då inte
+ändrat i texten, men mejlet hade legat långt från sidan där det syns. Att
+WordPress gör stycken av texten hanteras i webbläsaren, där det går att testa.
+Utan egen text används den i koden, så att sidan fungerar innan texten flyttas
+över.

@@ -116,6 +116,13 @@ flytt. Mejlet går att kopiera eller öppna i mejlprogrammet, utan mottagare.
 Rubrik och inledande text ligger i WordPress. Utan snurran på sidan förblir
 rutan tom.
 
+Själva mejlet kan också skrivas i WordPress, mellan kortkodens taggar:
+`[itp_mejl_till_facket amne="…"]…[/itp_mejl_till_facket]`. Texten får
+platshållarna `{kostnad}` och `{per_manad}`. PHP lägger texten oförändrad i en
+`<template>` i rutan, och `facket.js` gör om WordPress stycken till vanlig text
+och fyller i beloppen. Saknas månadsbeloppet stryks meningen med `{per_manad}`.
+Utan ämne eller text används snurrans egna, `AMNE` och `MALL` i `facket.js`.
+
 ## Mätning
 
 `matning.js` bestämmer vilka värden som lämnar webbläsaren och testas fristående.

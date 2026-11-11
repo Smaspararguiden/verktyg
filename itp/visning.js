@@ -10,7 +10,7 @@ const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
 const { matvarden, nyKod, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
-const { mejl } = await import(`./facket.js${versionsfraga}`);
+const { mejl, mallFranHtml } = await import(`./facket.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -537,6 +537,12 @@ window.addEventListener("pagehide", rapportera);
 // The mail to the union, in the box that [itp_mejl_till_facket] puts on the
 // page, wherever the site has placed it. It follows the result as it changes.
 const facket = document.querySelector(".sg-itp-facket");
+// The site's own subject and text, written in the shortcode. Read before the
+// box is filled, since the text sits in a <template> inside it.
+const egetMejl = facket ? {
+  amne: (facket.dataset.amne || "").trim(),
+  mall: mallFranHtml(facket.querySelector("template.mall")?.innerHTML || ""),
+} : {};
 if (facket) {
   facket.innerHTML = `
     <button type="button" class="wp-element-button visa-mejl" aria-expanded="false">Visa mejlet</button>
@@ -561,7 +567,7 @@ if (facket) {
 }
 
 function aktuelltMejl() {
-  return senaste ? mejl(senaste.r) : null;
+  return senaste ? mejl(senaste.r, egetMejl) : null;
 }
 
 function visaFacket() {
@@ -572,8 +578,11 @@ function visaFacket() {
   facket.querySelector(".knappar").hidden = !m;
   facket.querySelector(".kopierat").textContent = "";
   if (!m) return;
-  facket.querySelector(".mejltext").innerHTML = `<p class="amne"><strong>Ämne:</strong> ${m.amne}</p>
-    <div class="brodtext">${m.text}</div>`;
+  // The text comes from the site's editor, so it goes in as text, not HTML.
+  facket.querySelector(".mejltext").innerHTML = `<p class="amne"><strong>Ämne:</strong> <span></span></p>
+    <div class="brodtext"></div>`;
+  facket.querySelector(".amne span").textContent = m.amne;
+  facket.querySelector(".brodtext").textContent = m.text;
   facket.querySelector(".oppna").href =
     `mailto:?subject=${encodeURIComponent(m.amne)}&body=${encodeURIComponent(m.text)}`;
 }
