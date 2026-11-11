@@ -123,6 +123,11 @@ platshållarna `{kostnad}` och `{per_manad}`. PHP lägger texten oförändrad i 
 och fyller i beloppen. Saknas månadsbeloppet stryks meningen med `{per_manad}`.
 Utan ämne eller text används snurrans egna, `AMNE` och `MALL` i `facket.js`.
 
+Rutans två hjälptexter är också attribut: `hjalp` står under knapparna när
+mejlet visas, och `rakna_forst` visas i stället för mejlet innan användaren har
+räknat. Utan `hjalp` står ingen text där; utan `rakna_forst` används snurrans
+egen.
+
 ## Mätning
 
 `matning.js` bestämmer vilka värden som lämnar webbläsaren och testas fristående.

@@ -449,3 +449,11 @@ Ett textfält på pluginets inställningssida valdes bort: WordPress hade då in
 WordPress gör stycken av texten hanteras i webbläsaren, där det går att testa.
 Utan egen text används den i koden, så att sidan fungerar innan texten flyttas
 över.
+
+## 35. Rutans hjälptexter är attribut i kortkoden (2026-11-11)
+
+Texten om att fylla i namnet och skicka mejlet hör till mejlet, så den ska
+synas först när mejlet är utfällt. Skriven i WordPress under kortkoden syntes
+den redan innan. Den och texten som ber användaren räkna först är därför
+attribut i kortkoden, så att de går att redigera i WordPress som mejlet (34)
+men visas inne i rutan.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.11
+ * Version: 0.1.12
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
@@ -61,16 +61,27 @@ add_shortcode('itp_raknesnurra', 'sgv_itp_raknesnurra');
  * not show, and visning.js turns WordPress's paragraphs back into plain text.
  * Without a subject or text, the calculator's own is used.
  *
+ * Two more attributes hold the help texts in the box: hjalp, under the
+ * buttons once the mail is shown, and rakna_forst, shown instead of the mail
+ * before the visitor has calculated. Without hjalp there is no text there;
+ * without rakna_forst the calculator's own is used.
+ *
  * @param array|string $atts    Shortcode attributes; '' when there are none.
  * @param string|null  $content The text between the tags, if any.
  */
 function sgv_itp_mejl_till_facket($atts = [], ?string $content = null): string
 {
-    $atts = shortcode_atts(['amne' => ''], $atts, 'itp_mejl_till_facket');
+    $atts = shortcode_atts(
+        ['amne' => '', 'hjalp' => '', 'rakna_forst' => ''],
+        $atts,
+        'itp_mejl_till_facket'
+    );
     $mall = trim((string) $content) === ''
         ? ''
         : '<template class="mall">' . $content . '</template>';
-    return '<div class="sg-itp-facket" data-amne="' . esc_attr($atts['amne']) . '">'
+    return '<div class="sg-itp-facket" data-amne="' . esc_attr($atts['amne'])
+        . '" data-hjalp="' . esc_attr($atts['hjalp'])
+        . '" data-rakna-forst="' . esc_attr($atts['rakna_forst']) . '">'
         . $mall . '</div>';
 }
 add_shortcode('itp_mejl_till_facket', 'sgv_itp_mejl_till_facket');
