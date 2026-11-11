@@ -422,3 +422,17 @@ säger till exempel att vi räknat som om allt ligger i traditionell försäkrin
 men uppmaningarna väger tyngre. Texten om vad vi sparar flyttades i stället
 överst i snurran, så att besökaren ser den innan hen fyller i något och den inte
 göms i rutan.
+
+## 33. Mejlet till facket har en egen kortkod och användarens belopp (2026-11-11)
+
+Användaren ska kunna skicka ett mejl till sitt fack med vad regeln kostar just
+henne eller honom. Beloppen finns bara i snurran, så mejlet skapas där. Rutan
+ska ändå kunna ligga bland de andra uppmaningarna, som är vanliga block i
+WordPress (31). Därför har den en egen kortkod som bara ger en tom ruta, och
+snurran fyller den var den än ligger på sidan.
+
+Mejlet visas först när man klickar, så att uppmaningen tar lite plats. Det
+månadsbelopp som nämns är vad regeln ensam kostar, alltså skillnaden mellan de
+två sparbeloppen på sidan. Den siffran står inte på sidan, och därför uttrycks
+meningen som vad kravet kostar, inte som "mer i pension". Steg 2, att välja
+förbund och få förslag på mottagare, ska få plats i samma ruta.

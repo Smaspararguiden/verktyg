@@ -32,6 +32,11 @@
     h2 { font-size: 1.2rem; margin: 32px 0 8px; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #dde8ee; vertical-align: top; }
+    /* Stands in for the theme's buttons. */
+    .wp-element-button {
+      background: #0b2e5b; color: #fff; border: none; border-radius: 10px;
+      padding: 10px 16px; text-decoration: none; display: inline-block;
+    }
     .platshallare {
       margin-top: 32px; padding: 24px 16px; border: 2px dashed #9bb3c2;
       border-radius: 10px; color: #325567; text-align: center;
@@ -49,6 +54,14 @@
 
     <!-- The same element the WordPress shortcode outputs. -->
     <div class="sg-itp"></div>
+
+    <!-- Preview only: stands in for a heading and text placed in WordPress above
+         the [itp_mejl_till_facket] box. -->
+    <h2>Säg till ditt fack</h2>
+    <p>Facken förhandlar om ITP. Berätta vad regeln kostar dig, vi har skrivit
+      ett mejl med dina siffror.</p>
+    <!-- The same element the [itp_mejl_till_facket] shortcode outputs. -->
+    <div class="sg-itp-facket"></div>
 
     <!-- Preview only: on the site, the blocks placed under the shortcode come here. -->
     <div class="platshallare">
