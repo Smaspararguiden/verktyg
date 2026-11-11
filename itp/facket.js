@@ -17,7 +17,7 @@ export function mejl(r) {
     + "Enligt beräkningen gör kravet på traditionell försäkring att jag får ungefär "
     + `${belopp(kostnad)} kr mindre i pensionskapital.`
     + (perManad > 0
-      ? ` Det motsvarar att själv spara ${belopp(perManad)} kr i månaden varje månad fram till pensionen.`
+      ? ` Det motsvarar att själv spara ${belopp(perManad)} kr varje månad fram till pensionen.`
       : "");
   const stycken = [
     "Hej,",

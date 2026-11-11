@@ -18,12 +18,12 @@ test("mejlet har ämnet och användarens belopp, avrundade som på sidan", () =>
 
 test("månadsbeloppet är det regeln ensam kostar", () => {
   const manad = Math.round((r.privatUtanRegeln - r.privatFlytt) / 10) * 10;
-  assert.ok(utanHardaMellanslag(mejl(r).text).includes(`spara ${manad} kr i månaden`));
+  assert.ok(utanHardaMellanslag(mejl(r).text).includes(`spara ${manad} kr varje månad`));
 });
 
 test("utan sparjämförelse står inget månadsbelopp", () => {
   const { text } = mejl({ ...r, privatFlytt: null, privatUtanRegeln: null });
-  assert.ok(!text.includes("i månaden"));
+  assert.ok(!text.includes("varje månad"));
   assert.ok(text.includes("mindre i pensionskapital."));
 });
 
