@@ -472,3 +472,11 @@ val ligger kvar i koden, så att en ändring i WordPress inte kan hänvisa till 
 val som inte finns. Hjälpen om ITP1 ligger i en expander, eftersom hovring inte
 fungerar på mobilen. Inget kapital uppskattas åt den som inte loggar in: den
 väljer att strunta i sparat kapital.
+
+## 37. Inloggningshjälpen ligger i en egen expander (2026-11-13)
+
+Instruktionen för att hitta sitt kapital behövs bara av den som loggar in, men
+tog lika mycket plats som valet att strunta i kapitalet. Den ligger nu i
+expandern "Så hittar du ditt kapital", som också nämner minpension.se, och går
+att skriva i WordPress som `hitta_kapital` (36). Raden om Alecta flyttade in
+dit, så att all hjälp för inloggningen finns på ett ställe.

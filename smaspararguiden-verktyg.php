@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.14
+ * Version: 0.1.15
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
@@ -88,7 +88,7 @@ add_shortcode('itp_mejl_till_facket', 'sgv_itp_mejl_till_facket');
 
 /**
  * [itp_text namn="..."]text[/itp_text]: a text the site writes itself for a
- * place in the calculator, such as osaker_itp1 or kapital. The text goes to
+ * place in the calculator, such as osaker_itp1, kapital or hitta_kapital. The text goes to
  * the page in a <template> the browser does not show; visning.js puts it in
  * the calculator in place of its own. It can stand anywhere on the page.
  *

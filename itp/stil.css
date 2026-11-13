@@ -135,9 +135,9 @@
 .sg-itp summary { cursor: pointer; font-weight: 700; }
 /* Expanders inside the outer one sit closer. */
 .sg-itp details details { margin-top: 16px; }
-/* The ITP1 help in the form is a quiet line, not a section. */
-.sg-itp details.osaker-itp1 { margin: 8px 0 0; border-top: none; padding-top: 0; }
-.sg-itp details.osaker-itp1 summary { font-weight: 400; text-decoration: underline; }
+/* Help expanders in the form are a quiet line, not a section. */
+.sg-itp details.tyst { margin: 8px 0 12px; border-top: none; padding-top: 0; }
+.sg-itp details.tyst summary { font-weight: 400; text-decoration: underline; }
 .sg-itp .text p { margin: 8px 0; }
 .sg-itp .text ul { margin: 8px 0; padding-left: 1.2em; }
 .sg-itp .lagring { margin: 0 0 16px; }

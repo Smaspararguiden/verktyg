@@ -108,8 +108,9 @@ I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en kn
 
 Vissa förklarande texter i snurran kan sajten skriva själv, med
 `[itp_text namn="…"]…[/itp_text]` var som helst på sidan. Namnen är
-`osaker_itp1`, texten i expandern "Osäker på om du har ITP1?", och `kapital`,
-hjälptexten överst under "Din ITP1 i dag". PHP lägger texten i en `<template>`,
+`osaker_itp1`, texten i expandern "Osäker på om du har ITP1?", `kapital`,
+hjälptexten överst under "Din ITP1 i dag", och `hitta_kapital`, texten i
+expandern "Så hittar du ditt kapital" under den. PHP lägger texten i en `<template>`,
 och `visning.js` sätter in den som HTML i stället för snurrans egen text, utan
 de tomma stycken som WordPress lämnar runt taggarna. Utan en sådan kortkod
 gäller texten i koden. Texter som hänger ihop med fälten och valen ligger kvar
