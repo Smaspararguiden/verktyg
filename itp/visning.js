@@ -51,7 +51,7 @@ rot.innerHTML = `
       <p class="hjalp" data-ej-anstalld hidden>
         Vi räknar bara på det kapital du har i dag, utan nya inbetalningar.
       </p>
-      <details class="hjalp osaker-itp1">
+      <details class="hjalp tyst">
         <summary>Osäker på om du har ITP1?</summary>
         <div class="text" data-text="osaker_itp1">
           <p>Du har ITP1 om alla de här stämmer:</p>
@@ -91,11 +91,20 @@ rot.innerHTML = `
       <div class="hjalp text" data-text="kapital">
         <p>Vill du inte logga in nu? Välj <em>Vi struntar i sparat kapital</em>,
           så räknar vi på det som betalas in från och med nu.</p>
-        <p>Vill du räkna på hela ditt kapital? Logga in på avtalat.se. Första
-          gången behöver du godkänna deras villkor. Ditt totala ITP1-kapital
-          står på startsidan. Under Din tjänstepension → Pensionskapital ser du
-          hos vilka bolag pengarna ligger.</p>
       </div>
+      <details class="hjalp tyst">
+        <summary>Så hittar du ditt kapital</summary>
+        <div class="text" data-text="hitta_kapital">
+          <p>Logga in med BankID på avtalat.se eller minpension.se.</p>
+          <p><strong>På avtalat.se</strong> behöver du första gången godkänna
+            deras villkor. Ditt totala ITP1-kapital står på startsidan. Under
+            Din tjänstepension → Pensionskapital ser du hos vilka bolag pengarna
+            ligger.</p>
+          <p><strong>På minpension.se</strong> hittar du din ITP1 bland dina
+            tjänstepensioner, med värdet hos varje bolag.</p>
+          <p>Står det bara Alecta ligger allt i traditionell försäkring.</p>
+        </div>
+      </details>
       <div class="val">
         <label><input type="radio" name="lage" value="trad" checked>
           Allt ligger i traditionell försäkring</label>
@@ -113,10 +122,6 @@ rot.innerHTML = `
         <label>Totalt ITP1-kapital
           <input name="total" inputmode="numeric" placeholder="t.ex. 400 000">
         </label>
-        <p class="hjalp">
-          Står det bara Alecta under Pensionskapital ligger allt i traditionell
-          försäkring.
-        </p>
       </div>
 
       <div data-lage="delar" hidden>
