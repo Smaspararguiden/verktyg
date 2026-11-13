@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Småspararguidens verktyg
  * Description: Räknesnurror från Småspararguiden. ITP1-räknesnurran visas med kortkoden [itp_raknesnurra].
- * Version: 0.1.13
+ * Version: 0.1.14
  * Author: Småspararguiden
  * Requires PHP: 7.4
  */
@@ -85,6 +85,27 @@ function sgv_itp_mejl_till_facket($atts = [], ?string $content = null): string
         . $mall . '</div>';
 }
 add_shortcode('itp_mejl_till_facket', 'sgv_itp_mejl_till_facket');
+
+/**
+ * [itp_text namn="..."]text[/itp_text]: a text the site writes itself for a
+ * place in the calculator, such as osaker_itp1 or kapital. The text goes to
+ * the page in a <template> the browser does not show; visning.js puts it in
+ * the calculator in place of its own. It can stand anywhere on the page.
+ *
+ * @param array|string $atts    Shortcode attributes; '' when there are none.
+ * @param string|null  $content The text between the tags, if any.
+ */
+function sgv_itp_text($atts = [], ?string $content = null): string
+{
+    $atts = shortcode_atts(['namn' => ''], $atts, 'itp_text');
+    $namn = sanitize_key($atts['namn']);
+    if ($namn === '' || trim((string) $content) === '') {
+        return '';
+    }
+    return '<template class="sgv-text" data-namn="' . esc_attr($namn) . '">'
+        . $content . '</template>';
+}
+add_shortcode('itp_text', 'sgv_itp_text');
 
 // The Apps Script that keeps the calculator's statistics in a Google sheet, see
 // apps-script/itp-resultat.gs. Not a secret.

@@ -19,7 +19,7 @@ const rot = document.querySelector(".sg-itp");
 rot.innerHTML = `
   <p class="hjalp lagring">När du lämnar sidan sparar vi det du har fyllt i och ditt
     resultat i vår statistik, i ett kalkylark hos Google. Vi sparar inte ditt namn
-    eller din IP-adress, och bara dagen, inte klockslaget.</p>
+    eller din IP-adress.</p>
 
   <form autocomplete="off">
     <fieldset>
@@ -51,6 +51,23 @@ rot.innerHTML = `
       <p class="hjalp" data-ej-anstalld hidden>
         Vi räknar bara på det kapital du har i dag, utan nya inbetalningar.
       </p>
+      <details class="hjalp osaker-itp1">
+        <summary>Osäker på om du har ITP1?</summary>
+        <div class="text" data-text="osaker_itp1">
+          <p>Du har ITP1 om alla de här stämmer:</p>
+          <ul>
+            <li>Du jobbar på ett privat företag, inte i stat, kommun eller region. De har egna tjänstepensioner.</li>
+            <li>Du är tjänsteman. Arbetare har oftast SAF-LO i stället.</li>
+            <li>Din arbetsgivare har kollektivavtal.</li>
+            <li>Du är född ${ITP1_FRAN_FODELSEAR} eller senare. Äldre har oftast ITP2.</li>
+          </ul>
+          <p><strong>Så kollar du</strong><br>
+            Logga in på avtalat.se eller minpension.se med BankID. Där ser du
+            vilken tjänstepension du har. Du kan också fråga din chef eller
+            lönekontoret.</p>
+          <p>Räkna gärna ändå, så ser du vad det skulle betyda.</p>
+        </div>
+      </details>
     </fieldset>
 
     <fieldset data-anstalld>
@@ -71,15 +88,14 @@ rot.innerHTML = `
 
     <fieldset>
       <legend>Din ITP1 i dag</legend>
-      <p class="hjalp">
-        Logga in på avtalat.se. Första gången behöver du godkänna deras villkor.
-        Ditt totala ITP1-kapital står på startsidan. Under Din tjänstepension
-        → Pensionskapital ser du hos vilka bolag pengarna ligger.
-      </p>
-      <p class="hjalp">
-        Är du osäker och orkar inte kolla? Välj att allt ligger i traditionell
-        försäkring, så ser du hur illa det kan vara.
-      </p>
+      <div class="hjalp text" data-text="kapital">
+        <p>Vill du inte logga in nu? Välj <em>Vi struntar i sparat kapital</em>,
+          så räknar vi på det som betalas in från och med nu.</p>
+        <p>Vill du räkna på hela ditt kapital? Logga in på avtalat.se. Första
+          gången behöver du godkänna deras villkor. Ditt totala ITP1-kapital
+          står på startsidan. Under Din tjänstepension → Pensionskapital ser du
+          hos vilka bolag pengarna ligger.</p>
+      </div>
       <div class="val">
         <label><input type="radio" name="lage" value="trad" checked>
           Allt ligger i traditionell försäkring</label>
@@ -126,6 +142,20 @@ rot.innerHTML = `
       <div class="parametrar"></div>
     </details>
   </details>`;
+
+// Texts the site has written itself with [itp_text namn="…"] replace the
+// calculator's own. Everything the site's text says is the site's; it goes in
+// as HTML, like the rest of the page's content.
+for (const ruta of rot.querySelectorAll("[data-text]")) {
+  const egen = document.querySelector(`template.sgv-text[data-namn="${ruta.dataset.text}"]`);
+  if (!egen) continue;
+  const innehall = egen.content.cloneNode(true);
+  // WordPress leaves empty paragraphs around the shortcode tags.
+  for (const p of innehall.querySelectorAll("p")) {
+    if (!p.textContent.trim() && !p.querySelector("img")) p.remove();
+  }
+  ruta.replaceChildren(innehall);
+}
 
 const form = rot.querySelector("form");
 const resultat = rot.querySelector(".resultat");

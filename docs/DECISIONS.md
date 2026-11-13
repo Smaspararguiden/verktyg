@@ -457,3 +457,18 @@ synas först när mejlet är utfällt. Skriven i WordPress under kortkoden synte
 den redan innan. Den och texten som ber användaren räkna först är därför
 attribut i kortkoden, så att de går att redigera i WordPress som mejlet (34)
 men visas inne i rutan.
+
+## 36. Förklarande texter i snurran skrivs i WordPress (2026-11-13)
+
+Den som inte vet om hen har ITP1, eller inte vill logga in med BankID, ska
+inte fastna i formuläret. Hjälpen för det är text, och formuleringen ska kunna
+prövas utan en ny version av pluginet. Därför kan två texter skrivas i
+WordPress med en egen kortkod, `[itp_text]`. En kortkod med text mellan
+taggarna valdes i stället för attribut, eftersom texterna har stycken och
+listor, som WordPress inte tål i ett attribut.
+
+Bara fristående förklaringar blir redigerbara. Texter som nämner fält eller
+val ligger kvar i koden, så att en ändring i WordPress inte kan hänvisa till ett
+val som inte finns. Hjälpen om ITP1 ligger i en expander, eftersom hovring inte
+fungerar på mobilen. Inget kapital uppskattas åt den som inte loggar in: den
+väljer att strunta i sparat kapital.
