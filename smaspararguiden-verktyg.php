@@ -76,6 +76,9 @@ function sgv_itp_mejl_till_facket($atts = [], ?string $content = null): string
         $atts,
         'itp_mejl_till_facket'
     );
+    // The content goes out raw inside the <template>: it is post content, so
+    // WordPress has already filtered it for everyone without unfiltered_html,
+    // and those who have it can write HTML anywhere on the site anyway.
     $mall = trim((string) $content) === ''
         ? ''
         : '<template class="mall">' . $content . '</template>';
@@ -102,6 +105,8 @@ function sgv_itp_text($atts = [], ?string $content = null): string
     if ($namn === '' || trim((string) $content) === '') {
         return '';
     }
+    // The content goes out raw inside the <template>, as post content that
+    // WordPress has already filtered for everyone without unfiltered_html.
     return '<template class="sgv-text" data-namn="' . esc_attr($namn) . '">'
         . $content . '</template>';
 }
