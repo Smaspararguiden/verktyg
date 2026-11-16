@@ -153,8 +153,10 @@ som genast skickar vidare till ett Apps Script och inte sparar något. Google se
 då sajtens server, inte besökaren. Pluginen ger sidan adressen i kortkodens
 `data-insamling`. Förhandsvisningen har ingen sådan adress och skickar inget.
 Endpointen är taktsbegränsad (10 anrop per minut och adress, 120 totalt, svar 429
-vid överskridande) och tar bara emot små JSON-objekt med strängnycklar; pluginen
-sparar bara räknare över anrop i databasen, aldrig rapporterna.
+vid överskridande) och tar bara emot små JSON-objekt som kontrolleras mot samma
+fältlista som skriptet innan något skickas vidare; en begränsad förfrågan skriver
+inte heller till databasen varje gång. Pluginen sparar bara räknare över anrop i
+databasen (ej autoload), aldrig rapporterna.
 
 Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje värde och sparar i
 fliken `Resultat` i det Google-ark det hör till. Finns koden redan skrivs den

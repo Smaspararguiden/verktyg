@@ -114,7 +114,9 @@ const SGV_ITP_INSAMLING = 'https://script.google.com/macros/s/AKfycbwTc68eThpPp1
 /**
  * The address reports are forwarded to. When the site has a key in the
  * sgv_itp_nyckel option, it is added as a query parameter; the script checks
- * it against its SGV_NYCKEL property when one is set there.
+ * it against its SGV_NYCKEL property when one is set there. Apps Script only
+ * exposes query parameters to the script, so the key has to travel in the URL
+ * and can end up in URL logs between this server and Google.
  */
 function sgv_insamlings_url(): string
 {
@@ -165,19 +167,116 @@ function sgv_for_manga(): bool
     return false;
 }
 
+// The fields the receiver accepts, mirrored from apps-script/itp-resultat.gs;
+// a new field goes last in both places. An unknown field or an invalid
+// required value rejects the whole report; an invalid optional value is
+// dropped, exactly as the receiver leaves its cell empty.
+const SGV_RAPPORT_FALT = [
+    'kalla' => ['val' => ['sajt', 'test'], 'krav' => true],
+    'version' => ['monster' => '/^[0-9A-Za-z.-]{1,20}$/D'],
+    'fodelsear' => ['min' => 1900, 'max' => 2100],
+    'alder' => ['min' => 0, 'max' => 120],
+    'itp1_nu' => ['val' => ['ja', 'nej']],
+    'itp1_tidigare' => ['val' => ['ja', 'nej']],
+    'manadslon' => ['min' => 0, 'max' => 10000000],
+    'andel_fond' => ['min' => 0, 'max' => 100],
+    'lage' => ['val' => ['trad', 'delar', 'ingen'], 'krav' => true],
+    'kapital_trad' => ['min' => 0, 'max' => 100000000000],
+    'kapital_fond' => ['min' => 0, 'max' => 100000000000],
+    'forsakringar' => ['monster' => '/^\d{1,12}:(trad|fond)(\|\d{1,12}:(trad|fond)){0,49}$/D'],
+    'vinst' => ['min' => -100000000000, 'max' => 100000000000],
+    'kostnad_regeln' => ['min' => -100000000000, 'max' => 100000000000],
+    'kvar_att_hamta' => ['min' => -100000000000, 'max' => 100000000000],
+    'trafikljus' => ['val' => ['rod', 'gul', 'gron', 'inget']],
+    'andel_uppnadd' => ['min' => 0, 'max' => 100],
+    'spara_flytt' => ['min' => -100000000000, 'max' => 100000000000],
+    'spara_utan_regeln' => ['min' => -100000000000, 'max' => 100000000000],
+    'aldersvarning' => ['val' => ['ja', 'nej']],
+    'slut_allt_trad' => ['min' => -100000000000, 'max' => 100000000000],
+    'slut_nuvarande' => ['min' => -100000000000, 'max' => 100000000000],
+    'slut_allt_som_gar' => ['min' => -100000000000, 'max' => 100000000000],
+    'slut_utan_regeln' => ['min' => -100000000000, 'max' => 100000000000],
+    'resultat' => ['val' => ['ja', 'nej']],
+    'kod' => ['monster' => '/^[0-9a-f]{32}$/D'],
+];
+
+function sgv_giltigt_falt(array $falt, $varde): bool
+{
+    if (isset($falt['val'])) {
+        return in_array($varde, $falt['val'], true);
+    }
+    if (isset($falt['monster'])) {
+        return is_string($varde) && preg_match($falt['monster'], $varde) === 1;
+    }
+    return (is_int($varde) || is_float($varde))
+        && $varde >= $falt['min'] && $varde <= $falt['max'];
+}
+
+/**
+ * Checks a report against the receiver's field list and returns it cleaned,
+ * or null when it must be rejected.
+ */
+function sgv_rensa_rapport(array $data): ?array
+{
+    $rensa = [];
+    foreach ($data as $nyckel => $varde) {
+        if (!is_string($nyckel) || !array_key_exists($nyckel, SGV_RAPPORT_FALT)) {
+            return null;
+        }
+        $falt = SGV_RAPPORT_FALT[$nyckel];
+        if (sgv_giltigt_falt($falt, $varde)) {
+            $rensa[$nyckel] = $varde;
+        } elseif (!empty($falt['krav'])) {
+            return null;
+        }
+    }
+    // A required field that is missing altogether rejects the report too,
+    // as in the receiver.
+    foreach (SGV_RAPPORT_FALT as $namn => $falt) {
+        if (!empty($falt['krav']) && !array_key_exists($namn, $rensa)) {
+            return null;
+        }
+    }
+    return $rensa;
+}
+
+const SGV_STAT_NOLL = ['skickade' => 0, 'misslyckade' => 0, 'begransade' => 0];
+
+/**
+ * Saves the endpoint's counters. The option is created non-autoloaded, so the
+ * counters are not read on every page view.
+ */
+function sgv_spara_stat(array $stat): void
+{
+    if (get_option('sgv_matning_stat', false) === false) {
+        add_option('sgv_matning_stat', $stat, '', 'no');
+    } else {
+        update_option('sgv_matning_stat', $stat);
+    }
+}
+
 /**
  * Passes one report from the calculator on to the Apps Script, so that Google
  * sees this server instead of the visitor. Nothing is stored here, and the
  * visitor's address is not passed on. Open to anyone, like the page itself, so
- * it is rate limited and only small JSON objects go through; the script checks
- * every value. Only counts of requests are kept, in the sgv_matning_stat option.
+ * it is rate limited and only small JSON reports that pass the receiver's
+ * field list go through; the script checks every value again. Only counts of
+ * requests are kept, in the sgv_matning_stat option, and a rejected request
+ * does not write to the database every time.
  */
 function sgv_itp_resultat(WP_REST_Request $anrop): WP_REST_Response
 {
-    $stat = get_option('sgv_matning_stat', ['skickade' => 0, 'misslyckade' => 0, 'begransade' => 0]);
+    $stat = get_option('sgv_matning_stat', SGV_STAT_NOLL);
+    if (!is_array($stat)) {
+        $stat = SGV_STAT_NOLL;
+    }
     if (sgv_for_manga()) {
-        $stat['begransade']++;
-        update_option('sgv_matning_stat', $stat);
+        // Counted only every tenth rejection: a flood of 429s must not turn
+        // into a flood of database writes from an open endpoint.
+        if (random_int(1, 10) === 1) {
+            $stat['begransade']++;
+            sgv_spara_stat($stat);
+        }
         return new WP_REST_Response(null, 429);
     }
     $text = $anrop->get_body();
@@ -185,15 +284,16 @@ function sgv_itp_resultat(WP_REST_Request $anrop): WP_REST_Response
     if (strlen($text) > 3000 || !is_array($tolkad) || count($tolkad) > 30) {
         return new WP_REST_Response(null, 400);
     }
-    foreach (array_keys($tolkad) as $nyckel) {
-        if (!is_string($nyckel)) {
-            return new WP_REST_Response(null, 400);
-        }
+    // Only a report the receiver would save is forwarded, so the open
+    // endpoint cannot relay anything else to the sheet.
+    $rapport = sgv_rensa_rapport($tolkad);
+    if ($rapport === null) {
+        return new WP_REST_Response(null, 400);
     }
     // The script saves the row before it answers with a redirect, which is
     // not followed. A failure is not reported: the visitor never waits for it.
     $svar = wp_remote_post(sgv_insamlings_url(), [
-        'body' => $text,
+        'body' => (string) json_encode($rapport),
         'headers' => ['Content-Type' => 'text/plain'],
         'timeout' => 3,
         'redirection' => 0,
@@ -203,7 +303,7 @@ function sgv_itp_resultat(WP_REST_Request $anrop): WP_REST_Response
     } else {
         $stat['skickade']++;
     }
-    update_option('sgv_matning_stat', $stat);
+    sgv_spara_stat($stat);
     return new WP_REST_Response(null, 204);
 }
 add_action('rest_api_init', function (): void {
@@ -221,6 +321,9 @@ add_action('rest_api_init', function (): void {
 add_action('admin_init', function (): void {
     if (get_option('sgv_itp_nyckel') === false) {
         add_option('sgv_itp_nyckel', wp_generate_password(32, false));
+    }
+    if (get_option('sgv_matning_stat', false) === false) {
+        add_option('sgv_matning_stat', SGV_STAT_NOLL, '', 'no');
     }
     register_setting('sgv_verktyg', 'sgv_itp_ark', [
         'type' => 'string',
