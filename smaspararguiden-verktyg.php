@@ -196,7 +196,7 @@ const SGV_RAPPORT_FALT = [
     'slut_nuvarande' => ['min' => -100000000000, 'max' => 100000000000],
     'slut_allt_som_gar' => ['min' => -100000000000, 'max' => 100000000000],
     'slut_utan_regeln' => ['min' => -100000000000, 'max' => 100000000000],
-    'resultat' => ['val' => ['ja', 'nej'], 'krav' => true],
+    'resultat' => ['val' => ['ja', 'nej']],
     'kod' => ['monster' => '/^[0-9a-f]{32}$/D'],
 ];
 
