@@ -154,37 +154,57 @@ const SGV_MATNING_GRANS = 10;
 const SGV_MATNING_TOTALT = 120;
 
 /**
- * Counts one more request for this key and returns the new count. With an
- * external object cache the increment is atomic; without one the transient
- * read-then-write can let a few concurrent requests past the limit, which the
- * total cap covers.
+ * The current count for this key: from the external object cache when there is
+ * one, otherwise from a transient.
  */
-function sgv_oka(string $nyckel): int
+function sgv_antal(string $nyckel): int
 {
     if (wp_using_ext_object_cache()) {
-        if (wp_cache_add($nyckel, 1, 'sgv_matning', MINUTE_IN_SECONDS)) {
-            return 1;
-        }
-        $nytt = wp_cache_incr($nyckel, 1, 'sgv_matning');
-        return $nytt === false ? 1 : (int) $nytt;
+        $varde = wp_cache_get($nyckel, 'sgv_matning');
+        return $varde === false ? 0 : (int) $varde;
     }
-    $antal = (int) get_transient($nyckel);
-    set_transient($nyckel, $antal + 1, MINUTE_IN_SECONDS);
-    return $antal + 1;
+    return (int) get_transient($nyckel);
 }
 
 /**
- * Whether this request is over the limit. Counted before anything is
- * forwarded, so a flood cannot hold PHP workers with the upstream call.
+ * Counts one more request for this key. With an external object cache the
+ * increment is atomic; without one the read-then-write can let a few
+ * concurrent requests past the limit.
+ */
+function sgv_oka(string $nyckel): void
+{
+    if (wp_using_ext_object_cache()) {
+        if (!wp_cache_add($nyckel, 1, 'sgv_matning', 2 * MINUTE_IN_SECONDS)) {
+            wp_cache_incr($nyckel, 1, 'sgv_matning');
+        }
+        return;
+    }
+    set_transient($nyckel, sgv_antal($nyckel) + 1, 2 * MINUTE_IN_SECONDS);
+}
+
+/**
+ * Whether this request is over the limit, counted in fixed minute windows: the
+ * minute is part of the key, so every minute starts at zero no matter how
+ * steady the traffic is, and a key expires after two minutes. Counted before
+ * anything is forwarded, so a flood cannot hold PHP workers with the upstream
+ * call. Once a limit is reached nothing is saved, so a flood of rejections
+ * writes nothing to the database.
  */
 function sgv_for_manga(): bool
 {
+    $fonster = '_' . intdiv(time(), 60);
     $granser = [SGV_MATNING_GRANS, SGV_MATNING_TOTALT];
-    $nycklar = ['sgv_matning_' . md5(sgv_klient_ip()), 'sgv_matning_allt'];
+    $nycklar = [
+        'sgv_matning_' . md5(sgv_klient_ip()) . $fonster,
+        'sgv_matning_allt' . $fonster,
+    ];
     foreach ($nycklar as $i => $nyckel) {
-        if (sgv_oka($nyckel) > $granser[$i]) {
+        if (sgv_antal($nyckel) >= $granser[$i]) {
             return true;
         }
+    }
+    foreach ($nycklar as $nyckel) {
+        sgv_oka($nyckel);
     }
     return false;
 }
