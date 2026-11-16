@@ -125,19 +125,25 @@ function sgv_insamlings_url(): string
 }
 
 /**
- * The visitor's address as the proxy in front reports it: the last
- * X-Forwarded-For entry when the direct peer is the local proxy, since a
- * client can prepend forged entries. Without a proxy header this is the
- * proxy's own address, and the per-address limit below becomes a global one.
+ * The visitor's address as the proxy in front reports it, without depending on
+ * where the proxy runs. The proxy header is only read when the direct peer is
+ * one of our own proxies, that is a private or reserved address; a public peer
+ * is the client itself, and its header is client-controlled. Our proxies
+ * append the address they saw, so walking the list from the right past private
+ * addresses gives the first public one: the client's. Without a proxy header
+ * this is the peer's own address, and the per-address limit below becomes a
+ * global one.
  */
 function sgv_klient_ip(): string
 {
     $peer = $_SERVER['REMOTE_ADDR'] ?? '';
-    if (in_array($peer, ['127.0.0.1', '::1'], true)) {
-        $xff = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
-        if ($xff !== '') {
-            $delar = explode(',', $xff);
-            return trim(end($delar));
+    $flaggor = FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE;
+    if (!filter_var($peer, FILTER_VALIDATE_IP, $flaggor)) {
+        $delar = array_map('trim', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''));
+        for ($i = count($delar) - 1; $i >= 0; $i--) {
+            if (filter_var($delar[$i], FILTER_VALIDATE_IP, $flaggor)) {
+                return $delar[$i];
+            }
         }
     }
     return $peer;
@@ -148,6 +154,26 @@ const SGV_MATNING_GRANS = 10;
 const SGV_MATNING_TOTALT = 120;
 
 /**
+ * Counts one more request for this key and returns the new count. With an
+ * external object cache the increment is atomic; without one the transient
+ * read-then-write can let a few concurrent requests past the limit, which the
+ * total cap covers.
+ */
+function sgv_oka(string $nyckel): int
+{
+    if (wp_using_ext_object_cache()) {
+        if (wp_cache_add($nyckel, 1, 'sgv_matning', MINUTE_IN_SECONDS)) {
+            return 1;
+        }
+        $nytt = wp_cache_incr($nyckel, 1, 'sgv_matning');
+        return $nytt === false ? 1 : (int) $nytt;
+    }
+    $antal = (int) get_transient($nyckel);
+    set_transient($nyckel, $antal + 1, MINUTE_IN_SECONDS);
+    return $antal + 1;
+}
+
+/**
  * Whether this request is over the limit. Counted before anything is
  * forwarded, so a flood cannot hold PHP workers with the upstream call.
  */
@@ -156,11 +182,9 @@ function sgv_for_manga(): bool
     $granser = [SGV_MATNING_GRANS, SGV_MATNING_TOTALT];
     $nycklar = ['sgv_matning_' . md5(sgv_klient_ip()), 'sgv_matning_allt'];
     foreach ($nycklar as $i => $nyckel) {
-        $antal = (int) get_transient($nyckel);
-        if ($antal >= $granser[$i]) {
+        if (sgv_oka($nyckel) > $granser[$i]) {
             return true;
         }
-        set_transient($nyckel, $antal + 1, MINUTE_IN_SECONDS);
     }
     return false;
 }
