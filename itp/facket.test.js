@@ -66,3 +66,19 @@ test("tomt ämne och tom text ger snurrans eget mejl", () => {
   assert.deepEqual(mejl(r, { amne: "", mall: "" }), mejl(r));
   assert.ok(MALL.includes("{kostnad}") && MALL.includes("{per_manad}"));
 });
+
+test("teckenkoder utanför giltigt område hoppas över med varning, inte kastar", () => {
+  const varningar = [];
+  const sparad = console.warn;
+  console.warn = (...args) => varningar.push(args.join(" "));
+  try {
+    assert.equal(mallFranHtml("<p>A&#x110000;B &#1114112; C&#x201D;</p>"), "AB  C\u201D");
+  } finally {
+    console.warn = sparad;
+  }
+  assert.equal(varningar.length, 2);
+});
+
+test("högsta giltiga kodpunkten avkodas fortfarande", () => {
+  assert.equal(mallFranHtml("&#x10FFFF;"), "\u{10FFFF}");
+});
