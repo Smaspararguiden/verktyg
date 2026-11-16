@@ -230,6 +230,13 @@ function sgv_rensa_rapport(array $data): ?array
             return null;
         }
     }
+    // A required field that is missing altogether rejects the report too,
+    // as in the receiver.
+    foreach (SGV_RAPPORT_FALT as $namn => $falt) {
+        if (!empty($falt['krav']) && !array_key_exists($namn, $rensa)) {
+            return null;
+        }
+    }
     return $rensa;
 }
 
