@@ -34,9 +34,18 @@ const belopp = (x) => x.toLocaleString("sv-SE");
 // The few entities WordPress writes into text: its curly quotes and dashes come
 // as numeric ones.
 const ENTITETER = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
+// fromCodePoint throws above 0x10FFFF, and the shortcode's text is editor
+// input, so an out-of-range entity is skipped with a warning instead.
+const franKodpunkt = (cp) => {
+  if (cp > 0x10ffff) {
+    console.warn(`Hoppar över teckenkoden &#${cp}; som ligger utanför giltigt område`);
+    return "";
+  }
+  return String.fromCodePoint(cp);
+};
 const avkoda = (s) => s
-  .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
-  .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+  .replace(/&#x([0-9a-f]+);/gi, (_, h) => franKodpunkt(parseInt(h, 16)))
+  .replace(/&#(\d+);/g, (_, d) => franKodpunkt(Number(d)))
   .replace(/&([a-z]+);/gi, (hel, namn) => ENTITETER[namn.toLowerCase()] ?? hel);
 
 // Turns the text between the shortcode tags into plain text. WordPress has

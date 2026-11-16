@@ -573,11 +573,20 @@ window.addEventListener("pagehide", rapportera);
 // page, wherever the site has placed it. It follows the result as it changes.
 const facket = document.querySelector(".sg-itp-facket");
 // The site's own subject and text, written in the shortcode. Read before the
-// box is filled, since the text sits in a <template> inside it.
-const egetMejl = facket ? {
-  amne: (facket.dataset.amne || "").trim(),
-  mall: mallFranHtml(facket.querySelector("template.mall")?.innerHTML || ""),
-} : {};
+// box is filled, since the text sits in a <template> inside it. If the text
+// cannot be parsed, the calculator's own mail is used instead of the whole
+// module failing to load.
+let egetMejl = {};
+if (facket) {
+  try {
+    egetMejl = {
+      amne: (facket.dataset.amne || "").trim(),
+      mall: mallFranHtml(facket.querySelector("template.mall")?.innerHTML || ""),
+    };
+  } catch (fel) {
+    console.warn("Kunde inte tolka mejltexten i kortkoden:", fel);
+  }
+}
 // The box's help texts, also from the shortcode. Without hjalp there is none.
 const hjalpText = (facket?.dataset.hjalp || "").trim();
 const raknaForstText = (facket?.dataset.raknaForst || "").trim()
