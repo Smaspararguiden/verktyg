@@ -155,8 +155,11 @@ då sajtens server, inte besökaren. Pluginen ger sidan adressen i kortkodens
 Endpointen är taktsbegränsad (10 anrop per minut och adress, 120 totalt, svar 429
 vid överskridande) och tar bara emot små JSON-objekt som kontrolleras mot samma
 fältlista som skriptet innan något skickas vidare; en begränsad förfrågan skriver
-inte heller till databasen varje gång. Pluginen sparar bara räknare över anrop i
-databasen (ej autoload), aldrig rapporterna.
+inte heller till databasen varje gång, utan räknas som stickprov var tionde 429;
+adminsidan visar både stickprovet och det uppskattade antalet (stickprovet × 10).
+Pluginen sparar bara räknare över anrop i databasen (ej autoload), aldrig
+rapporterna. Fältlistorna i skriptet, pluginen och `matning.js` jämförs av
+`tests/falt-parity.test.js`.
 
 Skriptet, `apps-script/itp-resultat.gs`, kontrollerar varje värde och sparar i
 fliken `Resultat` i det Google-ark det hör till. Finns koden redan skrivs den

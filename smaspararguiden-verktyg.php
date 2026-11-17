@@ -374,6 +374,12 @@ add_action('admin_init', function (): void {
     if (get_option('sgv_matning_stat', false) === false) {
         add_option('sgv_matning_stat', SGV_STAT_NOLL, '', 'no');
     }
+    // På sajter där optionen skapades innan den blev icke-autoload ligger den
+    // kvar som autoload; slå av det här en gång. wp_set_option_autoload finns
+    // från WP 6.6.
+    if (function_exists('wp_set_option_autoload')) {
+        wp_set_option_autoload('sgv_matning_stat', false);
+    }
     register_setting('sgv_verktyg', 'sgv_itp_ark', [
         'type' => 'string',
         'sanitize_callback' => 'esc_url_raw',
@@ -430,7 +436,12 @@ function sgv_admin_sida(): void
     echo '<table class="widefat striped"><thead><tr><th>Anrop till statistik-endpointen</th><th>Antal</th></tr></thead><tbody>';
     echo '<tr><td>Skickade vidare</td><td>' . (int) ($stat['skickade'] ?? 0) . '</td></tr>';
     echo '<tr><td>Misslyckade vidarebefordringar</td><td>' . (int) ($stat['misslyckade'] ?? 0) . '</td></tr>';
-    echo '<tr><td>Begränsade (429)</td><td>' . (int) ($stat['begransade'] ?? 0) . '</td></tr>';
+    // Räknaren är ett stickprov: var tionde 429 räknas, så det uppskattade
+    // antalet är stickprovet gånger tio.
+    $begransade = (int) ($stat['begransade'] ?? 0);
+    echo '<tr><td>Begränsade (429, stickprov var tionde)</td><td>'
+        . number_format($begransade, 0, ',', ' ') . ' (ca '
+        . number_format($begransade * 10, 0, ',', ' ') . ')</td></tr>';
     echo '</tbody></table>';
     echo '<h2>Kalkylark</h2>';
     echo '<form method="post" action="options.php">';
