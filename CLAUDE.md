@@ -8,9 +8,8 @@ calculator's statistics on to Google. The tools are published as a WordPress plu
 zip file through the WordPress admin. GitHub Pages shows a preview.
 
 Rules shared with Småspararguiden's other small repos, and facts about the
-site, are read in from a file outside the repo:
-
-@~/.claude/smaspararguiden-sajten.md
+site, are in `~/.claude/CLAUDE.md`, section "Småspararguiden's site and its
+small repos". Claude Code loads that file in every session.
 
 Never modify code unless explicitly requested. Prefer discussion over
 implementation.
@@ -76,8 +75,8 @@ tools load (listed in `docs/ARCHITECTURE.md`, section "Publicering"), nothing
 else. A zip built for upload carries a new `Version:` in the PHP header, so
 WordPress shows which copy is installed.
 
-After the upload the site's cache has to be cleared; the shared file above says
-how.
+After the upload the site's cache has to be cleared; `~/.claude/CLAUDE.md`
+says how.
 
 ## Privacy
 
