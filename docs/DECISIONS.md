@@ -96,6 +96,7 @@ statistiken gjordes ett undantag i 24, som togs bort i 26.
 
 Uppdatering sker för hand: filerna skrivs över via FTP och sajtens cache
 rensas i WordPress. Den första installationen gjordes med zip-fil, se 21.
+FTP ersattes av zip-fil också för uppdateringar, se 38.
 Automatisk uppdatering från GitHub valdes bort på
 webbansvarigs inrådan. Den kräver kod från tredje part i pluginen och ger
 GitHub en väg in till sajten, samma invändning som i 5. Priset är att en
@@ -250,7 +251,8 @@ Pluginen installerades som zip-fil via Tillägg i WordPress, inte via FTP.
 Andreas kan då göra det själv med sin vanliga inloggning, utan FTP-uppgifter.
 Sajtens webbansvarig rådde oss att först prova i testmiljön, sedan installera
 på den skarpa sajten och där testa på en privat sida innan den publiceras. Så
-gjorde vi. Hur senare uppdateringar laddas upp är inte bestämt.
+gjorde vi. Hur senare uppdateringar laddas upp är inte bestämt. Det bestämdes
+i 38.
 
 ## 22. Fält och knappar ärver sidans typsnitt (2026-11-06)
 
@@ -480,3 +482,16 @@ tog lika mycket plats som valet att strunta i kapitalet. Den ligger nu i
 expandern "Så hittar du ditt kapital", som också nämner minpension.se, och går
 att skriva i WordPress som `hitta_kapital` (36). Raden om Alecta flyttade in
 dit, så att all hjälp för inloggningen finns på ett ställe.
+
+## 38. Uppdateringar laddas upp som zip-fil, inte via FTP (2026-11-25)
+
+Varje ny version av pluginen laddas upp som zip-fil via Tillägg i WordPress,
+på samma sätt som den första installationen (21). Det gör Andreas eller sajtens
+webbansvarig. Skälet är detsamma som i 21: det går med en vanlig inloggning i
+WordPress, utan FTP-uppgifter. Det ersätter meningen om FTP i 9; resten av 9
+gäller.
+
+Efter uppladdningen rensas sajtens cache, annars får besökarna de gamla
+filerna. Zip-filen får ett nytt versionsnummer i pluginens huvud, så att
+WordPress visar vilken kopia som ligger på sajten. Adressernas `?ver=` (9)
+sköter fortfarande besökarnas webbläsare och behöver inget versionsnummer.
