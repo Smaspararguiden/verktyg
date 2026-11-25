@@ -11,6 +11,7 @@ const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, delaUppKapital } = await import(`./berakning.js${versionsfraga}`);
 const { matvarden, nyKod, tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
 const { mejl, mallFranHtml } = await import(`./facket.js${versionsfraga}`);
+const { html, procent } = await import(`./delat.js${versionsfraga}`);
 
 // ITP1 covers those born this year or later; older people have ITP2.
 const ITP1_FRAN_FODELSEAR = 1979;
@@ -179,13 +180,8 @@ resultatMer.addEventListener("toggle", (e) => {
 
 const kr = (x) => `${tusental(x).toLocaleString("sv-SE")} kr`;
 const krManad = (x) => `${tiotal(x).toLocaleString("sv-SE")} kr/mån`;
-const procent = (x, decimaler = 0) =>
-  `${(x * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler })} %`;
-
-// Escapes a text for HTML. Visitor input is parsed as digits before it is
-// rendered, so this is for the static texts from the parameter file.
-const html = (s) => String(s).replace(/[&<>"']/g,
-  (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+// html() escapes the static texts from the parameter file; visitor input is
+// parsed as digits before it is rendered. Both come from delat.js.
 
 // Accepts "45 000", "45000" and "45 000 kr".
 function talFran(falt) {

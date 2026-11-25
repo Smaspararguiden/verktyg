@@ -8,22 +8,19 @@
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
 const { berakna, schablonranta } = await import(`./berakning.js${versionsfraga}`);
+const { html, procent, kronor } = await import(`./delat.js${versionsfraga}`);
 
 const rot = document.querySelector(".sg-iskdepa");
 
-const procent = (andel, decimaler = 2) =>
-  (andel * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler });
-const kronor = (belopp) =>
-  Math.round(belopp).toLocaleString("sv-SE") + " kr";
-const escape = (text) => String(text).replace(/[&<>"']/g, (c) => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-}[c]));
+// Number text for the form's percentage fields, without the % sign.
+const procenttal = (andel) =>
+  (andel * 100).toLocaleString("sv-SE", { maximumFractionDigits: 2 });
 
 const valForlust = p.statensAndelAvForlust.alternativ
-  .map((a) => `<option value="${a.varde}"${a.varde === p.statensAndelAvForlust.varde ? " selected" : ""}>${escape(a.text)}</option>`)
+  .map((a) => `<option value="${a.varde}"${a.varde === p.statensAndelAvForlust.varde ? " selected" : ""}>${html(a.text)}</option>`)
   .join("");
 const valScenario = p.scenarier.varde
-  .map((s, i) => `<option value="${i}">${escape(s.namn)}</option>`)
+  .map((s, i) => `<option value="${i}">${html(s.namn)}</option>`)
   .join("");
 
 rot.innerHTML = `
@@ -44,17 +41,17 @@ rot.innerHTML = `
         Utan bocken räknar vi på kronor över fribeloppet.</p>
       <label class="kryss">
         <input type="checkbox" name="fonder" checked>
-        Depån innehåller fonder (fondskatt ${procent(p.fondSchablon.varde * p.skattesatsKapital.varde)} % per år)
+        Depån innehåller fonder (fondskatt ${procent(p.fondSchablon.varde * p.skattesatsKapital.varde, 2)} per år)
       </label>
     </fieldset>
     <fieldset>
       <legend>Skatter och räntor</legend>
       <label>Statslåneräntan 30 november året före (%)
-        <input name="statslanerantan" inputmode="decimal" value="${procent(p.statslanerantan.varde)}">
+        <input name="statslanerantan" inputmode="decimal" value="${procenttal(p.statslanerantan.varde)}">
       </label>
       <p class="hjalp" data-iskskatt></p>
       <label>Ränta på sparkonto (%)
-        <input name="kontoranta" inputmode="decimal" value="${procent(p.kontoranta.varde)}">
+        <input name="kontoranta" inputmode="decimal" value="${procenttal(p.kontoranta.varde)}">
       </label>
       <label>Hur stor del av en förlust på depån staten står för
         <select name="statensAndelAvForlust">${valForlust}</select>
@@ -63,7 +60,7 @@ rot.innerHTML = `
     <fieldset>
       <legend>Jämförelsen samma risk</legend>
       <label>Aktieandel på ISK (%)
-        <input name="aktieandelIsk" inputmode="decimal" value="${procent(p.aktieandelIskSammaRisk.varde)}">
+        <input name="aktieandelIsk" inputmode="decimal" value="${procenttal(p.aktieandelIskSammaRisk.varde)}">
       </label>
       <p class="hjalp">Resten står på sparkonto, i båda jämförelserna.</p>
     </fieldset>
@@ -148,10 +145,10 @@ function tabell(jamforelse) {
       return `<td>
         <span class="${depaVinner ? "" : "vinner"}">ISK ${kronor(h.isk)}</span><br>
         <span class="${depaVinner ? "vinner" : ""}">Depå ${kronor(h.depa)}</span><br>
-        <span class="skillnad">Depå ${skillnad >= 0 ? "+" : "−"}${procent(Math.abs(skillnad), 1)} %</span>
+        <span class="skillnad">Depå ${skillnad >= 0 ? "+" : "−"}${procent(Math.abs(skillnad), 1)}</span>
       </td>`;
     }).join("");
-    return `<tr><th>${escape(s.namn)}</th>${celler}</tr>`;
+    return `<tr><th>${html(s.namn)}</th>${celler}</tr>`;
   }).join("");
   return `<table><thead><tr><th>Scenario</th>${huvud}</tr></thead><tbody>${rader}</tbody></table>`;
 }
@@ -184,7 +181,7 @@ function uppdatera() {
   const meddelande = rot.querySelector("[data-meddelande]");
   const resultat = rot.querySelector("[data-resultat]");
   if (fel.length) {
-    meddelande.innerHTML = `<p class="meddelande varning">Kontrollera ${escape(fel.join(", "))}.</p>`;
+    meddelande.innerHTML = `<p class="meddelande varning">Kontrollera ${html(fel.join(", "))}.</p>`;
     resultat.hidden = true;
     return;
   }
@@ -193,18 +190,18 @@ function uppdatera() {
 
   const ranta = schablonranta(p, indata.statslanerantan);
   rot.querySelector("[data-iskskatt]").textContent =
-    `Det ger schablonräntan ${procent(ranta)} % och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} % av kapitalunderlaget.`;
+    `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av kapitalunderlaget.`;
 
   senaste = berakna(p, indata);
   const { sammaPengar, sammaRisk } = senaste;
 
   rot.querySelector("[data-text-pengar]").textContent =
-    `${procent(sammaPengar.andelIsk, 0)} % aktier på både ISK och depå. Värdet efter skatt om allt säljs efter så många år.`;
+    `${procent(sammaPengar.andelIsk, 0)} aktier på både ISK och depå. Värdet efter skatt om allt säljs efter så många år.`;
   rot.querySelector("[data-tabell-pengar]").innerHTML = tabell(sammaPengar);
 
   rot.querySelector("[data-text-risk]").textContent = sammaRisk.begransad
-    ? `${procent(sammaRisk.andelIsk, 0)} % aktier på ISK. För samma risk skulle depån behöva mer än 100 % aktier, alltså lån, så den har 100 % och därmed lägre risk än ISK.`
-    : `${procent(sammaRisk.andelIsk, 0)} % aktier på ISK mot ${procent(sammaRisk.andelDepa, 0)} % på depån. Staten står för en del av en förlust på depån, så depån kan ha mer aktier med samma risk efter skatt.`;
+    ? `${procent(sammaRisk.andelIsk, 0)} aktier på ISK. För samma risk skulle depån behöva mer än 100 % aktier, alltså lån, så den har 100 % och därmed lägre risk än ISK.`
+    : `${procent(sammaRisk.andelIsk, 0)} aktier på ISK mot ${procent(sammaRisk.andelDepa, 0)} på depån. Staten står för en del av en förlust på depån, så depån kan ha mer aktier med samma risk efter skatt.`;
   rot.querySelector("[data-tabell-risk]").innerHTML = tabell(sammaRisk);
 
   arTabell();
@@ -214,18 +211,18 @@ function uppdatera() {
 function formateraVarde(post) {
   if (post === p.scenarier) {
     return post.varde.map((s) => s.forstaAret === s.ovrigaAr
-      ? `${escape(s.namn)}: ${procent(s.ovrigaAr)} %`
-      : `${escape(s.namn)}: ${procent(s.forstaAret)} % år 1, sedan ${procent(s.ovrigaAr)} %`).join("<br>");
+      ? `${html(s.namn)}: ${procent(s.ovrigaAr, 2)}`
+      : `${html(s.namn)}: ${procent(s.forstaAret, 2)} år 1, sedan ${procent(s.ovrigaAr, 2)}`).join("<br>");
   }
   if (post === p.horisonter) return post.varde.join(", ") + " år";
-  if (post.enhet === "kr" || post.enhet === "kr/mån") return escape(kronor(post.varde) + (post.enhet === "kr/mån" ? "/mån" : ""));
+  if (post.enhet === "kr" || post.enhet === "kr/mån") return html(kronor(post.varde) + (post.enhet === "kr/mån" ? "/mån" : ""));
   const enhet = post.enhet === "andel" ? "" : ` ${post.enhet}`;
-  return escape(`${procent(post.varde)} %${enhet}`);
+  return html(`${procent(post.varde, 2)}${enhet}`);
 }
 
 function visaParametrar() {
   const rader = Object.values(p).map((post) => `<tr>
-    <td>${escape(post.beskrivning)}<br><span class="kalla">Källa: ${escape(post.kalla)}</span></td>
+    <td>${html(post.beskrivning)}<br><span class="kalla">Källa: ${html(post.kalla)}</span></td>
     <td>${formateraVarde(post)}</td>
   </tr>`).join("");
   rot.querySelector("[data-parametrar]").innerHTML = `

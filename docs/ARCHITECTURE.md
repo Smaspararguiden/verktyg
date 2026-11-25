@@ -14,19 +14,26 @@ smaspararguiden-verktyg.php   pluginen: en kortkod per verktyg
   visning.js      visningen: ritar inmatning, resultat och "Så har vi räknat"
   matning.js      vad som sparas om ett resultat, och vart det skickas
   facket.js       mejlet till facket, med användarens belopp
+  delat.js        hjälpfunktioner, identisk kopia i varje verktyg
   stil.css        stilar för verktygets egna komponenter
   index.html      förhandsvisning utanför WordPress
+  typsnitt/       Lato för förhandsvisningen, identisk kopia i varje verktyg
 apps-script/      skript som tar emot resultat och sparar dem i ett Google-ark
+tests/            tester som gäller flera verktyg eller pluginen
 ```
 
 Beräkningsmodulen importerar inget från visningen. Visningen anropar
 beräkningsmodulen och läser parameterfilen för "Så har vi räknat".
 
+Inget verktyg laddar filer från ett annat verktygs mapp (DECISIONS.md 40).
+Det verktygen delar, `delat.js` och `typsnitt/`, är kopior som
+`tests/kopior.test.js` håller identiska.
+
 ## Publicering
 
 Pluginen ligger i `wp-content/plugins/smaspararguiden-verktyg/` på sajten:
 `smaspararguiden-verktyg.php` och de filer som verktygen laddar, för ITP-snurran
-`parametrar.js`, `berakning.js`, `visning.js`, `matning.js`, `facket.js` och `stil.css`. Den
+`parametrar.js`, `berakning.js`, `visning.js`, `matning.js`, `facket.js`, `delat.js` och `stil.css`. Den
 laddas upp som en zip-fil via Tillägg i WordPress, både första gången och vid
 varje uppdatering (DECISIONS.md 38). Zip-filen har filerna i en mapp som heter
 `smaspararguiden-verktyg`. Efter uppladdningen rensas sajtens cache i WordPress.
@@ -108,8 +115,8 @@ I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en kn
 
 En simulator som bara visas på GitHub Pages, https://smaspararguiden.github.io/verktyg/isk-depa/,
 och inte ligger i pluginen (DECISIONS.md 39). Samma uppdelning som ITP-snurran:
-`parametrar.js`, `berakning.js`, `visning.js`, `stil.css` och `index.html`.
-Typsnitten lånas från `itp/typsnitt/`.
+`parametrar.js`, `berakning.js`, `visning.js`, `delat.js`, `stil.css`,
+`index.html` och `typsnitt/`.
 
 `berakning.js` exporterar `berakna(parametrar, indata)`, där indata är
 `{ startbelopp, manadssparande, statslanerantan, kontoranta,

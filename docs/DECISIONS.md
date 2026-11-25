@@ -523,3 +523,18 @@ Allt räknas månad för månad, eftersom ISK-skatten bygger på kvartalsvärden
 månadssparande. Beloppen är nominella, eftersom både ISK-skatten och skatten
 på vinst räknas på nominella belopp. Depån säljs vid varje tidshorisont, så att
 alla siffror är vad som blir kvar efter all skatt.
+
+## 40. Verktygen hålls isär, och det de delar kopieras (2026-11-25)
+
+Varje verktyg ligger i en egen mapp och laddar inget från ett annat verktygs
+mapp. Ett nytt repo per verktyg vore för mycket, men verktygen ska kunna
+ändras och laddas upp utan att ett annat påverkas. Ett gemensamt bibliotek
+skulle göra att en ändring för det ena verktyget kan ha sönder det andra utan
+att någon märker det.
+
+Det som delas är små hjälpfunktioner (`delat.js`) och typsnitten. De kopieras
+in i varje verktyg och hålls identiska: samma namn betyder samma kod.
+`tests/kopior.test.js` jämför kopiorna och kontrollerar att inget verktyg pekar
+in i ett annat. Det är en kompromiss: kopior är inte snyggt, men de är få och
+korta, och testet gör att de inte kan glida isär i tysthet. Frågan tas upp igen
+om det kommer ett tredje verktyg eller om beräkningslogik behöver delas.
