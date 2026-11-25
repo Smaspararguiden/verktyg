@@ -104,6 +104,28 @@ förhandsvisning med samma element och några regler som står i för temat.
 
 I "Så har vi räknat" ligger varje källa på en egen rad som öppnas med en knapp.
 
+## ISK eller depå (`isk-depa/`)
+
+En simulator som bara visas på GitHub Pages, https://smaspararguiden.github.io/verktyg/isk-depa/,
+och inte ligger i pluginen (DECISIONS.md 39). Samma uppdelning som ITP-snurran:
+`parametrar.js`, `berakning.js`, `visning.js`, `stil.css` och `index.html`.
+Typsnitten lånas från `itp/typsnitt/`.
+
+`berakning.js` exporterar `berakna(parametrar, indata)`, där indata är
+`{ startbelopp, manadssparande, statslanerantan, kontoranta,
+statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder }`. Den returnerar
+två jämförelser, `sammaPengar` och `sammaRisk`, var och en med aktieandelarna
+och för varje scenario raderna år för år och värdena vid varje tidshorisont.
+`simulera()` räknar ett scenario månad för månad: aktierna på ISK eller depå,
+resten på sparkonto, och skatterna i slutet av varje år. Varje års rad har
+också depåns värde om den säljs då.
+
+`visning.js` ritar formuläret med startvärden från parameterfilen, två tabeller
+(scenarier mot tidshorisonter), en tabell år för år för valt scenario och
+"Så har vi räknat" från parameterfilen. Inget skickas från sidan.
+
+Tester: `isk-depa/berakning.test.js`.
+
 ## Texter från WordPress
 
 Vissa förklarande texter i snurran kan sajten skriva själv, med

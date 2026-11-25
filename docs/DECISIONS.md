@@ -495,3 +495,31 @@ Efter uppladdningen rensas sajtens cache, annars får besökarna de gamla
 filerna. Zip-filen får ett nytt versionsnummer i pluginens huvud, så att
 WordPress visar vilken kopia som ligger på sajten. Adressernas `?ver=` (9)
 sköter fortfarande besökarnas webbläsare och behöver inget versionsnummer.
+
+## 39. ISK eller depå: en simulator som jämför både samma pengar och samma risk (2026-11-25)
+
+Simulatorn i `isk-depa/` byggs först som arbetsverktyg för Andreas, som
+underlag till artiklar. Den visas bara på GitHub Pages och ligger inte i
+pluginen. Kortkoden kommer om den ska publiceras.
+
+Den jämför två saker. Samma pengar är det de flesta läsare gör: samma
+aktieandel på båda kontona. Samma risk följer resonemanget i intervjun med
+Jacob Lundberg: staten står för en del av en förlust på depån, så den som har
+depå kan ha mer aktier med samma risk efter skatt. Depåns aktieandel blir ISK:s
+delad med (1 − statens andel). Ingen befintlig kalkylator räknar så, och det är
+skälet att bygga en egen.
+
+Statens andel av en förlust är 21 % som utgångsläge. Simulatorn räknar på hela
+depån, så en förlust på den har inga vinster på depån att kvittas mot. Då gäller
+70 % avdrag med 30 % skatt, och det får alla. 30 % kräver vinster på andra
+marknadsnoterade värdepapper och kan väljas på sidan.
+
+Det som inte ligger i aktier står på sparkonto utanför ISK i båda portföljerna,
+eftersom ränta på sparkonto beskattas lägre än pengar på ISK när räntan är
+under schablonräntan. Depåns aktieandel stannar vid 100 %: mer kräver lån, och
+lån räknar vi inte med.
+
+Allt räknas månad för månad, eftersom ISK-skatten bygger på kvartalsvärden och
+månadssparande. Beloppen är nominella, eftersom både ISK-skatten och skatten
+på vinst räknas på nominella belopp. Depån säljs vid varje tidshorisont, så att
+alla siffror är vad som blir kvar efter all skatt.

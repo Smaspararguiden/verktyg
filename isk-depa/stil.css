@@ -1,0 +1,69 @@
+/* Styles for the ISK vs depå simulator. Every rule is scoped to the
+   .sg-iskdepa element, so nothing here reaches the rest of the page. Follows
+   the ITP calculator: headings, text and tables are left to the page, and
+   the colours are taken from smaspararguiden.se. */
+
+.sg-iskdepa {
+  --dampad: #42728a;
+  --yta: #eef4f7;
+  --kant: #dde8ee;
+  --accent: #325567;
+  --mork: #0b2e5b;
+  --gul: #d4a017;
+}
+
+.sg-iskdepa [hidden] { display: none !important; }
+
+.sg-iskdepa .hjalp { color: var(--dampad); font-size: 0.9em; margin: 4px 0 12px; }
+
+.sg-iskdepa fieldset {
+  background: var(--yta);
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 0 0 16px;
+  min-width: 0;
+}
+.sg-iskdepa legend {
+  font-weight: 700;
+  color: var(--accent);
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.sg-iskdepa legend + * { clear: both; }
+
+.sg-iskdepa label { display: block; margin: 0 0 10px; }
+.sg-iskdepa label.kryss { display: flex; gap: 8px; align-items: baseline; }
+.sg-iskdepa input:not([type=checkbox]), .sg-iskdepa select {
+  display: block;
+  margin-top: 4px;
+  padding: 8px 10px;
+  font: inherit;
+  border: 1px solid var(--kant);
+  border-radius: 6px;
+  background: #fff;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.sg-iskdepa input:not([type=checkbox]) { width: 12em; }
+
+.sg-iskdepa .rad { display: flex; flex-wrap: wrap; gap: 16px; }
+
+.sg-iskdepa .meddelande.varning {
+  border-left: 4px solid var(--gul);
+  background: #fdf6e3;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+/* Wide tables scroll inside their box instead of widening the page. */
+.sg-iskdepa .tabell { overflow-x: auto; margin-bottom: 16px; }
+.sg-iskdepa .tabell table { min-width: 640px; }
+.sg-iskdepa .tabell td, .sg-iskdepa .tabell th { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sg-iskdepa .vinner { font-weight: 700; color: var(--mork); }
+.sg-iskdepa .skillnad { color: var(--dampad); font-size: 0.85em; }
+
+.sg-iskdepa .parametrar { margin-top: 24px; }
+.sg-iskdepa .parametrar summary { cursor: pointer; font-weight: 700; color: var(--accent); }
+.sg-iskdepa .kalla { color: var(--dampad); font-size: 0.85em; }
