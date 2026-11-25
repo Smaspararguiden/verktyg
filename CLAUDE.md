@@ -23,6 +23,17 @@ no installed packages.
 Look in `docs/ARCHITECTURE.md` to understand the architecture and use similar
 patterns for new code.
 
+## Tools are kept apart
+
+Each tool lives in its own top-level folder and loads nothing from another
+tool's folder (`docs/DECISIONS.md` 40). What tools share is copied, not
+imported: every tool has its own identical `delat.js`, and identical files
+in `typsnitt/`. `tests/kopior.test.js` checks that the copies match and that
+no tool points into another. To change a shared helper, change it in one
+tool and copy the file to all the others. A helper that must behave
+differently in one tool gets a different name in that tool's own code; the
+same name always means the same code.
+
 ## Calculations
 
 The calculation module of a tool is kept apart from its display. It takes
