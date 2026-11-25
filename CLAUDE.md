@@ -4,9 +4,13 @@ This repo holds tools that Småspararguiden publishes on smaspararguiden.se,
 for example calculators. Each tool runs entirely in the visitor's browser:
 plain JavaScript, no build step. The only server code passes the ITP
 calculator's statistics on to Google. The tools are published as a WordPress plugin
-(`smaspararguiden-verktyg.php`, one shortcode per tool), uploaded by hand: a
-zip file through the WordPress admin the first time, then FTP. GitHub Pages
-shows a preview.
+(`smaspararguiden-verktyg.php`, one shortcode per tool), uploaded by hand as a
+zip file through the WordPress admin. GitHub Pages shows a preview.
+
+Rules shared with Småspararguiden's other small repos, and facts about the
+site, are read in from a file outside the repo:
+
+@~/.claude/smaspararguiden-sajten.md
 
 Never modify code unless explicitly requested. Prefer discussion over
 implementation.
@@ -56,9 +60,24 @@ that as "prepare and open the PR".
 
 `gh` is **not installed** on this machine. Open PRs against
 `Smaspararguiden/verktyg` through the GitHub REST API, with the token from
-`git credential fill`. The details (which shell, how to feed it input, building
-the JSON body in Python with UTF-8) are the same as in the smaspararboten repo's
-`CLAUDE.md`, section "Opening a pull request".
+`git credential fill`. The recipe (which shell, how to feed it input, building
+the JSON body in Python with UTF-8) is in `~/.claude/CLAUDE.md`.
+
+Fetch and cut a new branch from fresh `origin/main` for every change. There is
+no worktree registry in this repo: work in the clone on your own branch, and do
+not create worktrees unasked.
+
+## Publishing to WordPress
+
+Andreas or the site's web manager publishes; Claude never touches the site
+(`docs/DECISIONS.md` 38). Claude's part is the zip file: everything in one
+folder named `smaspararguiden-verktyg`, holding the PHP file and the files the
+tools load (listed in `docs/ARCHITECTURE.md`, section "Publicering"), nothing
+else. A zip built for upload carries a new `Version:` in the PHP header, so
+WordPress shows which copy is installed.
+
+After the upload the site's cache has to be cleared; the shared file above says
+how.
 
 ## Privacy
 
