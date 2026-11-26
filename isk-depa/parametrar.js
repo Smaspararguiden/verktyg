@@ -72,6 +72,15 @@ export const parametrar = {
     kalla: "Antagande (Småspararguiden) – VERIFIERA mot aktuella sparkonton med insättningsgaranti",
   },
 
+  fondavgift: {
+    // Taken month by month from the equities on both accounts. The page lets
+    // the user type another.
+    varde: 0.001,
+    enhet: "per år",
+    beskrivning: "Fondens totala årliga avgift, dras från aktierna på både ISK och depå",
+    kalla: "Antagande (Småspararguiden): i nivå med en billig global indexfond",
+  },
+
   // --- The comparison --------------------------------------------------------
   aktieandelSammaPengar: {
     varde: 1.0,
@@ -88,7 +97,7 @@ export const parametrar = {
   },
   scenarier: {
     // forstaAret is the return in year 1, ovrigaAr the return every year
-    // after. Returns are nominal and after the fund's own fee.
+    // after. Returns are nominal and before the fund's fee (fondavgift).
     varde: [
       { namn: "Normalläge", forstaAret: 0.08, ovrigaAr: 0.08 },
       { namn: "Goda tider", forstaAret: 0.12, ovrigaAr: 0.12 },
@@ -97,7 +106,7 @@ export const parametrar = {
       { namn: "Krasch år 1", forstaAret: -0.5, ovrigaAr: 0.08 },
     ],
     enhet: "avkastning per år",
-    beskrivning: "Avkastning på aktierna, nominellt och efter fondens avgift. Normalläget är 6 % real avkastning och 2 % inflation",
+    beskrivning: "Avkastning på aktierna, nominellt och före fondens avgift. Normalläget är 6 % real avkastning och 2 % inflation",
     kalla: "Antaganden (Småspararguiden)",
   },
   inflation: {

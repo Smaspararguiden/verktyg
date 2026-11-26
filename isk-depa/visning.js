@@ -51,6 +51,9 @@ rot.innerHTML = `
         <input name="statslanerantan" inputmode="decimal" value="${procenttal(p.statslanerantan.varde)}">
       </label>
       <p class="hjalp" data-iskskatt></p>
+      <label>Fondens totala avgift per år (%)
+        <input name="avgift" inputmode="decimal" value="${procenttal(p.fondavgift.varde)}">
+      </label>
       <label>Ränta på sparkonto (%)
         <input name="kontoranta" inputmode="decimal" value="${procenttal(p.kontoranta.varde)}">
       </label>
@@ -71,7 +74,7 @@ rot.innerHTML = `
           <input name="egenAntalAr" inputmode="numeric" value="${Math.max(...p.horisonter.varde)}">
         </label>
       </div>
-      <p class="hjalp">Nominell avkastning på aktierna per år, efter fondens avgift.</p>
+      <p class="hjalp">Nominell avkastning på aktierna per år, före fondens avgift.</p>
       <div class="rad">
         <label>Aktieandel på ISK (%)
           <input name="egenAndelIsk" inputmode="decimal" value="${procenttal(p.aktieandelSammaPengar.varde)}">
@@ -153,6 +156,7 @@ function lasIndata() {
     manadssparande: kr("manadssparande", "månadssparande"),
     statslanerantan: pr("statslanerantan", "statslåneräntan", -0.05, 0.2),
     kontoranta: pr("kontoranta", "räntan på sparkonto", -0.05, 0.2),
+    avgift: pr("avgift", "fondens avgift", 0, 0.05),
     aktieandelIsk: pr("aktieandelIsk", "aktieandelen på ISK", 0, 1),
     statensAndelAvForlust: Number(falt("statensAndelAvForlust").value),
     medFribelopp: falt("medFribelopp").checked,
@@ -255,7 +259,7 @@ function uppdatera() {
 
   const ranta = schablonranta(p, indata.statslanerantan);
   rot.querySelector("[data-iskskatt]").textContent =
-    `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av kapitalunderlaget.`;
+    `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av ISK:ns värde 1 januari.`;
 
   const risk = aktieandelSammaRisk(egen.andelIsk, indata.statensAndelAvForlust);
   rot.querySelector("[data-egen-risk]").textContent = risk.begransad
@@ -300,7 +304,10 @@ function visaParametrar() {
   </tr>`).join("");
   rot.querySelector("[data-parametrar]").innerHTML = `
     <p>Allt räknas månad för månad i nominella kronor. Skatterna dras i slutet
-      av varje år från kontot de gäller. Depån säljs och vinsten beskattas
+      av varje år från kontot de gäller. ISK-skatten räknar vi förenklat på
+      värdet 1 januari, inte på Skatteverkets snitt av fyra kvartalsvärden
+      och årets insättningar. Fondens avgift dras från aktierna varje månad.
+      Depån säljs och vinsten beskattas
       vid varje tidshorisont. Utdelningar räknar vi inte med: fonderna antas
       återinvestera dem.</p>
     <table><tbody>${rader}</tbody></table>`;

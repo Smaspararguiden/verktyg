@@ -522,7 +522,8 @@ lån räknar vi inte med.
 Allt räknas månad för månad, eftersom ISK-skatten bygger på kvartalsvärden och
 månadssparande. Beloppen är nominella, eftersom både ISK-skatten och skatten
 på vinst räknas på nominella belopp. Depån säljs vid varje tidshorisont, så att
-alla siffror är vad som blir kvar efter all skatt.
+alla siffror är vad som blir kvar efter all skatt. ISK-skatten förenklades
+sedan till värdet 1 januari, se 41.
 
 ## 40. Verktygen hålls isär, och det de delar kopieras (2026-11-25)
 
@@ -538,3 +539,19 @@ in i varje verktyg och hålls identiska: samma namn betyder samma kod.
 in i ett annat. Det är en kompromiss: kopior är inte snyggt, men de är få och
 korta, och testet gör att de inte kan glida isär i tysthet. Frågan tas upp igen
 om det kommer ett tredje verktyg eller om beräkningslogik behöver delas.
+
+## 41. ISK eller depå: ISK-skatten på värdet 1 januari, och fondavgiften med (2026-11-27)
+
+Simulatorn räknar ISK-skatten på kontots värde 1 januari, inte på
+Skatteverkets kapitalunderlag (snittet av värdet vid fyra kvartalsskiften plus
+årets insättningar, delat med fyra). Det är lättare att förklara och att
+kontrollräkna i ett eget kalkylark, och skillnaden är liten jämfört med andra
+antaganden, till exempel hur statslåneräntan och därmed ISK-skatten utvecklas.
+Med 8 % avkastning blir skatten ett år cirka 4 % lägre än med kvartalsvärden,
+och ISK efter 30 år under 1 % högre. Årets insättningar beskattas först året
+efter. Förenklingen gynnar alltså ISK lite.
+
+Fondens totala avgift dras från aktierna på båda kontona, månad för månad.
+Avkastningen i scenarierna är därför före avgift. Avgiften påverkar ISK och depå
+nästan lika, men den måste med för att beloppen ska gå att stämma av mot ett
+eget kalkylark.
