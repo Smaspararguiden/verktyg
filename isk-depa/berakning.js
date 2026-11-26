@@ -6,9 +6,10 @@
 // account: one with the equities on an ISK, one with them on a depå. The
 // simulation runs month by month in nominal kronor. Taxes are settled at the
 // end of each year; the depå is sold, and its gain taxed, at each horizon.
+// The ISK tax is simplified to the value at the start of the year
+// (DECISIONS.md 41).
 
 const MANADER = 12;
-const KVARTAL = 4;
 
 // The ISK's deemed rate: government bond rate plus the add-on, with a floor.
 export function schablonranta(p, statslanerantan) {
@@ -35,6 +36,11 @@ export function manadsranta(arlig) {
   return Math.pow(1 + arlig, 1 / MANADER) - 1;
 }
 
+// Monthly factor that leaves (1 - yearly fee) of the value after a year.
+export function manadsfaktorEfterAvgift(arligAvgift) {
+  return Math.pow(1 - arligAvgift, 1 / MANADER);
+}
+
 // Tax when the whole depå is sold: on the gain, or a refund on a loss.
 export function depaSkattVidForsaljning(p, varde, omkostnad, statensAndelAvForlust) {
   const vinst = varde - omkostnad;
@@ -49,6 +55,9 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
   const s = p.skattesatsKapital.varde;
   const fribelopp = indata.medFribelopp ? p.fribelopp.varde : 0;
   const rKonto = manadsranta(indata.kontoranta);
+  // The fund's total fee comes off the equities month by month, on both
+  // accounts alike.
+  const efterAvgift = manadsfaktorEfterAvgift(indata.avgift);
 
   let isk = indata.startbelopp * andelIsk;
   let kontoIsk = indata.startbelopp * (1 - andelIsk);
@@ -61,26 +70,22 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
   for (let ar = 1; ar <= antalAr; ar++) {
     const rAktier = manadsranta(ar === 1 ? scenario.forstaAret : scenario.ovrigaAr);
     const depaFoerstaJanuari = depa;
-    let kvartalsvarden = 0;
-    let iskInsattIAr = 0;
+    // Simplified capital base: the ISK's value on 1 January only.
+    const kapitalunderlag = isk;
     let rantaIsk = 0;
     let rantaDepa = 0;
 
     for (let m = 0; m < MANADER; m++) {
-      // The capital base counts the value at the start of each quarter.
-      if (m % (MANADER / KVARTAL) === 0) kvartalsvarden += isk;
-
       const insattning = indata.manadssparande;
       insatt += insattning;
       isk += insattning * andelIsk;
-      iskInsattIAr += insattning * andelIsk;
       kontoIsk += insattning * (1 - andelIsk);
       depa += insattning * andelDepa;
       omkostnad += insattning * andelDepa;
       kontoDepa += insattning * (1 - andelDepa);
 
-      isk *= 1 + rAktier;
-      depa *= 1 + rAktier;
+      isk *= (1 + rAktier) * efterAvgift;
+      depa *= (1 + rAktier) * efterAvgift;
       rantaIsk += kontoIsk * rKonto;
       kontoIsk *= 1 + rKonto;
       rantaDepa += kontoDepa * rKonto;
@@ -88,7 +93,6 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
     }
 
     // Year-end taxes, taken from the accounts themselves.
-    const kapitalunderlag = (kvartalsvarden + iskInsattIAr) / KVARTAL;
     const skattIsk = iskSkatt(p, kapitalunderlag, indata.statslanerantan, fribelopp);
     isk -= skattIsk;
     const fondskatt = indata.fonder ? depaFoerstaJanuari * p.fondSchablon.varde * s : 0;
@@ -137,7 +141,7 @@ function jamforelse(p, indata, andelIsk, andelDepa, begransad) {
   return { andelIsk, andelDepa, begransad, scenarier };
 }
 
-// Indata: { startbelopp, manadssparande, statslanerantan, kontoranta,
+// Indata: { startbelopp, manadssparande, statslanerantan, kontoranta, avgift,
 // statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder }.
 // aktieandelIsk is the ISK's equity share in the same-risk comparison.
 export function berakna(p, indata) {

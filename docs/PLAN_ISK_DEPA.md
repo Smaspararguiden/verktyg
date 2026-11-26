@@ -18,13 +18,15 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
 2. **Samma pengar:** samma aktieandel i båda (100 % som utgångsläge).
    **Samma risk:** depåns aktieandel är ISK:s delad med (1 − statens andel av
    en förlust), högst 100 %. Med 70 % på ISK och 21 % blir det 89 % på depån.
-3. **ISK-skatt:** kapitalunderlaget är värdet vid början av varje kvartal plus
-   årets insättningar, delat med fyra. Fribeloppet räknas bara om användaren
+3. **ISK-skatt:** kapitalunderlaget är ISK:ns värde 1 januari (förenklat,
+   DECISIONS.md 41). Fribeloppet räknas bara om användaren
    bockar i det. Skatten dras från kontot i slutet av året.
 4. **Depå:** fondskatt 0,12 % av värdet 1 januari, dragen i slutet av året.
    Vid varje tidshorisont säljs allt: 30 % på vinsten, eller tillbaka den
    valda andelen av en förlust.
 5. **Sparkonto:** räntan beskattas med 30 % varje år.
+   **Fondavgift:** dras från aktierna på båda kontona varje månad; avkastningen
+   i scenarierna är före avgift.
 6. Scenarierna (8, 12, 5 och 0 %, och krasch −50 % år 1 och sedan 8 %) och
    horisonterna (1, 5, 10, 20, 30 år) står i parameterfilen.
 
