@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 
 import { parametrar } from "./parametrar.js";
 import {
-  aktieandelSammaRisk, berakna, depaSkattVidForsaljning, iskSkatt, manadsranta,
+  aktieandelSammaRisk, berakna, dagensPengar, depaSkattVidForsaljning, egenBerakning,
+  iskSkatt, manadsranta,
   schablonranta, simulera,
 } from "./berakning.js";
 
@@ -154,4 +155,25 @@ test("Rika tillsammans: med fondskatt blir depån något högre hos oss", () => 
     const depa = simulera(parametrar, indata, ettAr(rikasAvkastning), ar, 1, 1).at(-1).depaTotalt;
     assert.ok(depa > rikasVarde && depa < rikasVarde * 1.01, `${depa} mot Rikas ${rikasVarde}`);
   }
+});
+
+test("dagens pengar: 2 % inflation per år räknas bort", () => {
+  narall(dagensPengar(parametrar, 102000, 1), 100000);
+  narall(dagensPengar(parametrar, 100000 * 1.02 ** 30, 30), 100000);
+  assert.equal(dagensPengar(parametrar, 5000, 0), 5000);
+});
+
+test("egen beräkning: egna andelar och avkastning, och värdet i dagens pengar", () => {
+  const indata = grund({ statslanerantan: 0 });
+  const rader = egenBerakning(utanIskSkatt(), indata,
+    { forstaAret: -0.5, ovrigaAr: 0.1, antalAr: 3, andelIsk: 0.5, andelDepa: 0.8 });
+  assert.equal(rader.length, 3);
+  // Same as simulera with that scenario and those shares.
+  const direkt = simulera(utanIskSkatt(), indata, { forstaAret: -0.5, ovrigaAr: 0.1 }, 3, 0.5, 0.8);
+  narall(rader[2].iskTotalt, direkt[2].iskTotalt);
+  narall(rader[2].depaTotalt, direkt[2].depaTotalt);
+  // Year 1: half the ISK money halves, the other half stays on the account.
+  narall(rader[0].iskTotalt, 75000);
+  narall(rader[0].iskIDagensPengar, 75000 / 1.02);
+  narall(rader[2].depaIDagensPengar, rader[2].depaTotalt / 1.02 ** 3);
 });

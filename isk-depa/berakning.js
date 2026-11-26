@@ -148,3 +148,21 @@ export function berakna(p, indata) {
     sammaRisk: jamforelse(p, indata, indata.aktieandelIsk, risk.andel, risk.begransad),
   };
 }
+
+// An amount at the end of year `ar` in today's money, deflated by the
+// parameter file's inflation.
+export function dagensPengar(p, belopp, ar) {
+  return belopp / Math.pow(1 + p.inflation.varde, ar);
+}
+
+// The user's own run: one return path, one horizon and an equity share for
+// each portfolio. `egen` is { forstaAret, ovrigaAr, antalAr, andelIsk,
+// andelDepa }. Returns simulera's rows with each total also in today's money.
+export function egenBerakning(p, indata, egen) {
+  const scenario = { namn: "Egen", forstaAret: egen.forstaAret, ovrigaAr: egen.ovrigaAr };
+  return simulera(p, indata, scenario, egen.antalAr, egen.andelIsk, egen.andelDepa).map((rad) => ({
+    ...rad,
+    iskIDagensPengar: dagensPengar(p, rad.iskTotalt, rad.ar),
+    depaIDagensPengar: dagensPengar(p, rad.depaTotalt, rad.ar),
+  }));
+}

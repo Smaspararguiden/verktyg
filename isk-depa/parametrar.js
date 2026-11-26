@@ -100,6 +100,14 @@ export const parametrar = {
     beskrivning: "Avkastning på aktierna, nominellt och efter fondens avgift. Normalläget är 6 % real avkastning och 2 % inflation",
     kalla: "Antaganden (Småspararguiden)",
   },
+  inflation: {
+    // Only used to show values in today's money; the simulation itself is
+    // nominal. Matches the 2 % inflation inside the Normalläge scenario.
+    varde: 0.02,
+    enhet: "per år",
+    beskrivning: "Inflation när värdena räknas om till dagens penningvärde",
+    kalla: "Riksbankens inflationsmål: 2 % per år mätt med KPIF",
+  },
   horisonter: {
     varde: [1, 5, 10, 20, 30],
     enhet: "år",

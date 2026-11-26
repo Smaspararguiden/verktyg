@@ -7,7 +7,8 @@
 // calculator, so a later WordPress upload is never mixed with cached modules.
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
-const { berakna, schablonranta } = await import(`./berakning.js${versionsfraga}`);
+const { aktieandelSammaRisk, berakna, egenBerakning, schablonranta } =
+  await import(`./berakning.js${versionsfraga}`);
 const { html, procent, kronor } = await import(`./delat.js${versionsfraga}`);
 
 const rot = document.querySelector(".sg-iskdepa");
@@ -58,6 +59,30 @@ rot.innerHTML = `
       </label>
     </fieldset>
     <fieldset>
+      <legend>Egen beräkning</legend>
+      <div class="rad">
+        <label>Avkastning första året (%)
+          <input name="egenForstaAret" inputmode="decimal" value="${procenttal(p.scenarier.varde[0].forstaAret)}">
+        </label>
+        <label>Avkastning övriga år (%)
+          <input name="egenOvrigaAr" inputmode="decimal" value="${procenttal(p.scenarier.varde[0].ovrigaAr)}">
+        </label>
+        <label>Tidshorisont (år)
+          <input name="egenAntalAr" inputmode="numeric" value="${Math.max(...p.horisonter.varde)}">
+        </label>
+      </div>
+      <p class="hjalp">Nominell avkastning på aktierna per år, efter fondens avgift.</p>
+      <div class="rad">
+        <label>Aktieandel på ISK (%)
+          <input name="egenAndelIsk" inputmode="decimal" value="${procenttal(p.aktieandelSammaPengar.varde)}">
+        </label>
+        <label>Aktieandel på depån (%)
+          <input name="egenAndelDepa" inputmode="decimal" value="${procenttal(p.aktieandelSammaPengar.varde)}">
+        </label>
+      </div>
+      <p class="hjalp" data-egen-risk></p>
+    </fieldset>
+    <fieldset>
       <legend>Jämförelsen samma risk</legend>
       <label>Aktieandel på ISK (%)
         <input name="aktieandelIsk" inputmode="decimal" value="${procenttal(p.aktieandelIskSammaRisk.varde)}">
@@ -69,6 +94,10 @@ rot.innerHTML = `
   <div data-meddelande></div>
 
   <section data-resultat>
+    <h2>Egen beräkning, år för år</h2>
+    <p data-text-egen></p>
+    <div class="tabell" data-tabell-egen></div>
+
     <h2>Samma pengar</h2>
     <p data-text-pengar></p>
     <div class="tabell" data-tabell-pengar></div>
@@ -132,7 +161,43 @@ function lasIndata() {
   if (!fel.length && indata.startbelopp + indata.manadssparande <= 0) {
     fel.push("startbelopp eller månadssparande");
   }
-  return { indata, fel };
+  const antalAr = talFran(falt("egenAntalAr").value);
+  if (!Number.isInteger(antalAr) || antalAr < 1 || antalAr > 60) fel.push("tidshorisonten (1–60 år)");
+  const egen = {
+    forstaAret: pr("egenForstaAret", "avkastningen första året", -1, 1),
+    ovrigaAr: pr("egenOvrigaAr", "avkastningen övriga år", -1, 1),
+    antalAr,
+    andelIsk: pr("egenAndelIsk", "aktieandelen på ISK i egen beräkning", 0, 1),
+    andelDepa: pr("egenAndelDepa", "aktieandelen på depån i egen beräkning", 0, 1),
+  };
+  return { indata, egen, fel };
+}
+
+// The user's own run, year by year, with both totals also in today's money.
+function egenTabell(indata, egen) {
+  const rader = egenBerakning(p, indata, egen).map((r) => {
+    const skillnad = (r.depaTotalt - r.iskTotalt) / r.iskTotalt;
+    const depaVinner = r.depaTotalt > r.iskTotalt;
+    return `<tr>
+      <td>${r.ar}</td>
+      <td>${kronor(r.insatt)}</td>
+      <td>${kronor(r.iskSkatt)}</td>
+      <td class="${depaVinner ? "" : "vinner"}">${kronor(r.iskTotalt)}</td>
+      <td>${kronor(r.iskIDagensPengar)}</td>
+      <td>${kronor(r.fondskatt)}</td>
+      <td>${kronor(r.skattForsaljning)}</td>
+      <td class="${depaVinner ? "vinner" : ""}">${kronor(r.depaTotalt)}</td>
+      <td>${kronor(r.depaIDagensPengar)}</td>
+      <td>${Number.isFinite(skillnad) ? `${skillnad >= 0 ? "+" : "−"}${procent(Math.abs(skillnad), 1)}` : "–"}</td>
+    </tr>`;
+  }).join("");
+  const real = `i dagens penningvärde givet ${procent(p.inflation.varde, 1)} inflation`;
+  return `<table>
+    <thead><tr>
+      <th>År</th><th>Insatt</th><th>ISK-skatt</th><th>ISK + sparkonto</th>
+      <th>ISK ${real}</th><th>Fondskatt</th><th>Skatt vid försäljning</th>
+      <th>Depå + sparkonto efter försäljning</th><th>Depå ${real}</th><th>Depå mot ISK</th>
+    </tr></thead><tbody>${rader}</tbody></table>`;
 }
 
 // One table: scenarios down, horizons across, both portfolios in each cell.
@@ -177,7 +242,7 @@ function arTabell() {
 }
 
 function uppdatera() {
-  const { indata, fel } = lasIndata();
+  const { indata, egen, fel } = lasIndata();
   const meddelande = rot.querySelector("[data-meddelande]");
   const resultat = rot.querySelector("[data-resultat]");
   if (fel.length) {
@@ -191,6 +256,14 @@ function uppdatera() {
   const ranta = schablonranta(p, indata.statslanerantan);
   rot.querySelector("[data-iskskatt]").textContent =
     `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av kapitalunderlaget.`;
+
+  const risk = aktieandelSammaRisk(egen.andelIsk, indata.statensAndelAvForlust);
+  rot.querySelector("[data-egen-risk]").textContent = risk.begransad
+    ? `Samma risk som ${procent(egen.andelIsk, 0)} på ISK skulle kräva mer än 100 % aktier på depån.`
+    : `Samma risk som ${procent(egen.andelIsk, 0)} på ISK är ${procent(risk.andel, 1)} på depån, med den valda andelen staten står för.`;
+  rot.querySelector("[data-text-egen]").textContent =
+    `Resten står på sparkonto. Depån visas som om den säljs i slutet av året. Värdena gäller 31 december varje år.`;
+  rot.querySelector("[data-tabell-egen]").innerHTML = egenTabell(indata, egen);
 
   senaste = berakna(p, indata);
   const { sammaPengar, sammaRisk } = senaste;
