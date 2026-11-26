@@ -37,10 +37,10 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
 3. **Möjliga tillägg**, om de behövs för artiklarna:
    - krasch sista året före försäljning, där depåns förlustavdrag gör mest nytta
    - utdelningar på enskilda aktier, som beskattas varje år på depån
-   - reala kronor (dra av inflationen) i visningen
    - CSV-export av tabellen år för år
 4. **Publicering.** Om simulatorn ska ut på sajten: en egen kortkod i samma
    plugin som ITP-snurran (Andreas valde det 25 november 2026; skriv in det i
    DECISIONS.md när publiceringen görs),
    texter för besökare och ett beslut om vad som får lämna webbläsaren (inget,
-   som utgångsläge).
+   som utgångsläge). Scenariotabellerna under den egna beräkningen tas då bort
+   eller görs om till en graf.

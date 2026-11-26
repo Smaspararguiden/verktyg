@@ -127,7 +127,14 @@ och för varje scenario raderna år för år och värdena vid varje tidshorisont
 resten på sparkonto, och skatterna i slutet av varje år. Varje års rad har
 också depåns värde om den säljs då.
 
-`visning.js` ritar formuläret med startvärden från parameterfilen, två tabeller
+`egenBerakning(parametrar, indata, egen)` räknar ett eget fall, där `egen` är
+`{ forstaAret, ovrigaAr, antalAr, andelIsk, andelDepa }`. Den ger samma rader
+som `simulera()` och lägger till ISK:s och depåns värde i dagens penningvärde
+(`dagensPengar()`, med inflationen i parameterfilen).
+
+`visning.js` ritar formuläret med startvärden från parameterfilen, en tabell år
+för år för det egna fallet (avkastning, tidshorisont och aktieandel för varje
+portfölj väljs i formuläret), två tabeller
 (scenarier mot tidshorisonter), en tabell år för år för valt scenario och
 "Så har vi räknat" från parameterfilen. Inget skickas från sidan.
 
