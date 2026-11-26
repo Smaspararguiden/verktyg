@@ -123,3 +123,35 @@ test("månadsräntan blir årsräntan efter tolv månader", () => {
   narall(Math.pow(1 + manadsranta(0.08), 12), 1.08, 1e-12);
   narall(Math.pow(1 + manadsranta(-0.5), 12), 0.5, 1e-12);
 });
+
+// Cases read from Rika tillsammans' ISK/KF/AF calculator on 2026-11-25
+// (rikatillsammans.se/verktyg/isk-kf-af-jamfor/), with its defaults:
+// government bond rate 2.55 %, tax-free amount, 7 % return, 30 % on gains.
+// Rika compounds 7 %/12 each month, which is about 7.23 % a year in our terms.
+const rikasAvkastning = Math.pow(1 + 0.07 / 12, 12) - 1;
+const rika = (andra) => grund({ statensAndelAvForlust: 0.3, medFribelopp: true, ...andra });
+
+test("Rika tillsammans: ISK blir exakt lika", () => {
+  const sparande = simulera(parametrar, rika({ manadssparande: 1000 }), ettAr(rikasAvkastning), 10, 1, 1);
+  narall(sparande.at(-1).iskTotalt, 374257, 1);
+  const storre = simulera(parametrar, rika({ startbelopp: 1000000 }), ettAr(rikasAvkastning), 30, 1, 1);
+  narall(storre.at(-1).iskTotalt, 6226676, 1);
+});
+
+test("Rika tillsammans: depån utan fondskatt blir exakt lika", () => {
+  // Rika's result with the annual AF tax set to 0.
+  const rader = simulera(parametrar, rika({ manadssparande: 1000 }), ettAr(rikasAvkastning), 10, 1, 1);
+  narall(rader.at(-1).depaTotalt, 328542, 1);
+});
+
+test("Rika tillsammans: med fondskatt blir depån något högre hos oss", () => {
+  // Rika taxes the full growth at sale as if the fund tax had never been paid;
+  // we tax the gain on what is left in the account. The gap stays below 1 %.
+  for (const [indata, ar, rikasVarde] of [
+    [rika({ manadssparande: 1000, fonder: true }), 10, 325541],
+    [rika({ startbelopp: 1000000, fonder: true }), 30, 5759185],
+  ]) {
+    const depa = simulera(parametrar, indata, ettAr(rikasAvkastning), ar, 1, 1).at(-1).depaTotalt;
+    assert.ok(depa > rikasVarde && depa < rikasVarde * 1.01, `${depa} mot Rikas ${rikasVarde}`);
+  }
+});
