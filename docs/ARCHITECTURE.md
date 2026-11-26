@@ -131,7 +131,17 @@ också depåns värde om den säljs då.
 (scenarier mot tidshorisonter), en tabell år för år för valt scenario och
 "Så har vi räknat" från parameterfilen. Inget skickas från sidan.
 
-Tester: `isk-depa/berakning.test.js`.
+Tester: `isk-depa/berakning.test.js`. Där finns också två fall från Rika
+tillsammans kalkylator (rikatillsammans.se/verktyg/isk-kf-af-jamfor/), lästa
+25 november 2026. ISK blir lika på kronan, och depån utan fondskatt också.
+Två skillnader i hur saker tolkas:
+
+1. Rika lägger på 7 %/12 varje månad, alltså cirka 7,23 % per år. Hos oss
+   betyder 7 % att pengarna växer 7 % på ett år. Testerna räknar om Rikas
+   avkastning till vår.
+2. Med fondskatt beskattar Rika hela tillväxten vid försäljningen, som om
+   fondskatten aldrig hade betalats. Vi beskattar vinsten på det som finns
+   kvar på depån. Depån blir därför något högre hos oss, under 1 % efter 30 år.
 
 ## Texter från WordPress
 
