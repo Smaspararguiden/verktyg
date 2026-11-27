@@ -73,9 +73,10 @@ that as "prepare and open the PR".
 `git credential fill`. The recipe (which shell, how to feed it input, building
 the JSON body in Python with UTF-8) is in `~/.claude/CLAUDE.md`.
 
-Fetch and cut a new branch from fresh `origin/main` for every change. There is
-no worktree registry in this repo: work in the clone on your own branch, and do
-not create worktrees unasked.
+Fetch and cut a new branch from fresh `origin/main` for every change. Every session works in
+its own worktree, never in the main clone, and decision numbers in
+`docs/DECISIONS.md` are reserved before the entry is written. The rules are in
+`~/.claude/CLAUDE.md`, section "Småspararguiden's site and its small repos".
 
 ## Publishing to WordPress
 

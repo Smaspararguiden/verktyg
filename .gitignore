@@ -147,3 +147,6 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Session worktrees created by Claude Code
+.claude/worktrees/
