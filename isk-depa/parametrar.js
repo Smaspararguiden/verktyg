@@ -73,7 +73,8 @@ export const parametrar = {
   },
 
   fondavgift: {
-    // Taken month by month from the equities on both accounts. The page lets
+    // Taken from the equities on both accounts, on the value at 1 January or
+    // (exact option) every month. The page lets
     // the user type another.
     varde: 0.001,
     enhet: "per år",

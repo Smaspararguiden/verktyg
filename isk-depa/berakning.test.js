@@ -18,6 +18,8 @@ const grund = (andra = {}) => ({
   statslanerantan: 0.0255,
   kontoranta: 0,
   avgift: 0,
+  iskSkattKvartal: false,
+  avgiftManadsvis: false,
   statensAndelAvForlust: 0.21,
   aktieandelIsk: 0.7,
   medFribelopp: false,
@@ -60,21 +62,42 @@ test("ISK ett år: skatten på värdet 1 januari dras i slutet av året", () => 
   narall(rader[0].iskTotalt, 108000 - 100000 * 0.0355 * 0.3);
 });
 
-test("Andreas kontrollark: 1 000 000 kr, fribelopp och 8 % ger 7 455 kr i ISK-skatt", () => {
-  const rader = simulera(parametrar, grund({ startbelopp: 1000000, medFribelopp: true }), ettAr(0.08), 1, 1, 1);
+test("Andreas kontrollark: 1 000 000 kr, fribelopp, 8 % och 0,1 % avgift", () => {
+  const indata = grund({ startbelopp: 1000000, medFribelopp: true, avgift: 0.001 });
+  const rader = simulera(parametrar, indata, ettAr(0.08), 1, 1, 1);
   narall(rader[0].iskSkatt, 7455);
-  narall(rader[0].iskTotalt, 1072545);
+  narall(rader[0].iskTotalt, 1071545);
+  narall(rader[0].depa, 1079000);
+  narall(rader[0].depaTotalt, 1055300);
 });
 
-test("fondens avgift dras från aktierna på båda kontona, inte från sparkontot", () => {
+test("fondens avgift dras på värdet 1 januari från aktierna, inte från sparkontot", () => {
   const indata = grund({ statslanerantan: 0, avgift: 0.001, kontoranta: 0.02 });
   const rader = simulera(utanIskSkatt(), indata, ettAr(0.08), 1, 0.5, 0.5);
-  // A year at 8 % with 0.1 % fee: 50 000 × 1.08 × 0.999. Account: 2 % taxed at 30 %.
-  const aktier = 50000 * 1.08 * 0.999;
+  // 50 000 kr in equities grows 8 %, less 0.1 % of 50 000. Account: 2 % taxed at 30 %.
+  const aktier = 50000 * 1.08 - 50;
   const konto = 50000 * (1 + 0.02 * 0.7);
+  narall(rader[0].avgiftIsk, 50);
   narall(rader[0].iskTotalt, aktier + konto);
   narall(rader[0].depa, aktier);
+});
+
+test("exakt avgift: dras varje månad på det aktuella värdet", () => {
+  const indata = grund({ statslanerantan: 0, avgift: 0.001, avgiftManadsvis: true });
+  const rader = simulera(utanIskSkatt(), indata, ettAr(0.08), 1, 1, 1);
+  narall(rader[0].avgiftIsk, 0);
+  narall(rader[0].iskTotalt, 100000 * 1.08 * 0.999);
   narall(manadsfaktorEfterAvgift(0.001) ** 12, 0.999, 1e-12);
+});
+
+test("exakt ISK-skatt: kvartalsvärdena plus insättningar, delat med fyra", () => {
+  const sparande = simulera(parametrar, grund({ startbelopp: 0, manadssparande: 1000, iskSkattKvartal: true }), ettAr(0), 1, 1, 1);
+  // Quarter values 0, 3 000, 6 000, 9 000 plus 12 000 deposited.
+  narall(sparande[0].kapitalunderlag, 7500);
+  const r = 0.08;
+  const rader = simulera(parametrar, grund({ iskSkattKvartal: true }), ettAr(r), 1, 1, 1);
+  const kvartal = [0, 3, 6, 9].reduce((sum, m) => sum + 100000 * Math.pow(1 + r, m / 12), 0);
+  narall(rader[0].iskTotalt, 108000 - (kvartal / 4) * 0.0355 * 0.3);
 });
 
 test("depå ett år: 30 % på vinsten, och fondskatten på värdet 1 januari", () => {
@@ -147,10 +170,18 @@ test("månadsräntan blir årsräntan efter tolv månader", () => {
 const rikasAvkastning = Math.pow(1 + 0.07 / 12, 12) - 1;
 const rika = (andra) => grund({ statensAndelAvForlust: 0.3, medFribelopp: true, ...andra });
 
-test("Rika tillsammans: ISK blir något högre hos oss, under 1 %", () => {
-  // Rika uses Skatteverket's quarterly capital base; we tax only the value on
-  // 1 January (DECISIONS.md 41), which leaves the ISK slightly higher. With
-  // the quarterly base the two matched to the krona (checked 2026-11-25).
+test("Rika tillsammans: med exakt ISK-skatt blir ISK lika på kronan", () => {
+  for (const [indata, ar, rikasVarde] of [
+    [rika({ manadssparande: 1000, iskSkattKvartal: true }), 10, 374257],
+    [rika({ startbelopp: 1000000, iskSkattKvartal: true }), 30, 6226676],
+  ]) {
+    narall(simulera(parametrar, indata, ettAr(rikasAvkastning), ar, 1, 1).at(-1).iskTotalt, rikasVarde, 1);
+  }
+});
+
+test("Rika tillsammans: med enkel ISK-skatt blir ISK något högre hos oss, under 1 %", () => {
+  // Rika uses Skatteverket's quarterly capital base; the simple way taxes only
+  // the value on 1 January, which leaves the ISK slightly higher.
   for (const [indata, ar, rikasVarde] of [
     [rika({ manadssparande: 1000 }), 10, 374257],
     [rika({ startbelopp: 1000000 }), 30, 6226676],

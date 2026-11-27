@@ -6,10 +6,13 @@
 // account: one with the equities on an ISK, one with them on a depå. The
 // simulation runs month by month in nominal kronor. Taxes are settled at the
 // end of each year; the depå is sold, and its gain taxed, at each horizon.
-// The ISK tax is simplified to the value at the start of the year
-// (DECISIONS.md 41).
+// By default the ISK tax and the fund fee are both based on the value at the
+// start of the year, which is easy to follow and to check in a spreadsheet.
+// Two options switch to the exact ways: Skatteverket's quarterly capital base
+// and a fee taken every month (DECISIONS.md 42).
 
 const MANADER = 12;
+const KVARTAL = 4;
 
 // The ISK's deemed rate: government bond rate plus the add-on, with a floor.
 export function schablonranta(p, statslanerantan) {
@@ -55,9 +58,9 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
   const s = p.skattesatsKapital.varde;
   const fribelopp = indata.medFribelopp ? p.fribelopp.varde : 0;
   const rKonto = manadsranta(indata.kontoranta);
-  // The fund's total fee comes off the equities month by month, on both
-  // accounts alike.
-  const efterAvgift = manadsfaktorEfterAvgift(indata.avgift);
+  // The fund's total fee comes off the equities on both accounts alike:
+  // every month if exact, otherwise once a year on the value at 1 January.
+  const efterAvgift = indata.avgiftManadsvis ? manadsfaktorEfterAvgift(indata.avgift) : 1;
 
   let isk = indata.startbelopp * andelIsk;
   let kontoIsk = indata.startbelopp * (1 - andelIsk);
@@ -69,16 +72,21 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
   const rader = [];
   for (let ar = 1; ar <= antalAr; ar++) {
     const rAktier = manadsranta(ar === 1 ? scenario.forstaAret : scenario.ovrigaAr);
+    const iskForstaJanuari = isk;
     const depaFoerstaJanuari = depa;
-    // Simplified capital base: the ISK's value on 1 January only.
-    const kapitalunderlag = isk;
+    let kvartalsvarden = 0;
+    let iskInsattIAr = 0;
     let rantaIsk = 0;
     let rantaDepa = 0;
 
     for (let m = 0; m < MANADER; m++) {
+      // Skatteverket's capital base counts the value at each quarter's start.
+      if (m % (MANADER / KVARTAL) === 0) kvartalsvarden += isk;
+
       const insattning = indata.manadssparande;
       insatt += insattning;
       isk += insattning * andelIsk;
+      iskInsattIAr += insattning * andelIsk;
       kontoIsk += insattning * (1 - andelIsk);
       depa += insattning * andelDepa;
       omkostnad += insattning * andelDepa;
@@ -92,7 +100,14 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
       kontoDepa *= 1 + rKonto;
     }
 
-    // Year-end taxes, taken from the accounts themselves.
+    // Year-end fee (simple way) and taxes, taken from the accounts themselves.
+    const avgiftIsk = indata.avgiftManadsvis ? 0 : iskForstaJanuari * indata.avgift;
+    const avgiftDepa = indata.avgiftManadsvis ? 0 : depaFoerstaJanuari * indata.avgift;
+    isk -= avgiftIsk;
+    depa -= avgiftDepa;
+    const kapitalunderlag = indata.iskSkattKvartal
+      ? (kvartalsvarden + iskInsattIAr) / KVARTAL
+      : iskForstaJanuari;
     const skattIsk = iskSkatt(p, kapitalunderlag, indata.statslanerantan, fribelopp);
     isk -= skattIsk;
     const fondskatt = indata.fonder ? depaFoerstaJanuari * p.fondSchablon.varde * s : 0;
@@ -106,6 +121,8 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
       ar,
       insatt,
       kapitalunderlag,
+      avgiftIsk,
+      avgiftDepa,
       iskSkatt: skattIsk,
       isk,
       kontoIsk,
@@ -142,7 +159,8 @@ function jamforelse(p, indata, andelIsk, andelDepa, begransad) {
 }
 
 // Indata: { startbelopp, manadssparande, statslanerantan, kontoranta, avgift,
-// statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder }.
+// statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder,
+// iskSkattKvartal, avgiftManadsvis }. The last two pick the exact ways.
 // aktieandelIsk is the ISK's equity share in the same-risk comparison.
 export function berakna(p, indata) {
   const lika = p.aktieandelSammaPengar.varde;
