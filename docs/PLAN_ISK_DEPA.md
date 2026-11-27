@@ -33,7 +33,8 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
 ## Kvar att göra
 
 1. **ISK-skatten för 2027** är 1,164 % i parameterfilen, enligt Andreas. Stäm av
-   mot Riksgäldens fastställda statslåneräntan (2,88 % ger 1,164 %). ITP-snurrans
+   mot Riksgäldens fastställda statslåneräntan (2,88 % ger 1,164 %). Bytet i ITP-snurran
+   står i `PLAN_ITP_RAKNESNURRA.md`. ITP-snurrans
    `iskSkatt` i `itp/parametrar.js` är fortfarande 1,065 %.
 2. **Räntan på sparkonto** (2 %) är ett antagande som ska kontrolleras mot
    dagens sparkonton.

@@ -186,6 +186,11 @@ Pensionsåldern (68 år) och premierna fram till den, se `DECISIONS.md` 7.
 - [ ] Mätning av antal användare och resultat (`DECISIONS.md` 24–26). Byggd. Kvar:
       några testfall på sajten visar att raderna kommer fram, och
       integritetspolicyn får en rad om det som sparas.
+- [ ] ISK-skatten 2027: byt `iskSkatt` i `itp/parametrar.js` från 1,065 % till
+      1,164 % (samma värde som ISK eller depå-simulatorn har sedan 28 november
+      2026), med ny källa. Inte gjort än, efter beslut av Andreas. Kräver en ny
+      zip-fil med nytt `Version:` och att sajtens cache töms efter
+      uppladdningen.
 
 ## Öppna frågor
 
