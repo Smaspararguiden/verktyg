@@ -45,4 +45,6 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
    DECISIONS.md när publiceringen görs),
    texter för besökare och ett beslut om vad som får lämna webbläsaren (inget,
    som utgångsläge). Scenariotabellerna under den egna beräkningen tas då bort
-   eller görs om till en graf.
+   eller görs om till en graf. Kryssrutorna för exakt ISK-skatt och exakt
+   avgift tas bort från sidan (DECISIONS.md 42); de är till för att stämma av
+   mot andra kalkylatorer, inte för besökare.
