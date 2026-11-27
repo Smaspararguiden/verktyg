@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { parametrar } from "./parametrar.js";
 import {
   aktieandelSammaRisk, berakna, dagensPengar, depaSkattVidForsaljning, egenBerakning,
+  forstaAretDepaBattre,
   iskSkatt, manadsfaktorEfterAvgift, manadsranta,
   simulera,
 } from "./berakning.js";
@@ -221,4 +222,11 @@ test("egen beräkning: egna andelar och avkastning, och värdet i dagens pengar"
   narall(rader[0].iskTotalt, 75000);
   narall(rader[0].iskIDagensPengar, 75000 / 1.02);
   narall(rader[2].depaIDagensPengar, rader[2].depaTotalt / 1.02 ** 3);
+});
+
+test("första året depån ger mer än ISK", () => {
+  const rad = (ar, iskTotalt, depaTotalt) => ({ ar, iskTotalt, depaTotalt });
+  assert.equal(forstaAretDepaBattre([rad(1, 100, 99), rad(2, 101, 102), rad(3, 103, 104)]), 2);
+  assert.equal(forstaAretDepaBattre([rad(1, 100, 101)]), 1);
+  assert.equal(forstaAretDepaBattre([rad(1, 100, 100), rad(2, 101, 100)]), null);
 });

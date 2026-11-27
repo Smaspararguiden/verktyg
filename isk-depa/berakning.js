@@ -183,3 +183,10 @@ export function egenBerakning(p, indata, egen) {
     depaIDagensPengar: dagensPengar(p, rad.depaTotalt, rad.ar),
   }));
 }
+
+// The first year in which the depå leaves more after tax than the ISK, from
+// rows like simulera's. Null if it never does within the rows.
+export function forstaAretDepaBattre(rader) {
+  const rad = rader.find((r) => r.depaTotalt > r.iskTotalt);
+  return rad ? rad.ar : null;
+}

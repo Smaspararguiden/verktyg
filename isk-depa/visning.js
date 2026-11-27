@@ -7,7 +7,7 @@
 // calculator, so a later WordPress upload is never mixed with cached modules.
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
-const { aktieandelSammaRisk, berakna, egenBerakning } =
+const { aktieandelSammaRisk, berakna, egenBerakning, forstaAretDepaBattre } =
   await import(`./berakning.js${versionsfraga}`);
 const { html, procent, kronor } = await import(`./delat.js${versionsfraga}`);
 
@@ -107,6 +107,7 @@ rot.innerHTML = `
 
   <section data-resultat>
     <h2>Egen beräkning, år för år</h2>
+    <p class="brytar" data-brytar></p>
     <p data-text-egen></p>
     <div class="tabell" data-tabell-egen></div>
 
@@ -189,11 +190,13 @@ function lasIndata() {
 }
 
 // The user's own run, year by year, with both totals also in today's money.
-function egenTabell(indata, egen) {
-  const rader = egenBerakning(p, indata, egen).map((r) => {
+// The row of brytar (the first year the depå leaves more) is in bold.
+function egenTabell(rader, brytar) {
+  const tabellrader = rader.map((r) => {
     const skillnad = (r.depaTotalt - r.iskTotalt) / r.iskTotalt;
     const depaVinner = r.depaTotalt > r.iskTotalt;
-    return `<tr>
+    const iskMinusDepa = r.iskTotalt - r.depaTotalt;
+    return `<tr${r.ar === brytar ? ' class="brytar"' : ""}>
       <td>${r.ar}</td>
       <td>${kronor(r.insatt)}</td>
       <td>${kronor(r.iskSkatt)}</td>
@@ -203,6 +206,7 @@ function egenTabell(indata, egen) {
       <td>${kronor(r.skattForsaljning)}</td>
       <td class="${depaVinner ? "vinner" : ""}">${kronor(r.depaTotalt)}</td>
       <td>${kronor(r.depaIDagensPengar)}</td>
+      <td>${iskMinusDepa >= 0 ? "+" : "−"}${kronor(Math.abs(iskMinusDepa))}</td>
       <td>${Number.isFinite(skillnad) ? `${skillnad >= 0 ? "+" : "−"}${procent(Math.abs(skillnad), 1)}` : "–"}</td>
     </tr>`;
   }).join("");
@@ -211,8 +215,9 @@ function egenTabell(indata, egen) {
     <thead><tr>
       <th>År</th><th>Insatt</th><th>ISK-skatt</th><th>ISK + sparkonto</th>
       <th>ISK ${real}</th><th>Fondskatt</th><th>Skatt vid försäljning</th>
-      <th>Depå + sparkonto efter försäljning</th><th>Depå ${real}</th><th>Depå mot ISK</th>
-    </tr></thead><tbody>${rader}</tbody></table>`;
+      <th>Depå + sparkonto efter försäljning</th><th>Depå ${real}</th>
+      <th>ISK + sparkonto − depå + sparkonto</th><th>Depå mot ISK</th>
+    </tr></thead><tbody>${tabellrader}</tbody></table>`;
 }
 
 // One table: scenarios down, horizons across, both portfolios in each cell.
@@ -278,7 +283,14 @@ function uppdatera() {
     : `Samma risk som ${procent(egen.andelIsk, 0)} på ISK är ${procent(risk.andel, 1)} på depån, med den valda andelen staten står för.`;
   rot.querySelector("[data-text-egen]").textContent =
     `Resten står på sparkonto. Depån visas som om den säljs i slutet av året. Värdena gäller 31 december varje år.`;
-  rot.querySelector("[data-tabell-egen]").innerHTML = egenTabell(indata, egen);
+  const egnaRader = egenBerakning(p, indata, egen);
+  const brytar = forstaAretDepaBattre(egnaRader);
+  rot.querySelector("[data-brytar]").textContent = brytar === null
+    ? `Depån ger inte mer kvar efter skatt än ISK någon gång under ${egen.antalAr} år i din egen beräkning.`
+    : brytar === 1
+      ? `Depån ger mer kvar efter skatt än ISK redan första året i din egen beräkning.`
+      : `Det tar ${brytar} år innan depån ger mer kvar efter skatt än ISK i din egen beräkning.`;
+  rot.querySelector("[data-tabell-egen]").innerHTML = egenTabell(egnaRader, brytar);
 
   senaste = berakna(p, indata);
   const { sammaPengar, sammaRisk } = senaste;
