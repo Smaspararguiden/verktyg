@@ -5,7 +5,7 @@ import { parametrar } from "./parametrar.js";
 import {
   aktieandelSammaRisk, berakna, dagensPengar, depaSkattVidForsaljning, egenBerakning,
   iskSkatt, manadsfaktorEfterAvgift, manadsranta,
-  schablonranta, simulera,
+  simulera,
 } from "./berakning.js";
 
 const narall = (a, b, tolerans = 0.01) =>
@@ -15,7 +15,8 @@ const narall = (a, b, tolerans = 0.01) =>
 const grund = (andra = {}) => ({
   startbelopp: 100000,
   manadssparande: 0,
-  statslanerantan: 0.0255,
+  // The 2026 ISK tax, which the checked cases below were read with.
+  iskSkattesats: 0.01065,
   kontoranta: 0,
   avgift: 0,
   iskSkattKvartal: false,
@@ -29,26 +30,18 @@ const grund = (andra = {}) => ({
 
 const ettAr = (r) => ({ namn: "test", forstaAret: r, ovrigaAr: r });
 
-// Parameters without ISK tax, for tests of everything else. The input must
-// also have statslanerantan 0.
-function utanIskSkatt() {
-  const p = structuredClone(parametrar);
-  p.schablonGolv.varde = 0;
-  p.schablonPaslag.varde = 0;
-  return p;
-}
 
 test("ISK-skatten stämmer med Handelsbankens och Rika tillsammans exempel", () => {
   // 500 000 kr capital base, 300 000 kr tax free.
-  narall(iskSkatt(parametrar, 500000, 0.0255, 300000), 2130);
-  narall(iskSkatt(parametrar, 500000, 0.0309, 300000), 2454);
-  narall(iskSkatt(parametrar, 1000000, 0.0255, 300000), 7455);
+  // 1.065 % is 2026 (bond rate 2.55 %), 1.227 % a bond rate of 3.09 %.
+  narall(iskSkatt(500000, 0.01065, 300000), 2130);
+  narall(iskSkatt(500000, 0.01227, 300000), 2454);
+  narall(iskSkatt(1000000, 0.01065, 300000), 7455);
 });
 
-test("schablonräntan har ett golv och ingen skatt under fribeloppet", () => {
-  assert.equal(schablonranta(parametrar, 0), 0.0125);
-  narall(schablonranta(parametrar, 0.0255), 0.0355, 1e-12);
-  assert.equal(iskSkatt(parametrar, 250000, 0.0255, 300000), 0);
+test("ingen ISK-skatt under fribeloppet, och parameterns värde är 2027 års skatt", () => {
+  assert.equal(iskSkatt(250000, 0.01164, 300000), 0);
+  assert.equal(parametrar.iskSkattesats.varde, 0.01164);
 });
 
 test("kapitalunderlaget är ISK:ns värde 1 januari, utan årets insättningar", () => {
@@ -59,7 +52,7 @@ test("kapitalunderlaget är ISK:ns värde 1 januari, utan årets insättningar",
 
 test("ISK ett år: skatten på värdet 1 januari dras i slutet av året", () => {
   const rader = simulera(parametrar, grund(), ettAr(0.08), 1, 1, 1);
-  narall(rader[0].iskTotalt, 108000 - 100000 * 0.0355 * 0.3);
+  narall(rader[0].iskTotalt, 108000 - 100000 * 0.01065);
 });
 
 test("Andreas kontrollark: 1 000 000 kr, fribelopp, 8 % och 0,1 % avgift", () => {
@@ -72,8 +65,8 @@ test("Andreas kontrollark: 1 000 000 kr, fribelopp, 8 % och 0,1 % avgift", () =>
 });
 
 test("fondens avgift dras på värdet 1 januari från aktierna, inte från sparkontot", () => {
-  const indata = grund({ statslanerantan: 0, avgift: 0.001, kontoranta: 0.02 });
-  const rader = simulera(utanIskSkatt(), indata, ettAr(0.08), 1, 0.5, 0.5);
+  const indata = grund({ iskSkattesats: 0, avgift: 0.001, kontoranta: 0.02 });
+  const rader = simulera(parametrar, indata, ettAr(0.08), 1, 0.5, 0.5);
   // 50 000 kr in equities grows 8 %, less 0.1 % of 50 000. Account: 2 % taxed at 30 %.
   const aktier = 50000 * 1.08 - 50;
   const konto = 50000 * (1 + 0.02 * 0.7);
@@ -83,8 +76,8 @@ test("fondens avgift dras på värdet 1 januari från aktierna, inte från spark
 });
 
 test("exakt avgift: dras varje månad på det aktuella värdet", () => {
-  const indata = grund({ statslanerantan: 0, avgift: 0.001, avgiftManadsvis: true });
-  const rader = simulera(utanIskSkatt(), indata, ettAr(0.08), 1, 1, 1);
+  const indata = grund({ iskSkattesats: 0, avgift: 0.001, avgiftManadsvis: true });
+  const rader = simulera(parametrar, indata, ettAr(0.08), 1, 1, 1);
   narall(rader[0].avgiftIsk, 0);
   narall(rader[0].iskTotalt, 100000 * 1.08 * 0.999);
   narall(manadsfaktorEfterAvgift(0.001) ** 12, 0.999, 1e-12);
@@ -97,7 +90,7 @@ test("exakt ISK-skatt: kvartalsvärdena plus insättningar, delat med fyra", () 
   const r = 0.08;
   const rader = simulera(parametrar, grund({ iskSkattKvartal: true }), ettAr(r), 1, 1, 1);
   const kvartal = [0, 3, 6, 9].reduce((sum, m) => sum + 100000 * Math.pow(1 + r, m / 12), 0);
-  narall(rader[0].iskTotalt, 108000 - (kvartal / 4) * 0.0355 * 0.3);
+  narall(rader[0].iskTotalt, 108000 - (kvartal / 4) * 0.01065);
 });
 
 test("depå ett år: 30 % på vinsten, och fondskatten på värdet 1 januari", () => {
@@ -131,8 +124,8 @@ test("aktieandel för samma risk: delas med det som sparen själv bär", () => {
 test("samma risk: efter en krasch förlorar båda lika mycket", () => {
   // Without ISK tax, interest and fund tax, the depå with 70 / 0.7 = 100 %
   // equities must end exactly where the ISK with 70 % does.
-  const p = utanIskSkatt();
-  const indata = grund({ statslanerantan: 0, statensAndelAvForlust: 0.3, aktieandelIsk: 0.7 });
+  const p = parametrar;
+  const indata = grund({ iskSkattesats: 0, statensAndelAvForlust: 0.3, aktieandelIsk: 0.7 });
   const r = berakna(p, indata);
   const krasch = r.sammaRisk.scenarier.find((s) => s.namn === "Krasch år 1");
   narall(r.sammaRisk.andelDepa, 1, 1e-12);
@@ -141,8 +134,8 @@ test("samma risk: efter en krasch förlorar båda lika mycket", () => {
 });
 
 test("utan skatter på ISK och utan avkastning blir allt lika", () => {
-  const p = utanIskSkatt();
-  const r = berakna(p, grund({ statslanerantan: 0, manadssparande: 500 }));
+  const p = parametrar;
+  const r = berakna(p, grund({ iskSkattesats: 0, manadssparande: 500 }));
   const noll = r.sammaPengar.scenarier.find((s) => s.namn === "Nominellt noll");
   for (const h of noll.horisonter) {
     narall(h.isk, h.depa);
@@ -216,12 +209,12 @@ test("dagens pengar: 2 % inflation per år räknas bort", () => {
 });
 
 test("egen beräkning: egna andelar och avkastning, och värdet i dagens pengar", () => {
-  const indata = grund({ statslanerantan: 0 });
-  const rader = egenBerakning(utanIskSkatt(), indata,
+  const indata = grund({ iskSkattesats: 0 });
+  const rader = egenBerakning(parametrar, indata,
     { forstaAret: -0.5, ovrigaAr: 0.1, antalAr: 3, andelIsk: 0.5, andelDepa: 0.8 });
   assert.equal(rader.length, 3);
   // Same as simulera with that scenario and those shares.
-  const direkt = simulera(utanIskSkatt(), indata, { forstaAret: -0.5, ovrigaAr: 0.1 }, 3, 0.5, 0.8);
+  const direkt = simulera(parametrar, indata, { forstaAret: -0.5, ovrigaAr: 0.1 }, 3, 0.5, 0.8);
   narall(rader[2].iskTotalt, direkt[2].iskTotalt);
   narall(rader[2].depaTotalt, direkt[2].depaTotalt);
   // Year 1: half the ISK money halves, the other half stays on the account.

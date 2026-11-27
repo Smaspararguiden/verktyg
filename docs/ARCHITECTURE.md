@@ -119,8 +119,10 @@ och inte ligger i pluginen (DECISIONS.md 39). Samma uppdelning som ITP-snurran:
 `index.html` och `typsnitt/`.
 
 `berakning.js` exporterar `berakna(parametrar, indata)`, där indata är
-`{ startbelopp, manadssparande, statslanerantan, kontoranta,
-statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder }`. Den returnerar
+`{ startbelopp, manadssparande, iskSkattesats, kontoranta, avgift,
+statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder, iskSkattKvartal,
+avgiftManadsvis }`. ISK-skatten {a}r en parameter i procent av kapitalunderlaget
+(DECISIONS.md 44). Den returnerar
 två jämförelser, `sammaPengar` och `sammaRisk`, var och en med aktieandelarna
 och för varje scenario raderna år för år och värdena vid varje tidshorisont.
 `simulera()` räknar ett scenario månad för månad: aktierna på ISK eller depå,

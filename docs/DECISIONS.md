@@ -591,3 +591,13 @@ kan läggas till senare.
 En fond och en ETF jämförs, över 30 år. Verktyget visas bara på GitHub Pages
 till att börja med och ligger inte i pluginen. Kortkoden kommer när det ska
 upp på sajten.
+
+## 44. ISK eller depå: ISK-skatten är en parameter (2026-11-28)
+
+Simulatorn räknar inte längre fram ISK-skatten från statslåneräntan, utan
+skattesatsen står direkt i parameterfilen och i formuläret, i procent av
+kapitalunderlaget. Det är skatten som läsare och artiklar talar om, till exempel
+1,164 % för 2027, och den är lättare att känna igen och stämma av än en ränta som
+först ska plussas på, jämföras med ett golv och gånger 30 %. Statslåneräntan,
+tillägget på 1 procentenhet och golvet på 1,25 % togs bort ur parameterfilen och
+nämns bara i beskrivningen av skatten.
