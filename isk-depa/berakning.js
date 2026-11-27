@@ -14,15 +14,10 @@
 const MANADER = 12;
 const KVARTAL = 4;
 
-// The ISK's deemed rate: government bond rate plus the add-on, with a floor.
-export function schablonranta(p, statslanerantan) {
-  return Math.max(p.schablonGolv.varde, statslanerantan + p.schablonPaslag.varde);
-}
-
 // ISK tax in kronor for a year's capital base.
-export function iskSkatt(p, kapitalunderlag, statslanerantan, fribelopp) {
+export function iskSkatt(kapitalunderlag, iskSkattesats, fribelopp) {
   const beskattat = Math.max(0, kapitalunderlag - fribelopp);
-  return beskattat * schablonranta(p, statslanerantan) * p.skattesatsKapital.varde;
+  return beskattat * iskSkattesats;
 }
 
 // Equity share on the depå that gives the same risk after tax as a given
@@ -108,7 +103,7 @@ export function simulera(p, indata, scenario, antalAr, andelIsk, andelDepa) {
     const kapitalunderlag = indata.iskSkattKvartal
       ? (kvartalsvarden + iskInsattIAr) / KVARTAL
       : iskForstaJanuari;
-    const skattIsk = iskSkatt(p, kapitalunderlag, indata.statslanerantan, fribelopp);
+    const skattIsk = iskSkatt(kapitalunderlag, indata.iskSkattesats, fribelopp);
     isk -= skattIsk;
     const fondskatt = indata.fonder ? depaFoerstaJanuari * p.fondSchablon.varde * s : 0;
     depa -= fondskatt;
@@ -158,7 +153,7 @@ function jamforelse(p, indata, andelIsk, andelDepa, begransad) {
   return { andelIsk, andelDepa, begransad, scenarier };
 }
 
-// Indata: { startbelopp, manadssparande, statslanerantan, kontoranta, avgift,
+// Indata: { startbelopp, manadssparande, iskSkattesats, kontoranta, avgift,
 // statensAndelAvForlust, aktieandelIsk, medFribelopp, fonder,
 // iskSkattKvartal, avgiftManadsvis }. The last two pick the exact ways.
 // aktieandelIsk is the ISK's equity share in the same-risk comparison.

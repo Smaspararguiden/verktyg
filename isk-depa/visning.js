@@ -7,15 +7,15 @@
 // calculator, so a later WordPress upload is never mixed with cached modules.
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
-const { aktieandelSammaRisk, berakna, egenBerakning, schablonranta } =
+const { aktieandelSammaRisk, berakna, egenBerakning } =
   await import(`./berakning.js${versionsfraga}`);
 const { html, procent, kronor } = await import(`./delat.js${versionsfraga}`);
 
 const rot = document.querySelector(".sg-iskdepa");
 
 // Number text for the form's percentage fields, without the % sign.
-const procenttal = (andel) =>
-  (andel * 100).toLocaleString("sv-SE", { maximumFractionDigits: 2 });
+const procenttal = (andel, decimaler = 2) =>
+  (andel * 100).toLocaleString("sv-SE", { maximumFractionDigits: decimaler });
 
 const valForlust = p.statensAndelAvForlust.alternativ
   .map((a) => `<option value="${a.varde}"${a.varde === p.statensAndelAvForlust.varde ? " selected" : ""}>${html(a.text)}</option>`)
@@ -47,8 +47,8 @@ rot.innerHTML = `
     </fieldset>
     <fieldset>
       <legend>Skatter och räntor</legend>
-      <label>Statslåneräntan 30 november året före (%)
-        <input name="statslanerantan" inputmode="decimal" value="${procenttal(p.statslanerantan.varde)}">
+      <label>ISK-skatt (% av kapitalunderlaget)
+        <input name="iskSkattesats" inputmode="decimal" value="${procenttal(p.iskSkattesats.varde, 3)}">
       </label>
       <p class="hjalp" data-iskskatt></p>
       <label>Fondens totala avgift per år (%)
@@ -163,7 +163,7 @@ function lasIndata() {
   const indata = {
     startbelopp: kr("startbelopp", "startbelopp"),
     manadssparande: kr("manadssparande", "månadssparande"),
-    statslanerantan: pr("statslanerantan", "statslåneräntan", -0.05, 0.2),
+    iskSkattesats: pr("iskSkattesats", "ISK-skatten", 0, 0.1),
     kontoranta: pr("kontoranta", "räntan på sparkonto", -0.05, 0.2),
     avgift: pr("avgift", "fondens avgift", 0, 0.05),
     aktieandelIsk: pr("aktieandelIsk", "aktieandelen på ISK", 0, 1),
@@ -268,9 +268,9 @@ function uppdatera() {
   meddelande.innerHTML = "";
   resultat.hidden = false;
 
-  const ranta = schablonranta(p, indata.statslanerantan);
-  rot.querySelector("[data-iskskatt]").textContent =
-    `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av ${indata.iskSkattKvartal ? "kapitalunderlaget" : "ISK:ns värde 1 januari"}.`;
+  rot.querySelector("[data-iskskatt]").textContent = indata.iskSkattKvartal
+    ? "Kapitalunderlaget är Skatteverkets snitt av kvartalsvärden plus årets insättningar."
+    : "Kapitalunderlaget är ISK:ns värde 1 januari.";
 
   const risk = aktieandelSammaRisk(egen.andelIsk, indata.statensAndelAvForlust);
   rot.querySelector("[data-egen-risk]").textContent = risk.begransad
@@ -305,7 +305,7 @@ function formateraVarde(post) {
   if (post === p.horisonter) return post.varde.join(", ") + " år";
   if (post.enhet === "kr" || post.enhet === "kr/mån") return html(kronor(post.varde) + (post.enhet === "kr/mån" ? "/mån" : ""));
   const enhet = post.enhet === "andel" ? "" : ` ${post.enhet}`;
-  return html(`${procent(post.varde, 2)}${enhet}`);
+  return html(`${procent(post.varde, 3)}${enhet}`);
 }
 
 function visaParametrar() {

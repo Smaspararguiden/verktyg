@@ -8,25 +8,14 @@
 
 export const parametrar = {
   // --- ISK -----------------------------------------------------------------
-  statslanerantan: {
-    // Changes every year. The rate for 2027 (set 30 November 2026) replaces
-    // this one when it is known; the page lets the user type another.
-    varde: 0.0255,
-    enhet: "per år",
-    beskrivning: "Statslåneräntan den 30 november året före beskattningsåret. ISK-skatten bygger på den",
-    kalla: "Riksgälden; Skatteverket. 2,55 % gäller ISK-skatten 2026",
-  },
-  schablonPaslag: {
-    varde: 0.01,
-    enhet: "procentenheter",
-    beskrivning: "Läggs på statslåneräntan för att få schablonräntan på ISK",
-    kalla: "Skatteverket, skatt på investeringssparkonto (2026)",
-  },
-  schablonGolv: {
-    varde: 0.0125,
-    enhet: "per år",
-    beskrivning: "Schablonräntan på ISK blir aldrig lägre än så här",
-    kalla: "Skatteverket, skatt på investeringssparkonto (2026)",
+  iskSkattesats: {
+    // The tax itself, not the government bond rate it is derived from
+    // (DECISIONS.md 44). Changes every year; the page lets the user type
+    // another.
+    varde: 0.01164,
+    enhet: "av kapitalunderlaget per år",
+    beskrivning: "ISK-skatten: schablonräntan (statslåneräntan plus 1 procentenhet, lägst 1,25 %) gånger 30 %",
+    kalla: "ISK-skatten för 2027 enligt Andreas Runnemo 28 november 2026, motsvarar statslåneräntan 2,88 %",
   },
   fribelopp: {
     // Per person, shared by all of the person's ISK and kapitalförsäkringar.
