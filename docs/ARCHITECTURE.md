@@ -153,6 +153,34 @@ kronan. Tre skillnader i hur saker tolkas:
    värdet 1 januari (DECISIONS.md 41). ISK blir därför något högre hos oss,
    under 1 % efter 30 år. Med kvartalsvärden blev ISK lika på kronan.
 
+## Fond eller ETF (`fond-etf/`)
+
+Jämför vad en fond och en ETF kostar per år, beroende på hur länge man
+behåller dem (DECISIONS.md 43). Visas bara på GitHub Pages,
+https://smaspararguiden.github.io/verktyg/fond-etf/, och ligger inte i
+pluginen. Samma uppdelning som de andra verktygen: `parametrar.js`,
+`berakning.js`, `visning.js`, `delat.js`, `stil.css`, `index.html` och
+`typsnitt/`.
+
+`berakning.js` exporterar `berakna(parametrar, indata)`, där indata är
+`{ belopp, fondAvgift, etfAvgift, courtage: { procent, minimum }, spread,
+valutavaxling, handlasISek }`. Den returnerar ETF:ens engångskostnader
+(`engangskostnader()`: courtage, halva spreaden och växling, vid köp och vid
+försäljning), en rad per år med den genomsnittliga årliga kostnaden och den
+totala kostnaden i kronor för båda, och `brytpunkt`: det första hela året då
+ETF:en är billigast, eller `null` om den aldrig blir det. Courtaget för en
+affär är `courtage(klass, belopp)`, procenten av beloppet men minst
+minimiavgiften. En fast avgift är procent 0 med avgiften som minimum.
+
+Courtageklasserna ligger i parameterfilen. `visning.js` ritar formuläret,
+ett linjediagram i SVG med en siktlinje och en ruta som visar det år
+muspekaren är över, en tabell med engångskostnaderna, en tabell år för år
+och "Så har vi räknat". Diagrammet ritas i rutans egen bredd, så att texten
+behåller sin storlek på mobilen, och ritas om när bredden ändras. Inget skickas
+från sidan.
+
+Tester: `fond-etf/berakning.test.js`.
+
 ## Texter från WordPress
 
 Vissa förklarande texter i snurran kan sajten skriva själv, med

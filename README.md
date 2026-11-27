@@ -11,6 +11,7 @@ visar en förhandsvisning.
 |---|---|---|
 | `itp/` | Räknesnurra för ITP1: vad man vinner på att flytta till fondförsäkring och vad regeln om obligatorisk traditionell försäkring kostar | Under utveckling |
 | `isk-depa/` | Simulator: ISK eller depå, med samma pengar och med samma risk | Arbetsverktyg, bara på GitHub Pages |
+| `fond-etf/` | Fond eller ETF: genomsnittlig årlig kostnad beroende på innehavstid | Under utveckling, bara på GitHub Pages |
 
 ## Dokumentation
 
