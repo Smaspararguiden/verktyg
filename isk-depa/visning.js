@@ -216,7 +216,7 @@ function egenTabell(rader, brytar) {
       <th>År</th><th>Insatt</th><th>ISK-skatt</th><th>ISK + sparkonto</th>
       <th>ISK ${real}</th><th>Fondskatt</th><th>Skatt vid försäljning</th>
       <th>Depå + sparkonto efter försäljning</th><th>Depå ${real}</th>
-      <th>ISK + sparkonto − depå + sparkonto</th><th>Depå mot ISK</th>
+      <th>Skillnad (ISK + sparkonto − depå + sparkonto)</th><th>Depå mot ISK</th>
     </tr></thead><tbody>${tabellrader}</tbody></table>`;
 }
 
