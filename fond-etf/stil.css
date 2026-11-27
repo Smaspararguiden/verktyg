@@ -1,0 +1,123 @@
+/* Styles for the fund vs ETF cost comparison. Every rule is scoped to the
+   .sg-fondetf element, so nothing here reaches the rest of the page. Follows
+   the other tools: headings, text and tables are left to the page, and the
+   colours are taken from smaspararguiden.se. The two series colours passed
+   the dataviz palette check (contrast, colour-blind separation) on white. */
+
+.sg-fondetf {
+  --dampad: #42728a;
+  --yta: #eef4f7;
+  --kant: #dde8ee;
+  --accent: #325567;
+  --mork: #0b2e5b;
+  --gul: #d4a017;
+  --fond: #1f6f9a;
+  --etf: #c2410c;
+}
+
+.sg-fondetf [hidden] { display: none !important; }
+
+.sg-fondetf .hjalp { color: var(--dampad); font-size: 0.9em; margin: 4px 0 12px; }
+
+.sg-fondetf fieldset {
+  background: var(--yta);
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 0 0 16px;
+  min-width: 0;
+}
+.sg-fondetf legend {
+  font-weight: 700;
+  color: var(--accent);
+  float: left;
+  width: 100%;
+  margin-bottom: 8px;
+}
+.sg-fondetf legend + * { clear: both; }
+
+.sg-fondetf .sida-vid-sida { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.sg-fondetf .sida-vid-sida fieldset { margin: 0; }
+@media (max-width: 640px) {
+  .sg-fondetf .sida-vid-sida { grid-template-columns: 1fr; }
+}
+.sg-fondetf form { margin-bottom: 16px; }
+
+.sg-fondetf label { display: block; margin: 0 0 10px; }
+.sg-fondetf label.kryss { display: flex; gap: 8px; align-items: baseline; }
+.sg-fondetf input:not([type=checkbox]), .sg-fondetf select {
+  display: block;
+  margin-top: 4px;
+  padding: 8px 10px;
+  font: inherit;
+  border: 1px solid var(--kant);
+  border-radius: 6px;
+  background: #fff;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.sg-fondetf input:not([type=checkbox]) { width: 12em; }
+.sg-fondetf .rad { display: flex; flex-wrap: wrap; gap: 0 16px; }
+.sg-fondetf .rad input:not([type=checkbox]) { width: 8em; }
+
+.sg-fondetf .meddelande.varning {
+  border-left: 4px solid var(--gul);
+  background: #fdf6e3;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+.sg-fondetf .slutsats { font-weight: 700; color: var(--mork); }
+
+/* Legend: a coloured mark beside text in the normal text colour. */
+.sg-fondetf .forklaring { display: flex; gap: 20px; font-size: 0.9em; margin: 8px 0; }
+.sg-fondetf .farg {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.sg-fondetf .farg.fond { background: var(--fond); }
+.sg-fondetf .farg.etf { background: var(--etf); }
+
+.sg-fondetf .diagram { position: relative; }
+.sg-fondetf .diagram svg { display: block; width: 100%; height: auto; overflow: visible; }
+.sg-fondetf .diagram .rutnat { stroke: var(--kant); stroke-width: 1; }
+.sg-fondetf .diagram .baslinje { stroke: var(--dampad); stroke-width: 1; }
+.sg-fondetf .diagram .axel { fill: var(--dampad); font-size: 12px; font-variant-numeric: tabular-nums; }
+.sg-fondetf .diagram .etikett { fill: currentColor; font-size: 13px; font-weight: 700; }
+.sg-fondetf .diagram .linje { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.sg-fondetf .diagram .linje.fond { stroke: var(--fond); }
+.sg-fondetf .diagram .linje.etf { stroke: var(--etf); }
+.sg-fondetf .diagram .sikte { stroke: var(--dampad); stroke-width: 1; stroke-dasharray: 3 3; }
+.sg-fondetf .diagram .punkt { stroke: #fff; stroke-width: 2; }
+.sg-fondetf .diagram .punkt.fond { fill: var(--fond); }
+.sg-fondetf .diagram .punkt.etf { fill: var(--etf); }
+.sg-fondetf .diagram .traffyta { fill: transparent; cursor: crosshair; }
+.sg-fondetf .diagram .tips {
+  position: absolute;
+  top: 8px;
+  background: #fff;
+  border: 1px solid var(--kant);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.85em;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Wide tables scroll inside their box instead of widening the page. */
+.sg-fondetf .tabell { overflow-x: auto; margin-bottom: 16px; }
+.sg-fondetf .tabell td, .sg-fondetf .tabell th { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sg-fondetf .vinner { font-weight: 700; color: var(--mork); }
+.sg-fondetf .summa td { font-weight: 700; }
+.sg-fondetf .brytpunkt td { background: var(--yta); }
+
+.sg-fondetf details { margin-top: 16px; }
+.sg-fondetf details summary { cursor: pointer; font-weight: 700; color: var(--accent); }
+.sg-fondetf .kalla { color: var(--dampad); font-size: 0.85em; }

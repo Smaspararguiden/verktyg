@@ -569,3 +569,25 @@ De exakta sätten finns kvar som två val på sidan: Skatteverkets kapitalunderl
 varje månad på det aktuella värdet. Med dem går det att stämma av mot andra
 kalkylatorer, till exempel Rika tillsammans, som räknar ISK-skatten på
 kvartalsvärden.
+
+## 43. Fond eller ETF: kostnaderna summeras som om innehavet inte växer (2026-11-27)
+
+Verktyget i `fond-etf/` jämför vad en fond och en ETF kostar per år,
+beroende på hur länge man behåller dem. Det räknar som grafen i underlaget
+Andreas utgick från: noll avkastning, så att alla kostnader kan läggas ihop i
+kronor och delas med beloppet och antalet år. Det gör jämförelsen lätt att
+förklara och att kontrollera för hand.
+
+Fonden kostar bara sin årliga avgift. ETF:en kostar sin årliga avgift och
+dessutom courtage, halva spreaden och valutaväxling, både vid köp och vid
+försäljning. Rutan "Handlas i SEK" tar bort växlingen. Besökaren väljer själv
+courtageklass, bland Avanzas och Nordnets klasser eller ett eget courtage:
+procent med minimiavgift eller en fast avgift per affär.
+
+Allt räknas i kronor. Avanzas klasser för utländska börser är därför inte med,
+eftersom deras minimiavgift är i euro eller pund. Det kräver en växelkurs och
+kan läggas till senare.
+
+En fond och en ETF jämförs, över 30 år. Verktyget visas bara på GitHub Pages
+till att börja med och ligger inte i pluginen. Kortkoden kommer när det ska
+upp på sajten.
