@@ -61,6 +61,11 @@
 .sg-iskdepa .tabell { overflow-x: auto; margin-bottom: 16px; }
 .sg-iskdepa .tabell table { min-width: 640px; }
 .sg-iskdepa .tabell td, .sg-iskdepa .tabell th { white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* In the own-run table the headers wrap inside the width the numbers need:
+   the header text asks only for its longest word and then fills the cell. */
+.sg-iskdepa .tabell table.egen { min-width: 0; width: auto; }
+.sg-iskdepa .tabell table.egen th { white-space: normal; vertical-align: bottom; }
+.sg-iskdepa .tabell table.egen .rubrik { width: min-content; min-width: 100%; }
 .sg-iskdepa .vinner { font-weight: 700; color: var(--mork); }
 /* The year the depå first leaves more than the ISK. */
 .sg-iskdepa tr.brytar td { font-weight: 700; background: var(--yta); }

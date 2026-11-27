@@ -174,10 +174,21 @@ export function dagensPengar(p, belopp, ar) {
 
 // The user's own run: one return path, one horizon and an equity share for
 // each portfolio. `egen` is { forstaAret, ovrigaAr, antalAr, andelIsk,
-// andelDepa }. Returns simulera's rows with each total also in today's money.
+// andelDepa }. Returns a row for year 0 (the start amount, before any return
+// or tax) and then simulera's rows, with each total also in today's money.
 export function egenBerakning(p, indata, egen) {
   const scenario = { namn: "Egen", forstaAret: egen.forstaAret, ovrigaAr: egen.ovrigaAr };
-  return simulera(p, indata, scenario, egen.antalAr, egen.andelIsk, egen.andelDepa).map((rad) => ({
+  const start = {
+    ar: 0,
+    insatt: indata.startbelopp,
+    iskSkatt: 0,
+    iskTotalt: indata.startbelopp,
+    fondskatt: 0,
+    skattForsaljning: 0,
+    depaTotalt: indata.startbelopp,
+  };
+  const rader = simulera(p, indata, scenario, egen.antalAr, egen.andelIsk, egen.andelDepa);
+  return [start, ...rader].map((rad) => ({
     ...rad,
     iskIDagensPengar: dagensPengar(p, rad.iskTotalt, rad.ar),
     depaIDagensPengar: dagensPengar(p, rad.depaTotalt, rad.ar),

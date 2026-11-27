@@ -213,15 +213,18 @@ test("egen beräkning: egna andelar och avkastning, och värdet i dagens pengar"
   const indata = grund({ iskSkattesats: 0 });
   const rader = egenBerakning(parametrar, indata,
     { forstaAret: -0.5, ovrigaAr: 0.1, antalAr: 3, andelIsk: 0.5, andelDepa: 0.8 });
-  assert.equal(rader.length, 3);
+  assert.equal(rader.length, 4);
+  // Year 0 is the start amount in both, before return and tax.
+  assert.deepEqual([rader[0].ar, rader[0].iskTotalt, rader[0].depaTotalt, rader[0].iskIDagensPengar],
+    [0, 100000, 100000, 100000]);
   // Same as simulera with that scenario and those shares.
   const direkt = simulera(parametrar, indata, { forstaAret: -0.5, ovrigaAr: 0.1 }, 3, 0.5, 0.8);
-  narall(rader[2].iskTotalt, direkt[2].iskTotalt);
-  narall(rader[2].depaTotalt, direkt[2].depaTotalt);
+  narall(rader[3].iskTotalt, direkt[2].iskTotalt);
+  narall(rader[3].depaTotalt, direkt[2].depaTotalt);
   // Year 1: half the ISK money halves, the other half stays on the account.
-  narall(rader[0].iskTotalt, 75000);
-  narall(rader[0].iskIDagensPengar, 75000 / 1.02);
-  narall(rader[2].depaIDagensPengar, rader[2].depaTotalt / 1.02 ** 3);
+  narall(rader[1].iskTotalt, 75000);
+  narall(rader[1].iskIDagensPengar, 75000 / 1.02);
+  narall(rader[3].depaIDagensPengar, rader[3].depaTotalt / 1.02 ** 3);
 });
 
 test("första året depån ger mer än ISK", () => {
