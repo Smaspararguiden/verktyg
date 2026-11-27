@@ -57,6 +57,15 @@ rot.innerHTML = `
       <label>Ränta på sparkonto (%)
         <input name="kontoranta" inputmode="decimal" value="${procenttal(p.kontoranta.varde)}">
       </label>
+      <label class="kryss">
+        <input type="checkbox" name="iskSkattKvartal">
+        Exakt ISK-skatt: Skatteverkets snitt av fyra kvartalsvärden plus årets insättningar
+      </label>
+      <label class="kryss">
+        <input type="checkbox" name="avgiftManadsvis">
+        Exakt avgift: dras varje månad på det aktuella värdet
+      </label>
+      <p class="hjalp">Utan bockarna räknas både ISK-skatten och avgiften på värdet 1 januari.</p>
       <label>Hur stor del av en förlust på depån staten står för
         <select name="statensAndelAvForlust">${valForlust}</select>
       </label>
@@ -161,6 +170,8 @@ function lasIndata() {
     statensAndelAvForlust: Number(falt("statensAndelAvForlust").value),
     medFribelopp: falt("medFribelopp").checked,
     fonder: falt("fonder").checked,
+    iskSkattKvartal: falt("iskSkattKvartal").checked,
+    avgiftManadsvis: falt("avgiftManadsvis").checked,
   };
   if (!fel.length && indata.startbelopp + indata.manadssparande <= 0) {
     fel.push("startbelopp eller månadssparande");
@@ -259,7 +270,7 @@ function uppdatera() {
 
   const ranta = schablonranta(p, indata.statslanerantan);
   rot.querySelector("[data-iskskatt]").textContent =
-    `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av ISK:ns värde 1 januari.`;
+    `Det ger schablonräntan ${procent(ranta, 2)} och ISK-skatten ${procent(ranta * p.skattesatsKapital.varde, 3)} av ${indata.iskSkattKvartal ? "kapitalunderlaget" : "ISK:ns värde 1 januari"}.`;
 
   const risk = aktieandelSammaRisk(egen.andelIsk, indata.statensAndelAvForlust);
   rot.querySelector("[data-egen-risk]").textContent = risk.begransad
@@ -304,9 +315,10 @@ function visaParametrar() {
   </tr>`).join("");
   rot.querySelector("[data-parametrar]").innerHTML = `
     <p>Allt räknas månad för månad i nominella kronor. Skatterna dras i slutet
-      av varje år från kontot de gäller. ISK-skatten räknar vi förenklat på
-      värdet 1 januari, inte på Skatteverkets snitt av fyra kvartalsvärden
-      och årets insättningar. Fondens avgift dras från aktierna varje månad.
+      av varje år från kontot de gäller. ISK-skatten och fondens avgift räknar
+      vi förenklat på värdet 1 januari, om du inte bockar för de exakta sätten:
+      Skatteverkets snitt av fyra kvartalsvärden och årets insättningar, och
+      avgiften dragen varje månad.
       Depån säljs och vinsten beskattas
       vid varje tidshorisont. Utdelningar räknar vi inte med: fonderna antas
       återinvestera dem.</p>

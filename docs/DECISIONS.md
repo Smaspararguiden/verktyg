@@ -542,6 +542,8 @@ om det kommer ett tredje verktyg eller om beräkningslogik behöver delas.
 
 ## 41. ISK eller depå: ISK-skatten på värdet 1 januari, och fondavgiften med (2026-11-27)
 
+Avgiften månad för månad och kvartalsvärdena blev val i 42.
+
 Simulatorn räknar ISK-skatten på kontots värde 1 januari, inte på
 Skatteverkets kapitalunderlag (snittet av värdet vid fyra kvartalsskiften plus
 årets insättningar, delat med fyra). Det är lättare att förklara och att
@@ -555,6 +557,18 @@ Fondens totala avgift dras från aktierna på båda kontona, månad för månad.
 Avkastningen i scenarierna är därför före avgift. Avgiften påverkar ISK och depå
 nästan lika, men den måste med för att beloppen ska gå att stämma av mot ett
 eget kalkylark.
+
+## 42. ISK eller depå: enkelt som standard, exakt som val (2026-11-27)
+
+Både ISK-skatten och fondens avgift räknas som standard på värdet 1 januari
+och dras i slutet av året. Det är viktigare att siffrorna går att förstå och
+räkna efter i ett eget kalkylark än att de sista kronorna blir rätt.
+
+De exakta sätten finns kvar som två val på sidan: Skatteverkets kapitalunderlag
+(snittet av fyra kvartalsvärden plus årets insättningar) och avgiften dragen
+varje månad på det aktuella värdet. Med dem går det att stämma av mot andra
+kalkylatorer, till exempel Rika tillsammans, som räknar ISK-skatten på
+kvartalsvärden.
 
 ## 43. Fond eller ETF: kostnaderna summeras som om innehavet inte växer (2026-11-27)
 
