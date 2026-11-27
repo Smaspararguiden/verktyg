@@ -190,34 +190,41 @@ function lasIndata() {
 }
 
 // The user's own run, year by year, with both totals also in today's money.
-// The row of brytar (the first year the depå leaves more) is in bold.
+// The row of brytar (the first year the depå leaves more) is in bold. The
+// headers wrap, so the numbers decide each column's width.
 function egenTabell(rader, brytar) {
+  const tecken = (x) => (x >= 0 ? "+" : "−");
   const tabellrader = rader.map((r) => {
-    const skillnad = (r.depaTotalt - r.iskTotalt) / r.iskTotalt;
     const depaVinner = r.depaTotalt > r.iskTotalt;
     const iskMinusDepa = r.iskTotalt - r.depaTotalt;
+    const andel = iskMinusDepa / r.depaTotalt;
+    const procentdel = Number.isFinite(andel) ? ` (${tecken(andel)}${procent(Math.abs(andel), 1)})` : "";
     return `<tr${r.ar === brytar ? ' class="brytar"' : ""}>
       <td>${r.ar}</td>
-      <td>${kronor(r.insatt)}</td>
-      <td>${kronor(r.iskSkatt)}</td>
       <td class="${depaVinner ? "" : "vinner"}">${kronor(r.iskTotalt)}</td>
+      <td class="${depaVinner ? "vinner" : ""}">${kronor(r.depaTotalt)}</td>
+      <td>${tecken(iskMinusDepa)}${kronor(Math.abs(iskMinusDepa))}${procentdel}</td>
       <td>${kronor(r.iskIDagensPengar)}</td>
+      <td>${kronor(r.depaIDagensPengar)}</td>
+      <td>${kronor(r.iskSkatt)}</td>
       <td>${kronor(r.fondskatt)}</td>
       <td>${kronor(r.skattForsaljning)}</td>
-      <td class="${depaVinner ? "vinner" : ""}">${kronor(r.depaTotalt)}</td>
-      <td>${kronor(r.depaIDagensPengar)}</td>
-      <td>${iskMinusDepa >= 0 ? "+" : "−"}${kronor(Math.abs(iskMinusDepa))}</td>
-      <td>${Number.isFinite(skillnad) ? `${skillnad >= 0 ? "+" : "−"}${procent(Math.abs(skillnad), 1)}` : "–"}</td>
     </tr>`;
   }).join("");
   const real = `i dagens penningvärde givet ${procent(p.inflation.varde, 1)} inflation`;
-  return `<table>
-    <thead><tr>
-      <th>År</th><th>Insatt</th><th>ISK-skatt</th><th>ISK + sparkonto</th>
-      <th>ISK ${real}</th><th>Fondskatt</th><th>Skatt vid försäljning</th>
-      <th>Depå + sparkonto efter försäljning</th><th>Depå ${real}</th>
-      <th>Skillnad (ISK + sparkonto − depå + sparkonto)</th><th>Depå mot ISK</th>
-    </tr></thead><tbody>${tabellrader}</tbody></table>`;
+  const rubriker = [
+    "År",
+    "ISK + sparkonto",
+    "Depå + sparkonto efter försäljning",
+    "Skillnad (ISK + sparkonto − depå + sparkonto)",
+    `ISK + sparkonto ${real}`,
+    `Depå + sparkonto ${real}`,
+    "ISK-skatt",
+    "Fondskatt",
+    "Skatt vid försäljning",
+  ].map((text) => `<th><div class="rubrik">${html(text)}</div></th>`).join("");
+  return `<table class="egen">
+    <thead><tr>${rubriker}</tr></thead><tbody>${tabellrader}</tbody></table>`;
 }
 
 // One table: scenarios down, horizons across, both portfolios in each cell.
