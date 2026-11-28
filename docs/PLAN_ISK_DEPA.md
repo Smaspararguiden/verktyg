@@ -45,3 +45,18 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
    eller görs om till en graf. Kryssrutorna för exakt ISK-skatt och exakt
    avgift tas bort från sidan (DECISIONS.md 42); de är till för att stämma av
    mot andra kalkylatorer, inte för besökare.
+
+## Tankar till artiklarna (Andreas, 28 november 2026)
+
+Bara noterade, inte diskuterade än.
+
+1. Risken att börsen kraschar och att jag behöver pengarna oväntat. Det bör
+   motsvara 21 % skydd på nedsidan utöver de 300 000 kr.
+2. Har jag ändå tänkt ha pengar på sparkonto eller i räntefond är det lätt att
+   räkna. Vill jag ha 100 % aktier i ISK-fallet blir det svårare, eftersom jag
+   då lånar till högre ränta än sparkontot och det är svårt att veta kostnaden
+   i hävstångsprodukter. ISK skulle kunna ses som ett alternativ till en
+   hävstångsprodukt.
+3. Även med 5 % nominellt tar det 21 år. Det är länge. Jag skulle inte tänka
+   den tidshorisonten med tanke på allt som kan ändra sig på 21 år.
+4. Depå är ett bra alternativ till en 70/30-portfölj.

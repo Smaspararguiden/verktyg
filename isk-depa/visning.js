@@ -7,7 +7,7 @@
 // calculator, so a later WordPress upload is never mixed with cached modules.
 const versionsfraga = new URL(import.meta.url).search;
 const { parametrar: p } = await import(`./parametrar.js${versionsfraga}`);
-const { aktieandelSammaRisk, berakna, egenBerakning, forstaAretDepaBattre } =
+const { aktieandelIskSammaRisk, aktieandelSammaRisk, berakna, egenBerakning, forstaAretDepaBattre } =
   await import(`./berakning.js${versionsfraga}`);
 const { html, procent, kronor } = await import(`./delat.js${versionsfraga}`);
 
@@ -285,9 +285,19 @@ function uppdatera() {
     : "Kapitalunderlaget är ISK:ns värde 1 januari.";
 
   const risk = aktieandelSammaRisk(egen.andelIsk, indata.statensAndelAvForlust);
-  rot.querySelector("[data-egen-risk]").textContent = risk.begransad
-    ? `Samma risk som ${procent(egen.andelIsk, 0)} på ISK skulle kräva mer än 100 % aktier på depån.`
-    : `Samma risk som ${procent(egen.andelIsk, 0)} på ISK är ${procent(risk.andel, 1)} på depån, med den valda andelen staten står för.`;
+  // What the depå share chosen above equals on the ISK, for both shares of a
+  // loss the state can carry (the parameter file's alternatives).
+  const [avdrag, kvittning] = p.statensAndelAvForlust.alternativ.map((a) => a.varde).sort((a, b) => a - b);
+  const pIsk = (k) => procent(aktieandelIskSammaRisk(egen.andelDepa, k), 1);
+  const depa = procent(egen.andelDepa, 0);
+  rot.querySelector("[data-egen-risk]").textContent =
+    `Om avkastningen kan bli negativ och du då får dra av ${procent(avdrag, 0)} av förlusten på din skatt, ` +
+    `motsvarar ${depa} aktier på depån samma risk som ${pIsk(avdrag)} på ISK. ` +
+    `Om du har andra vinster på aktier och fonder att kvitta förlusten mot, så att staten står för ${procent(kvittning, 0)}, ` +
+    `motsvarar det ${pIsk(kvittning)} på ISK. ` +
+    (risk.begransad
+      ? `Samma risk som ${procent(egen.andelIsk, 0)} på ISK skulle kräva mer än 100 % aktier på depån.`
+      : `Åt andra hållet: ${procent(egen.andelIsk, 0)} på ISK motsvarar ${procent(risk.andel, 1)} på depån med den valda andelen.`);
   rot.querySelector("[data-text-egen]").textContent =
     `Resten står på sparkonto. Depån visas som om den säljs i slutet av året. Värdena gäller 31 december varje år.`;
   const egnaRader = egenBerakning(p, indata, egen);
