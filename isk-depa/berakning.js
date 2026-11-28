@@ -29,6 +29,12 @@ export function aktieandelSammaRisk(andelIsk, statensAndelAvForlust) {
   return { andel: Math.min(1, andel), begransad: andel > 1 };
 }
 
+// The other way round: the equity share on the ISK that gives the same risk
+// after tax as a given share on the depå. Never above the depå's share.
+export function aktieandelIskSammaRisk(andelDepa, statensAndelAvForlust) {
+  return andelDepa * (1 - statensAndelAvForlust);
+}
+
 // Monthly rate that compounds to the given yearly rate.
 export function manadsranta(arlig) {
   return Math.pow(1 + arlig, 1 / MANADER) - 1;

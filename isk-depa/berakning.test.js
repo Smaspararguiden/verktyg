@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import { parametrar } from "./parametrar.js";
 import {
-  aktieandelSammaRisk, berakna, dagensPengar, depaSkattVidForsaljning, egenBerakning,
+  aktieandelIskSammaRisk, aktieandelSammaRisk, berakna, dagensPengar, depaSkattVidForsaljning, egenBerakning,
   forstaAretDepaBattre,
   iskSkatt, manadsfaktorEfterAvgift, manadsranta,
   simulera,
@@ -129,6 +129,13 @@ test("aktieandel för samma risk: delas med det som sparen själv bär", () => {
   narall(a.andel, 0.7 / 0.79, 1e-12);
   assert.equal(a.begransad, false);
   assert.deepEqual(aktieandelSammaRisk(1, 0.21), { andel: 1, begransad: true });
+});
+
+test("aktieandel på ISK för samma risk som en given andel på depån", () => {
+  narall(aktieandelIskSammaRisk(1, 0.21), 0.79, 1e-12);
+  narall(aktieandelIskSammaRisk(1, 0.3), 0.7, 1e-12);
+  // And back again: the same-risk depå share of that ISK share is the start.
+  narall(aktieandelSammaRisk(aktieandelIskSammaRisk(0.8, 0.21), 0.21).andel, 0.8, 1e-12);
 });
 
 test("samma risk: efter en krasch förlorar båda lika mycket", () => {
