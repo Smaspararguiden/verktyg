@@ -601,3 +601,16 @@ kapitalunderlaget. Det är skatten som läsare och artiklar talar om, till exemp
 först ska plussas på, jämföras med ett golv och gånger 30 %. Statslåneräntan,
 tillägget på 1 procentenhet och golvet på 1,25 % togs bort ur parameterfilen och
 nämns bara i beskrivningen av skatten.
+
+## 45. ISK eller depå: depån säljs med schablonmetoden när den ger lägre skatt (2026-11-28)
+
+Den som säljer marknadsnoterade aktier eller fondandelar får välja
+schablonmetoden: omkostnadsbeloppet sätts till 20 % av försäljningspriset.
+Simulatorn räknar med det sätt som ger lägst skatt, eftersom det är vad den som
+säljer gör. Det spelar roll först när vinsten är mer än 80 % av värdet, alltså
+när depån har vuxit till mer än fem gånger det som satts in. Då blir
+vinstskatten högst 0,8 × 30 % = 24 % av värdet.
+
+Med 100 000 kr, 8 % och 100 % aktier på båda kontona går depån om ISK efter 29
+år i stället för 33. Regeln är alltid på och har inget val på sidan: ingen som
+säljer har skäl att låta bli. Andelen 20 % står i parameterfilen.

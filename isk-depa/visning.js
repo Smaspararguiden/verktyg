@@ -339,7 +339,7 @@ function visaParametrar() {
       Skatteverkets snitt av fyra kvartalsvärden och årets insättningar, och
       avgiften dragen varje månad.
       Depån säljs och vinsten beskattas
-      vid varje tidshorisont. Utdelningar räknar vi inte med: fonderna antas
+      vid varje tidshorisont, med schablonmetoden när den ger lägre skatt. Utdelningar räknar vi inte med: fonderna antas
       återinvestera dem.</p>
     <table><tbody>${rader}</tbody></table>`;
 }

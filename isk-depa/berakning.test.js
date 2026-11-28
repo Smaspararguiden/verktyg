@@ -103,6 +103,15 @@ test("depå ett år: 30 % på vinsten, och fondskatten på värdet 1 januari", (
   narall(medFond[0].depaTotalt, 100000 - 120 + 120 * 0.21);
 });
 
+test("schablonmetoden: vinsten beskattas med högst 80 % av försäljningspriset", () => {
+  // Bought for 100 000, sold for 1 000 000: 900 000 gain, but at most 800 000 taxed.
+  narall(depaSkattVidForsaljning(parametrar, 1000000, 100000, 0.21), 240000);
+  // Bought for 300 000: the real cost basis is higher, so it is used.
+  narall(depaSkattVidForsaljning(parametrar, 1000000, 300000, 0.21), 210000);
+  // Exactly at the line both methods give the same tax.
+  narall(depaSkattVidForsaljning(parametrar, 1000000, 200000, 0.21), 240000);
+});
+
 test("förlust på depån: staten står för den valda andelen", () => {
   narall(depaSkattVidForsaljning(parametrar, 50000, 100000, 0.21), -10500);
   const rader = simulera(parametrar, grund(), ettAr(-0.5), 1, 1, 1);
@@ -194,11 +203,15 @@ test("Rika tillsammans: depån utan fondskatt blir exakt lika", () => {
 test("Rika tillsammans: med fondskatt blir depån något högre hos oss", () => {
   // Rika taxes the full growth at sale as if the fund tax had never been paid;
   // we tax the gain on what is left in the account. The gap stays below 1 %.
+  // Rika does not use the schablonmetoden at sale, so neither does this test:
+  // after 30 years the gain is over 80 % of the value.
+  const utanSchablon = structuredClone(parametrar);
+  utanSchablon.schablonOmkostnad.varde = 0;
   for (const [indata, ar, rikasVarde] of [
     [rika({ manadssparande: 1000, fonder: true }), 10, 325541],
     [rika({ startbelopp: 1000000, fonder: true }), 30, 5759185],
   ]) {
-    const depa = simulera(parametrar, indata, ettAr(rikasAvkastning), ar, 1, 1).at(-1).depaTotalt;
+    const depa = simulera(utanSchablon, indata, ettAr(rikasAvkastning), ar, 1, 1).at(-1).depaTotalt;
     assert.ok(depa > rikasVarde && depa < rikasVarde * 1.01, `${depa} mot Rikas ${rikasVarde}`);
   }
 });

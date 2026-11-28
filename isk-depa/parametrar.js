@@ -33,6 +33,14 @@ export const parametrar = {
     beskrivning: "Skatt på kapitalinkomster: vinster, räntor och ISK:s schablonintäkt",
     kalla: "Skatteverket, skatt på kapitalinkomster",
   },
+  schablonOmkostnad: {
+    // Applied whenever it gives the lower tax: the gain taxed is then at
+    // most 80 % of the sale price, so the tax at most 24 % of it.
+    varde: 0.2,
+    enhet: "andel av försäljningspriset",
+    beskrivning: "Schablonmetoden: omkostnadsbeloppet får sättas till 20 % av försäljningspriset. Vi använder den när den ger lägre skatt",
+    kalla: "Skatteverket, schablonmetoden vid försäljning av marknadsnoterade aktier och fondandelar",
+  },
   fondSchablon: {
     // Taxed at skattesatsKapital, so 0.4 % × 30 % = 0.12 % of the value at
     // the start of the year.
