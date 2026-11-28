@@ -47,6 +47,11 @@ med samma `?ver=`, så en uppladdning byter alla adresser på en gång.
 GitHub Pages publicerar `main` som förhandsvisning:
 https://smaspararguiden.github.io/verktyg/itp/
 
+Förhandsvisningens `index.html` laddar `visning.js` och stilmallen med `?v=`
+och klockslaget, så varje laddning hämtar färska filer. Utan det kunde
+webbläsaren efter en merge blanda en ny fil med en gammal sparad, och då slutade
+sidan räkna.
+
 ## ITP-räknesnurran (`itp/`)
 
 `berakning.js` exporterar `berakna(parametrar, indata)`, där indata är

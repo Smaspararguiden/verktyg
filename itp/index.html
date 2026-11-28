@@ -71,6 +71,14 @@
     </div>
   </main>
 
-  <script type="module" src="visning.js"></script>
+  <!-- Preview only: every load asks for fresh files, so the browser never
+       mixes a new file with an old cached one after a merge. On the site the
+       plugin adds ?ver= instead. visning.js passes the query on to the other
+       modules. -->
+  <script type="module">
+    const v = `?v=${Date.now()}`;
+    document.querySelector('link[href="stil.css"]').href = `stil.css${v}`;
+    import(`./visning.js${v}`);
+  </script>
 </body>
 </html>
