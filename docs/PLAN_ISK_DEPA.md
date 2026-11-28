@@ -45,30 +45,3 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
    eller görs om till en graf. Kryssrutorna för exakt ISK-skatt och exakt
    avgift tas bort från sidan (DECISIONS.md 42); de är till för att stämma av
    mot andra kalkylatorer, inte för besökare.
-
-## Tankar till artiklarna (Andreas, 28 november 2026)
-
-Bara noterade, inte diskuterade än.
-
-1. Risken att börsen kraschar och att jag behöver pengarna oväntat. Det bör
-   motsvara 21 % skydd på nedsidan utöver de 300 000 kr.
-2. Har jag ändå tänkt ha pengar på sparkonto eller i räntefond är det lätt att
-   räkna. Vill jag ha 100 % aktier i ISK-fallet blir det svårare, eftersom jag
-   då lånar till högre ränta än sparkontot och det är svårt att veta kostnaden
-   i hävstångsprodukter. ISK skulle kunna ses som ett alternativ till en
-   hävstångsprodukt.
-3. Även med 5 % nominellt tar det 21 år. Det är länge. Jag skulle inte tänka
-   den tidshorisonten med tanke på allt som kan ändra sig på 21 år.
-4. Depå är ett bra alternativ till en 70/30-portfölj.
-5. Vad ISK-skatten kommer att vara är en osäkerhetsfaktor.
-6. Den som har enskilda aktier behöver ändå beskatta utdelningar. Fondskatten
-   bör vara låg i förhållande till förväntade utdelningar.
-7. Man ska alltid ha 300 000 kr på ett ISK. Men om börsen går ner går det
-   beloppet ner. Ska man då sälja av från depån och sätta in mer? Hur påverkar
-   det beräkningarna från början?
-8. Vid en börskrasch år 1 blir ISK aldrig bättre, även med 8 % avkastning
-   därefter. I scenariot "Jag kommer antagligen ha pengarna här länge, men jag
-   vill skydda mig mot börskrasch plus skilsmässa" är depå alltså ganska bra.
-9. ISK kostar drygt 1 % per år. Hur jämför jag egentligen det med en
-   hävstångsprodukt? Eller framför allt: hur tar jag hänsyn till lånekostnaden
-   här? Borde det vara skillnaden mellan lånekostnaden och den riskfria räntan?
