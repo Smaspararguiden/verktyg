@@ -66,3 +66,9 @@ Bara noterade, inte diskuterade än.
 7. Man ska alltid ha 300 000 kr på ett ISK. Men om börsen går ner går det
    beloppet ner. Ska man då sälja av från depån och sätta in mer? Hur påverkar
    det beräkningarna från början?
+8. Vid en börskrasch år 1 blir ISK aldrig bättre, även med 8 % avkastning
+   därefter. I scenariot "Jag kommer antagligen ha pengarna här länge, men jag
+   vill skydda mig mot börskrasch plus skilsmässa" är depå alltså ganska bra.
+9. ISK kostar drygt 1 % per år. Hur jämför jag egentligen det med en
+   hävstångsprodukt? Eller framför allt: hur tar jag hänsyn till lånekostnaden
+   här? Borde det vara skillnaden mellan lånekostnaden och den riskfria räntan?
