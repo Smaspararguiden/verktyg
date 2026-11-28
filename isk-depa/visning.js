@@ -221,7 +221,7 @@ function egenTabell(rader, brytar) {
     `Depå + sparkonto ${real}`,
     "ISK-skatt",
     "Fondskatt",
-    "Skatt vid försäljning",
+    "Skatt vid försäljning (negativt belopp betyder skatteavdrag)",
   ].map((text) => `<th><div class="rubrik">${html(text)}</div></th>`).join("");
   return `<table class="egen">
     <thead><tr>${rubriker}</tr></thead><tbody>${tabellrader}</tbody></table>`;
