@@ -66,6 +66,16 @@
 .sg-iskdepa .tabell table.egen { min-width: 0; width: auto; }
 .sg-iskdepa .tabell table.egen th { white-space: normal; vertical-align: bottom; }
 .sg-iskdepa .tabell table.egen .rubrik { width: min-content; min-width: 100%; }
+/* The own-run table scrolls inside its own box, so the header row can stay
+   in place while the years scroll under it, like a frozen top row. */
+.sg-iskdepa .tabell.rullar { max-height: 75vh; overflow: auto; }
+.sg-iskdepa .tabell.rullar thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  box-shadow: inset 0 -1px 0 var(--kant);
+}
 .sg-iskdepa .vinner { font-weight: 700; color: var(--mork); }
 /* The year the depå first leaves more than the ISK. */
 .sg-iskdepa tr.brytar td { font-weight: 700; background: var(--yta); }

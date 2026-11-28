@@ -109,7 +109,7 @@ rot.innerHTML = `
     <h2>Egen beräkning, år för år</h2>
     <p class="brytar" data-brytar></p>
     <p data-text-egen></p>
-    <div class="tabell" data-tabell-egen></div>
+    <div class="tabell rullar" data-tabell-egen></div>
 
     <h2>Samma pengar</h2>
     <p data-text-pengar></p>
