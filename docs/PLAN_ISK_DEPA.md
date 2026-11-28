@@ -23,7 +23,8 @@ Byggd i `isk-depa/berakning.js`, månad för månad i nominella kronor.
    bockar i det. Skatten dras från kontot i slutet av året.
 4. **Depå:** fondskatt 0,12 % av värdet 1 januari, dragen i slutet av året.
    Vid varje tidshorisont säljs allt: 30 % på vinsten, eller tillbaka den
-   valda andelen av en förlust.
+   valda andelen av en förlust. Schablonmetoden används när den ger lägre
+   skatt, så vinstskatten blir högst 24 % av värdet (DECISIONS.md 45).
 5. **Sparkonto:** räntan beskattas med 30 % varje år.
    **Fondavgift:** dras från aktierna på båda kontona, på värdet 1 januari
    eller som val varje månad. Avkastningen i scenarierna är före avgift.

@@ -151,6 +151,8 @@ kronan. Tre skillnader i hur saker tolkas:
 2. Med fondskatt beskattar Rika hela tillväxten vid försäljningen, som om
    fondskatten aldrig hade betalats. Vi beskattar vinsten på det som finns
    kvar på depån. Depån blir därför något högre hos oss, under 1 % efter 30 år.
+   Rika använder inte schablonmetoden vid försäljningen, så testet räknar
+   utan den (DECISIONS.md 45).
 3. Rika räknar ISK-skatten på Skatteverkets snitt av kvartalsvärden. Med
    valet exakt ISK-skatt blir ISK lika på kronan. Med det enkla sättet, på
    värdet 1 januari (DECISIONS.md 42), blir ISK något högre hos oss, under

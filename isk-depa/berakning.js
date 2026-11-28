@@ -39,9 +39,12 @@ export function manadsfaktorEfterAvgift(arligAvgift) {
   return Math.pow(1 - arligAvgift, 1 / MANADER);
 }
 
-// Tax when the whole depå is sold: on the gain, or a refund on a loss.
+// Tax when the whole depå is sold: on the gain, or a refund on a loss. The
+// cost basis is never taken lower than the schablonmetoden's share of the
+// sale price, since the seller picks that method whenever it gives the lower
+// tax (DECISIONS.md 45).
 export function depaSkattVidForsaljning(p, varde, omkostnad, statensAndelAvForlust) {
-  const vinst = varde - omkostnad;
+  const vinst = varde - Math.max(omkostnad, varde * p.schablonOmkostnad.varde);
   return vinst >= 0 ? vinst * p.skattesatsKapital.varde : vinst * statensAndelAvForlust;
 }
 
