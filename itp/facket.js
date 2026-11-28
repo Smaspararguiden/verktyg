@@ -4,7 +4,10 @@
 // holds the placeholders {kostnad} and {per_manad}. Without them, the text
 // below is used.
 
-import { tusental, tiotal } from "./matning.js";
+// Loaded with this file's own version query, as visning.js does, so the page
+// holds one copy of matning.js and never mixes a cached one with a new one.
+const versionsfraga = new URL(import.meta.url).search;
+const { tusental, tiotal } = await import(`./matning.js${versionsfraga}`);
 
 export const AMNE = "Låt oss välja fritt för hela ITP1-pensionen";
 
