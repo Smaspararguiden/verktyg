@@ -60,3 +60,9 @@ Bara noterade, inte diskuterade än.
 3. Även med 5 % nominellt tar det 21 år. Det är länge. Jag skulle inte tänka
    den tidshorisonten med tanke på allt som kan ändra sig på 21 år.
 4. Depå är ett bra alternativ till en 70/30-portfölj.
+5. Vad ISK-skatten kommer att vara är en osäkerhetsfaktor.
+6. Den som har enskilda aktier behöver ändå beskatta utdelningar. Fondskatten
+   bör vara låg i förhållande till förväntade utdelningar.
+7. Man ska alltid ha 300 000 kr på ett ISK. Men om börsen går ner går det
+   beloppet ner. Ska man då sälja av från depån och sätta in mer? Hur påverkar
+   det beräkningarna från början?
